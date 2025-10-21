@@ -1,0 +1,12 @@
+{
+  "version": "2.0",
+  "description": "OpenFloodAI blended ensemble configuration",
+  "regions": ["Sacramento", "Ohio_Valley", "Mississippi"],
+  "probability_tiers": {
+    "RED": "High flood risk",
+    "AMBER": "Moderate risk — monitor conditions",
+    "GREEN": "Low current risk"
+  },
+  "update_schedule": "Daily 06:00 UTC",
+  "license": "AGPL-3.0"
+}
