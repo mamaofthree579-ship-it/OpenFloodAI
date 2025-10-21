@@ -5,7 +5,7 @@ This script simulates multi-region daily forecasts.
 
 import json
 from datetime import datetime
-from scripts.flood_predictor_v2_blended import blended_flood_probability
+from flood_predictor_v2_blended import blended_flood_probability
 
 # --- Define sample region inputs (would be loaded from data/regions in production) ---
 regions = {
