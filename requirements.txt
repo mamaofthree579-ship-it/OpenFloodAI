@@ -1,0 +1,5 @@
+# Core Python dependencies for OpenFloodAI
+pandas
+numpy
+requests
+matplotlib
