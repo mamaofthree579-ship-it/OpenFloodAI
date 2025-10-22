@@ -59,38 +59,32 @@
   </footer>
 
  <script>
-const regions = {
-  "Northern California": "northern_california.json",
-  "Ohio Valley": "ohio_valley.json",
-  "Mississippi Basin": "mississippi_basin.json"
-};
+fetch('../data/outputs/all_forecasts.json')
+  .then(resp => resp.json())
+  .then(allData => {
+    const regions = Object.keys(allData.forecasts);
+    const selector = document.createElement('select');
+    selector.id = 'region-selector';
+    selector.innerHTML = '<option value="">Select your region...</option>' +
+      regions.map(r => `<option value="${r}">${r}</option>`).join('');
+    document.body.insertBefore(selector, document.getElementById('forecast-container'));
 
-const selector = document.createElement('select');
-selector.id = 'region-selector';
-selector.innerHTML = '<option value="">Select your region...</option>' +
-  Object.entries(regions)
-    .map(([name, file]) => `<option value="${file}">${name}</option>`)
-    .join('');
-document.body.insertBefore(selector, document.getElementById('forecast-container'));
-
-selector.addEventListener('change', () => {
-  const file = selector.value;
-  if (!file) return;
-  document.getElementById('forecast-container').innerHTML = 'Loading forecast...';
-  fetch(`../data/outputs/${file}`)
-    .then(resp => resp.json())
-    .then(data => {
+    selector.addEventListener('change', () => {
+      const region = selector.value;
+      if (!region) return;
+      const values = allData.forecasts[region];
       const container = document.getElementById('forecast-container');
       container.innerHTML = `
-        <h3>Updated: ${data.timestamp}</h3>
-        <p><strong>Flood Probability:</strong> ${(data.P_final * 100).toFixed(1)}%</p>
-        <p><strong>Risk Tier:</strong> ${data.tier}</p>
-        <p>${data.summary}</p>
+        <h3>${region}</h3>
+        <p><strong>Updated:</strong> ${allData.timestamp}</p>
+        <p><strong>Flood Probability:</strong> ${(values.P_final * 100).toFixed(1)}%</p>
+        <p><strong>Tier:</strong> ${values.tier}</p>
+        <p>${values.summary || ''}</p>
       `;
-      container.className = 'region ' + data.tier;
-    })
-    .catch(() => {
-      document.getElementById('forecast-container').innerHTML = '⚠️ Forecast data not available.';
+      container.className = 'region ' + values.tier;
     });
-});
+  })
+  .catch(() => {
+    document.getElementById('forecast-container').innerHTML = '⚠️ Forecast data not available.';
+  });
 </script>
