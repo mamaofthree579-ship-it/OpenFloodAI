@@ -115,7 +115,7 @@
     🌍 OpenFloodAI — Open and free flood forecasting for everyone.
   </footer>
 
-  <!-- ✅ Leaflet JS -->
+<!-- ✅ Leaflet JS -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
           integrity="sha256-o9N1j7kGStKzUjvXkE4qym9Wb0Fl4Q+Wxoh3lKpE0XU="
           crossorigin=""></script>
@@ -135,7 +135,7 @@
       const resp = await fetch('data/outputs/all_forecasts.json');
       const data = await resp.json();
 
-      // Populate region dropdown
+    // Populate region dropdown
       Object.keys(data.forecasts).forEach(region => {
         const opt = document.createElement('option');
         opt.value = region;
@@ -143,7 +143,7 @@
         regionSelector.appendChild(opt);
       });
 
-      // Add markers for each region
+    // Add markers for each region
       Object.entries(data.forecasts).forEach(([region, values]) => {
         if (values.lat && values.lon) {
           const color = values.tier === 'RED' ? 'red' : values.tier === 'AMBER' ? 'orange' : 'green';
@@ -159,7 +159,7 @@
         }
       });
 
-      // Render forecast list
+    // Render forecast list
       const renderForecasts = (region) => {
         let forecastsToShow = region === "ALL" ? data.forecasts : { [region]: data.forecasts[region] };
         let html = `<p>Updated: ${data.timestamp}</p><table class="forecast-table">
