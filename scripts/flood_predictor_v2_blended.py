@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
-"""
-flood_predictor_v2_blended.py - v1.0.1 Smart Basins update
+import sys
+from pathlib import Path
+
+# --- Fix import path ---
+BASE = Path(__file__).resolve().parents[1]
+sys.path.append(str(BASE / "scripts"))
+
+from flood_predictor_v2_blended import blended_flood_probability
 
 Adds:
  - Soil Moisture Index (SMI) multiplier
