@@ -1,90 +1,74 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🌊 OpenFloodAI — Community Flood Dashboard</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #e6f0ff;
-      color: #333;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background: #0077cc;
-      color: white;
-      padding: 15px 20px;
-    }
-    header img {
-      height: 40px;
-      vertical-align: middle;
-      margin-right: 10px;
-    }
-    h1 {
-      display: inline;
-      font-size: 1.8em;
-      vertical-align: middle;
-    }
-    .region {
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      margin: 15px;
-      padding: 15px;
-    }
-    .RED { background-color: #ff9999; }
-    .AMBER { background-color: #ffdb66; }
-    .GREEN { background-color: #a8f0a5; }
-    footer {
-      background: #0077cc;
-      color: white;
-      padding: 10px;
-      text-align: center;
-    }
-  </style>
+<head><meta charset="utf-8"><title>OpenFloodAI v1.0.1 Dashboard</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+body{font-family:Arial,Helvetica,sans-serif;background:#f4f8fb;color:#023;padding:16px}
+.header{display:flex;align-items:center;gap:12px}
+.logo{width:160px}
+.controls{margin:12px 0}
+.region-btn, select{padding:8px 12px;border-radius:6px;border:1px solid #036;background:white;cursor:pointer}
+.card{background:white;padding:15px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.08);margin-top:12px}
+.tier{font-weight:700;padding:6px 10px;border-radius:6px}
+.GREEN{background:#d4f8d4;color:#064}
+.AMBER{background:#fff1cc;color:#6a4300}
+.RED{background:#ffd6d6;color:#600}
+.meta{color:#556;font-size:0.9em;margin-top:8px}
+pre{background:#f7f7f7;padding:8px;border-radius:6px}
+</style>
 </head>
 <body>
-  <header>
-    <img src="logo.svg" alt="OpenFloodAI Logo">
-    <h1>OpenFloodAI Dashboard</h1>
-  </header>
+<div class="header"><img class="logo" src="logo.svg" alt="OpenFloodAI"><h1>OpenFloodAI — v1.0.1 Smart Basins</h1></div>
 
-  <main id="forecast-container">
-    <p>Loading forecast data...</p>
-  </main>
+<div class="controls">
+  <label for="regionSelect">Choose region:</label>
+  <select id="regionSelect"></select>
+  <button id="refreshBtn">Refresh</button>
+</div>
 
-  <footer>
-    <p>🌍 OpenFloodAI — Open and free flood forecasting for everyone.</p>
-  </footer>
+<div id="output" class="card">Loading forecast...</div>
 
- <script>
-fetch('../data/outputs/all_forecasts.json')
-  .then(resp => resp.json())
-  .then(allData => {
-    const regions = Object.keys(allData.forecasts);
-    const selector = document.createElement('select');
-    selector.id = 'region-selector';
-    selector.innerHTML = '<option value="">Select your region...</option>' +
-      regions.map(r => `<option value="${r}">${r}</option>`).join('');
-    document.body.insertBefore(selector, document.getElementById('forecast-container'));
+<script>
+async function loadAll(){
+  const resp = await fetch('../data/outputs/all_forecasts.json');
+  if(!resp.ok) throw new Error('no data');
+  const data = await resp.json();
+  return data;
+}
 
-    selector.addEventListener('change', () => {
-      const region = selector.value;
-      if (!region) return;
-      const values = allData.forecasts[region];
-      const container = document.getElementById('forecast-container');
-      container.innerHTML = `
-        <h3>${region}</h3>
-        <p><strong>Updated:</strong> ${allData.timestamp}</p>
-        <p><strong>Flood Probability:</strong> ${(values.P_final * 100).toFixed(1)}%</p>
-        <p><strong>Tier:</strong> ${values.tier}</p>
-        <p>${values.summary || ''}</p>
-      `;
-      container.className = 'region ' + values.tier;
+function renderForecast(regionName, entry, container){
+  const prob = (entry.P_final*100).toFixed(1);
+  container.innerHTML = `<h2>${regionName}</h2>
+    <div><span class="tier ${entry.tier}">${entry.tier}</span></div>
+    <p><strong>Probability:</strong> ${prob}%</p>
+    <p class="meta">Model v1.0.1 • Generated: ${new Date(entry.generated_utc || Date.now()).toLocaleString()}</p>
+    <pre>Diagnostics: ${JSON.stringify(entry.diagnostics, null, 2)}</pre>`;
+}
+
+async function init(){
+  try{
+    const all = await loadAll();
+    const select = document.getElementById('regionSelect');
+    const out = document.getElementById('output');
+    const regions = Object.keys(all.forecasts || {});
+    if(regions.length === 0){
+      out.textContent = 'No region forecasts available yet.';
+      return;
+    }
+    select.innerHTML = regions.map(r=>`<option value="${r}">${r}</option>`).join('');
+    select.addEventListener('change', ()=> renderForecast(select.value, all.forecasts[select.value], out));
+    document.getElementById('refreshBtn').addEventListener('click', async ()=>{
+      const fresh = await loadAll();
+      renderForecast(select.value, fresh.forecasts[select.value], out);
     });
-  })
-  .catch(() => {
-    document.getElementById('forecast-container').innerHTML = '⚠️ Forecast data not available.';
-  });
+    // default to first region
+    renderForecast(regions[0], all.forecasts[regions[0]], out);
+  }catch(e){
+    document.getElementById('output').textContent='No forecast data available.';
+    console.error(e);
+  }
+}
+
+init();
 </script>
+</body></html>
