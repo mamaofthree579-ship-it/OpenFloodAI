@@ -1,23 +1,25 @@
 {
-  "timestamp": "2025-10-31 06:52:42 UTC",
+  "timestamp": "2025-10-31 17:37:48 UTC",
   "forecasts": {
-    "Sacramento": {
-      "P_final": 0.7,
-      "tier": "RED",
-      "coastal_multiplier": 1.4,
-      "seasonal_tilt": 0.25
+    "Pacific Northwest": {
+      "P_final": 0.4496492034869896,
+      "tier": "AMBER"
     },
-    "Ohio_Valley": {
-      "P_final": 0.263,
-      "tier": "GREEN",
-      "coastal_multiplier": 1.0,
-      "seasonal_tilt": 0.05
+    "California Coast": {
+      "P_final": 0.7161155359368747,
+      "tier": "RED"
     },
-    "Mississippi": {
-      "P_final": 0.54,
-      "tier": "AMBER",
-      "coastal_multiplier": 1.0,
-      "seasonal_tilt": 0.08
+    "Midwest": {
+      "P_final": 0.5237621892121178,
+      "tier": "AMBER"
+    },
+    "Gulf States": {
+      "P_final": 0.3866959526568292,
+      "tier": "AMBER"
+    },
+    "Northeast": {
+      "P_final": 0.820353925493776,
+      "tier": "RED"
     }
   }
 }
