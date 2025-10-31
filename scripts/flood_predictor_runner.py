@@ -1,57 +1,109 @@
 #!/usr/bin/env python3
 """
-Updated runner for v1.0.1 - loads region parameters and computes forecasts with SMI & lag.
-Writes per-region JSONs and combined all_forecasts.json
+flood_predictor_runner.py - Main daily forecast runner for OpenFloodAI
+-------------------------------------------------------------
+• Loads region configurations and live conditions
+• Runs the blended and parametric flood probability models
+• Outputs both per-region and combined forecasts for the dashboard
 """
-import json, os
+
+import json
 from datetime import datetime
 from pathlib import Path
+
+# Import the model function
 from scripts.flood_predictor_v2_blended import blended_flood_probability
 
-BASE = Path(__file__).resolve().parents[0]
-REGION_CFG = BASE.parent / "config" / "region_parameters.json"
+# --- Paths ---
+BASE = Path(__file__).resolve().parents[1]
+CONFIG_PATH = BASE / "config" / "region_parameters.json"
+LIVE_INPUT_PATH = BASE / "data" / "inputs" / "live_conditions.json"
+OUTPUT_DIR = BASE / "data" / "outputs"
 
-def load_region_config():
-    if not REGION_CFG.exists():
-        return {}
-    return json.loads(REGION_CFG.read_text())
+# --- Helpers ---
+def load_json(path, fallback=None):
+    """Load a JSON file safely."""
+    if not path.exists():
+        print(f"⚠️  Missing file: {path}")
+        return fallback or {}
+    with open(path, "r") as f:
+        return json.load(f)
 
+def save_json(data, path):
+    """Save a dictionary to JSON with indentation."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "w") as f:
+        json.dump(data, f, indent=2)
+
+def timestamp_utc():
+    """Return current UTC timestamp string."""
+    return datetime.utcnow().isoformat() + "Z"
+
+# --- Main execution ---
 def main():
-    regions = load_region_config()
-    out_dir = BASE.parent / "data" / "outputs"
-    out_dir.mkdir(parents=True, exist_ok=True)
+    print("🌊 Running OpenFloodAI forecast runner...")
 
-    all_forecasts = {"timestamp": datetime.utcnow().isoformat() + "Z", "forecasts": {}}
+    # Load static configuration
+    regions = load_json(CONFIG_PATH, fallback={})
+    if not regions:
+        print("❌ No region configuration found. Exiting.")
+        return
+
+    # Load live conditions
+    live_data = load_json(LIVE_INPUT_PATH, fallback={}).get("regions", {})
+
+    # Prepare output container
+    all_forecasts = {
+        "timestamp": timestamp_utc(),
+        "forecasts": {}
+    }
 
     for region_name, params in regions.items():
-        # Example inputs - in production these should come from live data sources
+        print(f"📍 Processing region: {region_name}")
+
+        # Pull live conditions if available
+        live = live_data.get(region_name, {})
         inputs = {
-            "ENSO_bias": params.get("ENSO_bias", 0.4),
-            "PDO_pos": params.get("PDO_pos", True),
-            "AR_cat": params.get("AR_cat", 3),
-            "hydrologic_load": params.get("hydrologic_load", "HIGH"),
-            "IVT": params.get("IVT_90pct", params.get("IVT_90pct", 850)),
-            "IVT_90pct": params.get("IVT_90pct", 850),
+            "ENSO_bias": params.get("ENSO_bias", 0.0),
+            "PDO_pos": params.get("PDO_pos", False),
+            "AR_cat": params.get("AR_cat", 1),
+            "hydrologic_load": params.get("hydrologic_load", "MEDIUM"),
+            "IVT": params.get("IVT", 0),
+            "IVT_90pct": params.get("IVT_90pct", 0),
             "radar_24h_accum": params.get("radar_24h_accum", 0),
-            "R24_thresh": params.get("R24_thresh", 75),
+            "R24_thresh": params.get("R24_thresh", 0),
             "tide_height": params.get("tide_height", 0),
             "tide_thresh": params.get("tide_thresh", 0),
-            "ensemble_prob": params.get("base_ensemble_prob", 0.35),
-            "seasonal_tilt": params.get("seasonal_tilt", 0.0),
-            "smi": params.get("default_smi", 0.3),
-            "rainfall_lag_48h": params.get("default_rain_lag_mm", 0.0)
+            # Live updates (optional)
+            "smi": live.get("smi", params.get("default_smi", 0.3)),
+            "rainfall_lag_48h": live.get("rainfall_lag_48h", 0.0)
         }
-        res = blended_flood_probability(inputs, params)
-        # write per-region file
-        fname = f"forecast_{region_name.lower().replace(' ','_')}.json"
-        with open(out_dir / fname, "w") as f:
-            json.dump({"region": region_name, "generated_utc": all_forecasts["timestamp"], **res}, f, indent=2)
-        all_forecasts["forecasts"][region_name] = res
-        print("Wrote", fname)
 
-    with open(out_dir / "all_forecasts.json", "w") as f:
-        json.dump(all_forecasts, f, indent=2)
-    print("All forecasts written to", out_dir / "all_forecasts.json")
+        # Run the forecast model
+        blended, parametric = blended_flood_probability(inputs)
+
+        # Store outputs
+        region_output = {
+            "P_final": round(blended["P_final"], 3),
+            "tier": blended["tier"],
+            "parametric_prob": round(parametric["P_final"], 3),
+            "parametric_tier": parametric["tier"],
+            "inputs_used": inputs
+        }
+
+        all_forecasts["forecasts"][region_name] = region_output
+
+        # Save per-region forecast
+        region_fname = f"forecast_{region_name.lower().replace(' ', '_')}.json"
+        region_path = OUTPUT_DIR / region_fname
+        save_json(region_output, region_path)
+        print(f"✅ Saved forecast for {region_name} → {region_fname}")
+
+    # Save the combined forecast
+    all_path = OUTPUT_DIR / "all_forecasts.json"
+    save_json(all_forecasts, all_path)
+    print(f"🌐 Combined forecasts written to {all_path}")
+    print("🏁 Forecast run complete.")
 
 if __name__ == "__main__":
     main()
