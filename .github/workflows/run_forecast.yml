@@ -1,10 +1,8 @@
 name: 🌊 OpenFloodAI — Daily Forecast Automation
 
 on:
-  # Runs automatically every day at 06:00 UTC
   schedule:
     - cron: "0 6 * * *"
-  # Allows manual trigger from the Actions tab
   workflow_dispatch:
 
 jobs:
@@ -12,33 +10,35 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+
     steps:
-      # Step 1: Check out the repo
       - name: 📥 Checkout repository
         uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
 
-      # Step 2: Set up Python
       - name: 🐍 Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.10"
 
-      # Step 3: Install dependencies
       - name: 📦 Install dependencies
         run: |
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      # Step 4: Run the forecast runner script
       - name: 🌊 Run forecast runner
         run: python scripts/flood_predictor_runner.py
 
-      # Step 5: Commit and push new forecast data
-      - name: 💾 Commit forecast data
+      - name: 💾 Commit and push forecast data safely
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git pull --rebase
+          git add data/outputs/all_forecasts.json
+          git stash || echo "No local changes to stash"
+          git pull --rebase || echo "Nothing to pull or rebase"
+          git stash pop || echo "No stash to apply"
           git add data/outputs/all_forecasts.json
           git commit -m "🌊 Automated forecast update $(date -u +'%Y-%m-%d %H:%M UTC')" || echo "No changes to commit"
-          git push
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git main
