@@ -10,7 +10,7 @@ from flood_predictor_v2_blended import blended_flood_probability
 
 Adds:
  - Soil Moisture Index (SMI) multiplier
- - Rainfall lag response (48h) multiplier
+   Rainfall lag response (48h) multiplier
  - Regional parameter support (loaded externally)
 """
 from typing import Dict, Any
