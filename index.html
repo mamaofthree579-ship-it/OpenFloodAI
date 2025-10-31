@@ -1,27 +1,64 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="0; url=dashboard/dashboard_template.html">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌊 OpenFloodAI — Redirecting to Dashboard</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        text-align: center;
-        background: #e6f0ff;
-        color: #333;
-        padding-top: 100px;
-      }
-      a {
-        color: #0077cc;
-        text-decoration: none;
-        font-weight: bold;
-      }
-    </style>
-  </head>
-  <body>
-    <h2>🌊 OpenFloodAI</h2>
-    <p>Redirecting you to the <a href="dashboard/dashboard_template.html">Dashboard</a>...</p>
-  </body>
-</html>
+<body>
+<header>
+  <img src="logo.svg" alt="OpenFloodAI logo">
+  <h1>🌊 OpenFloodAI — Global Flood Dashboard</h1>
+</header>
+
+<main style="padding:20px;">
+  <div id="forecast-container" class="grid"></div>
+  
+  <h2>Regional Forecast Summary</h2>
+  <table id="forecast-table" border="1" cellpadding="8" cellspacing="0" style="border-collapse:collapse; width:100%; background:white;">
+    <thead>
+      <tr style="background:#0077cc; color:white;">
+        <th>Region</th>
+        <th>Probability</th>
+        <th>Tier</th>
+        <th>Last Updated</th>
+      </tr>
+    </thead>
+    <tbody id="forecast-table-body"></tbody>
+  </table>
+</main>
+
+<footer>🌍 OpenFloodAI — Free and open flood forecasting for all. Updated daily.</footer>
+
+<script>
+fetch('data/outputs/all_forecasts.json')
+  .then(resp => resp.json())
+  .then(data => {
+    const container = document.getElementById('forecast-container');
+    const tableBody = document.getElementById('forecast-table-body');
+    container.innerHTML = '';
+
+    Object.entries(data.forecasts).forEach(([region, values]) => {
+      const div = document.createElement('div');
+      div.className = `region ${values.tier}`;
+      div.style.display = "inline-block";
+      div.style.margin = "10px";
+      div.style.padding = "10px";
+      div.style.width = "200px";
+      div.style.borderRadius = "8px";
+      div.style.color = "#000";
+      div.innerHTML = `
+        <h3>${region}</h3>
+        <p>Probability: ${(values.P_final * 100).toFixed(1)}%</p>
+        <p>Tier: ${values.tier}</p>
+      `;
+      container.appendChild(div);
+
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${region}</td>
+        <td>${(values.P_final * 100).toFixed(1)}%</td>
+        <td>${values.tier}</td>
+        <td>${data.timestamp}</td>
+      `;
+      tableBody.appendChild(row);
+    });
+  })
+  .catch(() => {
+    document.getElementById('forecast-container').innerHTML = "⚠️ Forecast data not available. Please check again later.";
+  });
+</script>
+</body>
