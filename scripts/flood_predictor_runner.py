@@ -1,13 +1,19 @@
 #!/usr/bin/env python3
 """
 flood_predictor_runner.py - Main daily forecast runner for OpenFloodAI
--------------------------------------------------------------
-• Loads region configurations and live conditions
-• Runs the blended and parametric flood probability models
-• Outputs both per-region and combined forecasts for the dashboard
 """
 
+import sys
+from pathlib import Path
 import json
+from datetime import datetime
+
+# --- Fix import path for GitHub Actions and local runs ---
+BASE = Path(__file__).resolve().parents[1]
+sys.path.append(str(BASE / "scripts"))
+
+# ✅ Correct import (no "scripts." prefix)
+from flood_predictor_v2_blended import blended_flood_probability
 from datetime import datetime
 from pathlib import Path
 
