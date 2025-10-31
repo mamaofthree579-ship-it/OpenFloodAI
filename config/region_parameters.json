@@ -1,0 +1,39 @@
+{
+  "Sacramento Basin": {
+    "IVT_90pct": 350,
+    "R24_thresh": 20,
+    "tide_thresh": 2.5,
+    "default_smi": 0.6,
+    "smi_threshold": 0.7,
+    "rain_lag_threshold_mm": 20.0,
+    "smi_rain_multiplier": 0.25,
+    "amber_threshold": 0.30,
+    "red_threshold": 0.60,
+    "seasonal_tilt": 0.10,
+    "ENSO_threshold": 0.4,
+    "AR_cat_thresh": 3,
+    "seasonal_escalation": 0.15
+  },
+  "Ohio Valley": {
+    "IVT_90pct": 340,
+    "R24_thresh": 25,
+    "tide_thresh": 0.0,
+    "default_smi": 0.35,
+    "smi_threshold": 0.8,
+    "rain_lag_threshold_mm": 30.0,
+    "smi_rain_multiplier": 0.20,
+    "amber_threshold": 0.25,
+    "red_threshold": 0.55
+  },
+  "Mississippi Tributaries": {
+    "IVT_90pct": 360,
+    "R24_thresh": 22,
+    "tide_thresh": 2.5,
+    "default_smi": 0.55,
+    "smi_threshold": 0.7,
+    "rain_lag_threshold_mm": 25.0,
+    "smi_rain_multiplier": 0.30,
+    "amber_threshold": 0.30,
+    "red_threshold": 0.60
+  }
+}
