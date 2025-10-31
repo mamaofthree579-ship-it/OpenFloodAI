@@ -1,53 +1,53 @@
 {
-  "timestamp": "2025-10-31 18:18:22 UTC",
+  "timestamp": "2025-10-31 22:00:38 UTC",
   "forecasts": {
     "Pacific Northwest": {
-      "P_final": 0.7196044685406878,
-      "tier": "RED"
+      "P_final": 0.3826527076272557,
+      "tier": "AMBER"
     },
     "California Coast": {
-      "P_final": 0.46661402491938864,
+      "P_final": 0.5092416623250361,
       "tier": "AMBER"
     },
     "Southwest Desert": {
-      "P_final": 0.49703986445071535,
+      "P_final": 0.4169414113978877,
       "tier": "AMBER"
     },
     "Rocky Mountains": {
-      "P_final": 1,
-      "tier": "RED"
+      "P_final": 0.4083404841624709,
+      "tier": "AMBER"
     },
     "Midwest": {
-      "P_final": 0.6865009867816685,
+      "P_final": 0.7665534040503962,
       "tier": "RED"
     },
     "Great Plains": {
-      "P_final": 0.9083966269029481,
-      "tier": "RED"
-    },
-    "Gulf States": {
-      "P_final": 0.4759869466299093,
+      "P_final": 0.501311388990984,
       "tier": "AMBER"
     },
+    "Gulf States": {
+      "P_final": 0.6020088658140779,
+      "tier": "RED"
+    },
     "Appalachia": {
-      "P_final": 0.9307416437175343,
+      "P_final": 0.7188631349595985,
       "tier": "RED"
     },
     "Northeast": {
-      "P_final": 0.5472204693229237,
+      "P_final": 0.5304750760075246,
       "tier": "AMBER"
     },
     "Mid-Atlantic": {
-      "P_final": 0.5015854870290092,
-      "tier": "AMBER"
+      "P_final": 0.6543758044860227,
+      "tier": "RED"
     },
     "United Kingdom": {
-      "P_final": 0.47757128882085575,
+      "P_final": 0.5001305349248347,
       "tier": "AMBER"
     },
     "Philippines": {
-      "P_final": 0.42235579491543157,
-      "tier": "AMBER"
+      "P_final": 0.861031908261388,
+      "tier": "RED"
     }
   }
 }

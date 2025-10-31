@@ -1,64 +1,42 @@
-<body>
-<header>
-  <img src="logo.svg" alt="OpenFloodAI logo">
-  <h1>🌊 OpenFloodAI — Global Flood Dashboard</h1>
-</header>
-
-<main style="padding:20px;">
-  <div id="forecast-container" class="grid"></div>
-  
-  <h2>Regional Forecast Summary</h2>
-  <table id="forecast-table" border="1" cellpadding="8" cellspacing="0" style="border-collapse:collapse; width:100%; background:white;">
-    <thead>
-      <tr style="background:#0077cc; color:white;">
-        <th>Region</th>
-        <th>Probability</th>
-        <th>Tier</th>
-        <th>Last Updated</th>
-      </tr>
-    </thead>
-    <tbody id="forecast-table-body"></tbody>
-  </table>
-</main>
-
-<footer>🌍 OpenFloodAI — Free and open flood forecasting for all. Updated daily.</footer>
-
-<script>
-fetch('data/outputs/all_forecasts.json')
-  .then(resp => resp.json())
-  .then(data => {
-    const container = document.getElementById('forecast-container');
-    const tableBody = document.getElementById('forecast-table-body');
-    container.innerHTML = '';
-
-    Object.entries(data.forecasts).forEach(([region, values]) => {
-      const div = document.createElement('div');
-      div.className = `region ${values.tier}`;
-      div.style.display = "inline-block";
-      div.style.margin = "10px";
-      div.style.padding = "10px";
-      div.style.width = "200px";
-      div.style.borderRadius = "8px";
-      div.style.color = "#000";
-      div.innerHTML = `
-        <h3>${region}</h3>
-        <p>Probability: ${(values.P_final * 100).toFixed(1)}%</p>
-        <p>Tier: ${values.tier}</p>
-      `;
-      container.appendChild(div);
-
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td>${region}</td>
-        <td>${(values.P_final * 100).toFixed(1)}%</td>
-        <td>${values.tier}</td>
-        <td>${data.timestamp}</td>
-      `;
-      tableBody.appendChild(row);
-    });
-  })
-  .catch(() => {
-    document.getElementById('forecast-container').innerHTML = "⚠️ Forecast data not available. Please check again later.";
-  });
-</script>
-</body>
+<html><head><title>OpenFloodAI Dashboard</title>
+<style>body{font-family:sans-serif;background:#eef;} .region{margin:10px;padding:10px;border:1px solid #ccc;border-radius:5px;} .RED{background:#f88;} .AMBER{background:#ffb347;} .GREEN{background:#aaffaa;}</style>
+</head><body>
+<h1>🌊 OpenFloodAI Dashboard</h1>
+<p>Last update: 2025-10-31 22:00:38 UTC</p>
+<div class='region AMBER'><h2>Pacific Northwest</h2>
+<p>Flood probability: 0.38</p>
+<p>Alert tier: <strong>AMBER</strong></p></div>
+<div class='region AMBER'><h2>California Coast</h2>
+<p>Flood probability: 0.51</p>
+<p>Alert tier: <strong>AMBER</strong></p></div>
+<div class='region AMBER'><h2>Southwest Desert</h2>
+<p>Flood probability: 0.42</p>
+<p>Alert tier: <strong>AMBER</strong></p></div>
+<div class='region AMBER'><h2>Rocky Mountains</h2>
+<p>Flood probability: 0.41</p>
+<p>Alert tier: <strong>AMBER</strong></p></div>
+<div class='region RED'><h2>Midwest</h2>
+<p>Flood probability: 0.77</p>
+<p>Alert tier: <strong>RED</strong></p></div>
+<div class='region AMBER'><h2>Great Plains</h2>
+<p>Flood probability: 0.50</p>
+<p>Alert tier: <strong>AMBER</strong></p></div>
+<div class='region RED'><h2>Gulf States</h2>
+<p>Flood probability: 0.60</p>
+<p>Alert tier: <strong>RED</strong></p></div>
+<div class='region RED'><h2>Appalachia</h2>
+<p>Flood probability: 0.72</p>
+<p>Alert tier: <strong>RED</strong></p></div>
+<div class='region AMBER'><h2>Northeast</h2>
+<p>Flood probability: 0.53</p>
+<p>Alert tier: <strong>AMBER</strong></p></div>
+<div class='region RED'><h2>Mid-Atlantic</h2>
+<p>Flood probability: 0.65</p>
+<p>Alert tier: <strong>RED</strong></p></div>
+<div class='region AMBER'><h2>United Kingdom</h2>
+<p>Flood probability: 0.50</p>
+<p>Alert tier: <strong>AMBER</strong></p></div>
+<div class='region RED'><h2>Philippines</h2>
+<p>Flood probability: 0.86</p>
+<p>Alert tier: <strong>RED</strong></p></div>
+</body></html>
