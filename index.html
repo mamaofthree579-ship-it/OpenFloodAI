@@ -5,72 +5,92 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🌊 OpenFloodAI — Global Flood Dashboard</title>
 
-<!-- Leaflet CSS for the map -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-sA+qLwJz5IJdE0kFi6tk3+f0V3gHjOa1tT9d8QJpGgE=" crossorigin=""/>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #e6f0ff;
-    color: #333;
-    margin: 0;
-    padding: 0;
-  }
-  header {
-    background: #0077cc;
-    color: white;
-    padding: 15px 20px;
-  }
-  header img {
-    height: 40px;
-    vertical-align: middle;
-    margin-right: 10px;
-  }
-  h1 {
-    display: inline;
-    font-size: 1.8em;
-    vertical-align: middle;
-  }
-  #map {
-    height: 400px;
-    width: 100%;
-    margin-top: 10px;
-  }
-  .controls {
-    padding: 10px 20px;
-  }
-  .region {
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin: 15px;
-    padding: 15px;
-    display: inline-block;
-    width: 200px;
-  }
-  .RED { background-color: #ff9999; }
-  .AMBER { background-color: #ffdb66; }
-  .GREEN { background-color: #a8f0a5; }
-  table {
-    border-collapse: collapse;
-    width: 100%;
-    background: white;
-    margin-top: 20px;
-  }
-  th, td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: center;
-  }
-  th {
-    background: #0077cc;
-    color: white;
-  }
-  footer {
-    background: #0077cc;
-    color: white;
-    padding: 10px;
-    text-align: center;
-    margin-top: 30px;
-  }
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+integrity="sha256-SmHgJywY2OAtTSiVQF9Cqgk1jJZT5+M3qsGJjM8yE0E=" crossorigin=""></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  // Initialize the map AFTER DOM is loaded
+  const map = L.map('map').setView([20, 0], 2);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  fetch('data/outputs/all_forecasts.json')
+    .then(resp => {
+      if (!resp.ok) throw new Error("Failed to load forecasts");
+      return resp.json();
+    })
+    .then(data => {
+      const forecasts = data.forecasts || {};
+      const container = document.getElementById('forecast-container');
+      const tableBody = document.getElementById('forecast-table-body');
+      const filterSelect = document.getElementById('region-filter');
+
+      // If forecasts is empty, show warning
+      if (Object.keys(forecasts).length === 0) {
+        container.innerHTML = "⚠️ No forecast data available.";
+        return;
+      }
+
+      // Populate dropdown
+      Object.keys(forecasts).forEach(region => {
+        const opt = document.createElement('option');
+        opt.value = region;
+        opt.textContent = region;
+        filterSelect.appendChild(opt);
+      });
+
+      const updateDisplay = (selectedRegion = "all") => {
+        container.innerHTML = '';
+        tableBody.innerHTML = '';
+        map.eachLayer(layer => {
+          if (layer instanceof L.CircleMarker) map.removeLayer(layer);
+        });
+
+        Object.entries(forecasts).forEach(([region, values]) => {
+          if (selectedRegion !== "all" && region !== selectedRegion) return;
+
+          const div = document.createElement('div');
+          div.className = `region ${values.tier}`;
+          div.innerHTML = `
+            <h3>${region}</h3>
+            <p>Probability: ${(values.P_final * 100).toFixed(1)}%</p>
+            <p>Tier: ${values.tier}</p>
+          `;
+          container.appendChild(div);
+
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${region}</td>
+            <td>${(values.P_final * 100).toFixed(1)}%</td>
+            <td>${values.tier}</td>
+            <td>${data.timestamp}</td>
+          `;
+          tableBody.appendChild(row);
+
+          // Only add marker if lat/lon are provided
+          if (values.lat && values.lon) {
+            const color = values.tier === "RED" ? "red" : values.tier === "AMBER" ? "orange" : "green";
+            const marker = L.circleMarker([values.lat, values.lon], {
+              color,
+              radius: 8,
+              fillOpacity: 0.8
+            }).addTo(map).bindPopup(`<b>${region}</b><br>${(values.P_final * 100).toFixed(1)}% (${values.tier})`);
+          }
+        });
+      };
+
+      updateDisplay();
+      filterSelect.addEventListener('change', e => updateDisplay(e.target.value));
+    })
+    .catch(err => {
+      console.error(err);
+      document.getElementById('forecast-container').innerHTML = "⚠️ Error loading forecast data.";
+    });
+});
+</script>
 </style>
 </head>
 <body>
@@ -176,6 +196,5 @@ fetch('data/outputs/all_forecasts.json')
     document.getElementById('forecast-container').innerHTML = "⚠️ Forecast data not available.";
   });
 </script>
-
 </body>
 </html>
