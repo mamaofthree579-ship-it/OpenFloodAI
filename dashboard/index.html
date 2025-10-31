@@ -1,42 +1,192 @@
-<html><head><title>OpenFloodAI Dashboard</title>
-<style>body{font-family:sans-serif;background:#eef;} .region{margin:10px;padding:10px;border:1px solid #ccc;border-radius:5px;} .RED{background:#f88;} .AMBER{background:#ffb347;} .GREEN{background:#aaffaa;}</style>
-</head><body>
-<h1>🌊 OpenFloodAI Dashboard</h1>
-<p>Last update: 2025-10-31 22:00:38 UTC</p>
-<div class='region AMBER'><h2>Pacific Northwest</h2>
-<p>Flood probability: 0.38</p>
-<p>Alert tier: <strong>AMBER</strong></p></div>
-<div class='region AMBER'><h2>California Coast</h2>
-<p>Flood probability: 0.51</p>
-<p>Alert tier: <strong>AMBER</strong></p></div>
-<div class='region AMBER'><h2>Southwest Desert</h2>
-<p>Flood probability: 0.42</p>
-<p>Alert tier: <strong>AMBER</strong></p></div>
-<div class='region AMBER'><h2>Rocky Mountains</h2>
-<p>Flood probability: 0.41</p>
-<p>Alert tier: <strong>AMBER</strong></p></div>
-<div class='region RED'><h2>Midwest</h2>
-<p>Flood probability: 0.77</p>
-<p>Alert tier: <strong>RED</strong></p></div>
-<div class='region AMBER'><h2>Great Plains</h2>
-<p>Flood probability: 0.50</p>
-<p>Alert tier: <strong>AMBER</strong></p></div>
-<div class='region RED'><h2>Gulf States</h2>
-<p>Flood probability: 0.60</p>
-<p>Alert tier: <strong>RED</strong></p></div>
-<div class='region RED'><h2>Appalachia</h2>
-<p>Flood probability: 0.72</p>
-<p>Alert tier: <strong>RED</strong></p></div>
-<div class='region AMBER'><h2>Northeast</h2>
-<p>Flood probability: 0.53</p>
-<p>Alert tier: <strong>AMBER</strong></p></div>
-<div class='region RED'><h2>Mid-Atlantic</h2>
-<p>Flood probability: 0.65</p>
-<p>Alert tier: <strong>RED</strong></p></div>
-<div class='region AMBER'><h2>United Kingdom</h2>
-<p>Flood probability: 0.50</p>
-<p>Alert tier: <strong>AMBER</strong></p></div>
-<div class='region RED'><h2>Philippines</h2>
-<p>Flood probability: 0.86</p>
-<p>Alert tier: <strong>RED</strong></p></div>
-</body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🌊 OpenFloodAI — Community Flood Dashboard</title>
+
+  <!-- Leaflet Map CSS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #e6f0ff;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: #0077cc;
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+
+    header h1 {
+      font-size: 1.8em;
+      margin: 0;
+    }
+
+    #region-select {
+      padding: 5px;
+      font-size: 1em;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    #map {
+      height: 400px;
+      width: 100%;
+      margin: 10px 0;
+    }
+
+    #forecast-table {
+      width: 90%;
+      margin: 0 auto 20px auto;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    #forecast-table th,
+    #forecast-table td {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: center;
+    }
+
+    #forecast-table th {
+      background: #0077cc;
+      color: white;
+    }
+
+    .RED {
+      background-color: #ff9999;
+    }
+    .AMBER {
+      background-color: #ffdb66;
+    }
+    .GREEN {
+      background-color: #a8f0a5;
+    }
+
+    footer {
+      background: #0077cc;
+      color: white;
+      padding: 10px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🌊 OpenFloodAI Dashboard</h1>
+    <div>
+      <label for="region-select">Select Region:</label>
+      <select id="region-select">
+        <option value="All Regions">All Regions</option>
+      </select>
+    </div>
+  </header>
+
+  <div id="map"></div>
+
+  <table id="forecast-table">
+    <thead>
+      <tr>
+        <th>Region</th>
+        <th>Probability (%)</th>
+        <th>Risk Tier</th>
+      </tr>
+    </thead>
+    <tbody id="forecast-body">
+      <tr><td colspan="3">Loading forecast data...</td></tr>
+    </tbody>
+  </table>
+
+  <footer>
+    🌍 OpenFloodAI — Open and free flood forecasting for everyone.
+  </footer>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+    const map = L.map("map").setView([20, 0], 2);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 10,
+      attribution: "© OpenStreetMap contributors"
+    }).addTo(map);
+
+    const regionSelect = document.getElementById("region-select");
+    const forecastBody = document.getElementById("forecast-body");
+
+    fetch("../data/outputs/all_forecasts.json")
+      .then((resp) => resp.json())
+      .then((data) => {
+        forecastBody.innerHTML = "";
+        const forecasts = data.forecasts;
+
+        // Populate dropdown
+        Object.keys(forecasts).forEach((region) => {
+          const opt = document.createElement("option");
+          opt.value = region;
+          opt.textContent = region;
+          regionSelect.appendChild(opt);
+        });
+
+        // Create table + map markers
+        updateDashboard("All Regions", forecasts);
+        regionSelect.addEventListener("change", () => {
+          updateDashboard(regionSelect.value, forecasts);
+        });
+      })
+      .catch(() => {
+        forecastBody.innerHTML =
+          '<tr><td colspan="3">⚠️ Forecast data not available.</td></tr>';
+      });
+
+    function updateDashboard(selected, forecasts) {
+      forecastBody.innerHTML = "";
+      map.eachLayer((layer) => {
+        if (layer instanceof L.Marker) map.removeLayer(layer);
+      });
+
+      Object.entries(forecasts).forEach(([region, values]) => {
+        if (selected === "All Regions" || selected === region) {
+          const tr = document.createElement("tr");
+          tr.className = values.tier;
+          tr.innerHTML = `
+            <td>${region}</td>
+            <td>${(values.P_final * 100).toFixed(1)}%</td>
+            <td>${values.tier}</td>
+          `;
+          forecastBody.appendChild(tr);
+
+          if (values.lat && values.lon) {
+            const marker = L.marker([values.lat, values.lon]).addTo(map);
+            marker.bindPopup(
+              `<b>${region}</b><br>Risk: ${values.tier}<br>Prob: ${(values.P_final * 100).toFixed(1)}%`
+            );
+          }
+        }
+      });
+
+      if (selected !== "All Regions" && forecasts[selected]?.lat) {
+        map.setView([forecasts[selected].lat, forecasts[selected].lon], 6);
+      } else {
+        map.setView([20, 0], 2);
+      }
+    }
+  </script>
+</body>
+</html>
