@@ -1,53 +1,53 @@
 {
-  "timestamp": "2025-10-31 22:00:38 UTC",
+  "timestamp": "2025-10-31T22:55:35.505924Z",
   "forecasts": {
+    "Sacramento Basin": {
+      "P_final": 0.71,
+      "tier": "RED",
+      "lat": 38.58,
+      "lon": -121.49
+    },
+    "Ohio Valley": {
+      "P_final": 0.35,
+      "tier": "AMBER",
+      "lat": 38.0,
+      "lon": -84.5
+    },
+    "Mississippi Tributaries": {
+      "P_final": 0.2,
+      "tier": "GREEN",
+      "lat": 34.7,
+      "lon": -90.2
+    },
     "Pacific Northwest": {
-      "P_final": 0.3826527076272557,
-      "tier": "AMBER"
+      "P_final": 0.5,
+      "tier": "AMBER",
+      "lat": 45.5,
+      "lon": -122.6
     },
-    "California Coast": {
-      "P_final": 0.5092416623250361,
-      "tier": "AMBER"
+    "Gulf Coast": {
+      "P_final": 0.28,
+      "tier": "GREEN",
+      "lat": 29.9,
+      "lon": -90.1
     },
-    "Southwest Desert": {
-      "P_final": 0.4169414113978877,
-      "tier": "AMBER"
+    "Northeast Corridor": {
+      "P_final": 0.49,
+      "tier": "AMBER",
+      "lat": 40.7,
+      "lon": -74.0
     },
-    "Rocky Mountains": {
-      "P_final": 0.4083404841624709,
-      "tier": "AMBER"
+    "Central Plains": {
+      "P_final": 0.4,
+      "tier": "AMBER",
+      "lat": 39.1,
+      "lon": -96.6
     },
-    "Midwest": {
-      "P_final": 0.7665534040503962,
-      "tier": "RED"
-    },
-    "Great Plains": {
-      "P_final": 0.501311388990984,
-      "tier": "AMBER"
-    },
-    "Gulf States": {
-      "P_final": 0.6020088658140779,
-      "tier": "RED"
-    },
-    "Appalachia": {
-      "P_final": 0.7188631349595985,
-      "tier": "RED"
-    },
-    "Northeast": {
-      "P_final": 0.5304750760075246,
-      "tier": "AMBER"
-    },
-    "Mid-Atlantic": {
-      "P_final": 0.6543758044860227,
-      "tier": "RED"
-    },
-    "United Kingdom": {
-      "P_final": 0.5001305349248347,
-      "tier": "AMBER"
-    },
-    "Philippines": {
-      "P_final": 0.861031908261388,
-      "tier": "RED"
+    "Florida Peninsula": {
+      "P_final": 0.51,
+      "tier": "AMBER",
+      "lat": 27.9,
+      "lon": -82.5
     }
   }
 }
