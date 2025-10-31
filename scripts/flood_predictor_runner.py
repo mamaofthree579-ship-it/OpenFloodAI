@@ -20,13 +20,26 @@ OUTPUT_FILE = OUTPUT_DIR / "all_forecasts.json"
 
 # --- Define target regions ---
 REGIONS = {
+    # --- Western US ---
     "Pacific Northwest": {"lat": 47.6, "lon": -122.3},
     "California Coast": {"lat": 36.8, "lon": -121.9},
+    "Southwest Desert": {"lat": 34.0, "lon": -111.1},
+    
+    # --- Central US ---
+    "Rocky Mountains": {"lat": 39.7, "lon": -105.0},
     "Midwest": {"lat": 41.9, "lon": -87.6},
+    "Great Plains": {"lat": 38.0, "lon": -97.0},
+    
+    # --- Eastern US ---
     "Gulf States": {"lat": 29.9, "lon": -90.1},
-    "Northeast": {"lat": 42.4, "lon": -71.1}
+    "Appalachia": {"lat": 37.5, "lon": -81.0},
+    "Northeast": {"lat": 42.4, "lon": -71.1},
+    "Mid-Atlantic": {"lat": 39.0, "lon": -77.0},
+    
+    # --- International (pilot) ---
+    "United Kingdom": {"lat": 51.5, "lon": -0.1},
+    "Philippines": {"lat": 14.6, "lon": 121.0}
 }
-
 def run_forecast():
     all_results = {}
     timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
