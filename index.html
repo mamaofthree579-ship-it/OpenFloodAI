@@ -1,181 +1,191 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🌊 OpenFloodAI — Global Flood Dashboard</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🌊 OpenFloodAI — Community Flood Dashboard</title>
 
-<!-- Leaflet CSS for the map -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-sA+qLwJz5IJdE0kFi6tk3+f0V3gHjOa1tT9d8QJpGgE=" crossorigin=""/>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background: #e6f0ff;
-    color: #333;
-    margin: 0;
-    padding: 0;
-  }
-  header {
-    background: #0077cc;
-    color: white;
-    padding: 15px 20px;
-  }
-  header img {
-    height: 40px;
-    vertical-align: middle;
-    margin-right: 10px;
-  }
-  h1 {
-    display: inline;
-    font-size: 1.8em;
-    vertical-align: middle;
-  }
-  #map {
-    height: 400px;
-    width: 100%;
-    margin-top: 10px;
-  }
-  .controls {
-    padding: 10px 20px;
-  }
-  .region {
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin: 15px;
-    padding: 15px;
-    display: inline-block;
-    width: 200px;
-  }
-  .RED { background-color: #ff9999; }
-  .AMBER { background-color: #ffdb66; }
-  .GREEN { background-color: #a8f0a5; }
-  table {
-    border-collapse: collapse;
-    width: 100%;
-    background: white;
-    margin-top: 20px;
-  }
-  th, td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: center;
-  }
-  th {
-    background: #0077cc;
-    color: white;
-  }
-  footer {
-    background: #0077cc;
-    color: white;
-    padding: 10px;
-    text-align: center;
-    margin-top: 30px;
-  }
-</style>
+  <!-- ✅ Leaflet CSS -->
+  <link rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-o9N1j7kGStKzUjvXkE4qym9Wb0Fl4Q+Wxoh3lKpE0XU="
+        crossorigin=""/>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #e6f0ff;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: #0077cc;
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    header h1 {
+      font-size: 1.8em;
+      margin: 0;
+    }
+
+    .container {
+      width: 95%;
+      margin: auto;
+      padding: 20px;
+    }
+
+    #map {
+      width: 100%;
+      height: 500px;
+      margin: 20px 0;
+      border-radius: 8px;
+      border: 2px solid #0077cc;
+    }
+
+    .region {
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      margin: 10px 0;
+      padding: 10px;
+    }
+
+    .RED { background-color: #ff9999; }
+    .AMBER { background-color: #ffdb66; }
+    .GREEN { background-color: #a8f0a5; }
+
+    footer {
+      background: #0077cc;
+      color: white;
+      padding: 10px;
+      text-align: center;
+    }
+
+    select {
+      padding: 5px;
+      font-size: 1em;
+      margin-left: 10px;
+    }
+
+    .forecast-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    .forecast-table th, .forecast-table td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+
+    .forecast-table th {
+      background: #0077cc;
+      color: white;
+    }
+  </style>
 </head>
+
 <body>
+  <header>
+    <h1>🌊 OpenFloodAI Dashboard</h1>
+  </header>
 
-<header>
-  <img src="logo.svg" alt="OpenFloodAI logo">
-  <h1>🌊 OpenFloodAI — Global Flood Dashboard</h1>
-</header>
+  <div class="container">
+    <h2>Select a Region:</h2>
+    <select id="regionSelector">
+      <option value="ALL">All Regions</option>
+    </select>
 
-<div class="controls">
-  <label for="region-filter">🌎 Select region:</label>
-  <select id="region-filter">
-    <option value="all">All Regions</option>
-  </select>
-</div>
+    <!-- ✅ Map Section -->
+    <div id="map"></div>
 
-<div id="map"></div>
+    <!-- ✅ Forecast Section -->
+    <div id="forecast-container">
+      <p>Loading forecast data...</p>
+    </div>
+  </div>
 
-<main style="padding:20px;">
-  <div id="forecast-container"></div>
-  
-  <h2>Regional Forecast Summary</h2>
-  <table id="forecast-table">
-    <thead>
-      <tr>
-        <th>Region</th>
-        <th>Probability</th>
-        <th>Tier</th>
-        <th>Last Updated</th>
-      </tr>
-    </thead>
-    <tbody id="forecast-table-body"></tbody>
-  </table>
-</main>
+  <footer>
+    🌍 OpenFloodAI — Open and free flood forecasting for everyone.
+  </footer>
 
-<footer>🌍 OpenFloodAI — Open and free flood forecasting for all. Updated daily.</footer>
+  <!-- ✅ Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-o9N1j7kGStKzUjvXkE4qym9Wb0Fl4Q+Wxoh3lKpE0XU="
+          crossorigin=""></script>
 
-<!-- Leaflet JS -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-SmHgJywY2OAtTSiVQF9Cqgk1jJZT5+M3qsGJjM8yE0E=" crossorigin=""></script>
-<script>
-const map = L.map('map').setView([20, 0], 2);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '&copy; OpenStreetMap contributors'
-}).addTo(map);
+  <script>
+  document.addEventListener("DOMContentLoaded", async () => {
+    // Initialize map
+    const map = L.map('map').setView([20, 0], 2);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
 
-fetch('data/outputs/all_forecasts.json')
-  .then(resp => resp.json())
-  .then(data => {
-    const forecasts = data.forecasts;
-    const container = document.getElementById('forecast-container');
-    const tableBody = document.getElementById('forecast-table-body');
-    const filterSelect = document.getElementById('region-filter');
+    const forecastContainer = document.getElementById('forecast-container');
+    const regionSelector = document.getElementById('regionSelector');
 
-    // populate dropdown
-    Object.keys(forecasts).forEach(region => {
-      const opt = document.createElement('option');
-      opt.value = region;
-      opt.textContent = region;
-      filterSelect.appendChild(opt);
-    });
+    try {
+      const resp = await fetch('data/outputs/all_forecasts.json');
+      const data = await resp.json();
 
-    const updateDisplay = (selectedRegion = "all") => {
-      container.innerHTML = '';
-      tableBody.innerHTML = '';
-      map.eachLayer(layer => { if (layer instanceof L.Marker) map.removeLayer(layer); });
+      // Populate region dropdown
+      Object.keys(data.forecasts).forEach(region => {
+        const opt = document.createElement('option');
+        opt.value = region;
+        opt.textContent = region;
+        regionSelector.appendChild(opt);
+      });
 
-      Object.entries(forecasts).forEach(([region, values]) => {
-        if (selectedRegion !== "all" && region !== selectedRegion) return;
-
-        const div = document.createElement('div');
-        div.className = `region ${values.tier}`;
-        div.innerHTML = `
-          <h3>${region}</h3>
-          <p>Probability: ${(values.P_final * 100).toFixed(1)}%</p>
-          <p>Tier: ${values.tier}</p>
-        `;
-        container.appendChild(div);
-
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${region}</td>
-          <td>${(values.P_final * 100).toFixed(1)}%</td>
-          <td>${values.tier}</td>
-          <td>${data.timestamp}</td>
-        `;
-        tableBody.appendChild(row);
-
+      // Add markers for each region
+      Object.entries(data.forecasts).forEach(([region, values]) => {
         if (values.lat && values.lon) {
-          const color = values.tier === "RED" ? "red" : values.tier === "AMBER" ? "orange" : "green";
+          const color = values.tier === 'RED' ? 'red' : values.tier === 'AMBER' ? 'orange' : 'green';
           const marker = L.circleMarker([values.lat, values.lon], {
-            color,
             radius: 8,
+            fillColor: color,
+            color: "#000",
+            weight: 1,
+            opacity: 1,
             fillOpacity: 0.8
-          }).addTo(map).bindPopup(`<b>${region}</b><br>${(values.P_final * 100).toFixed(1)}% (${values.tier})`);
+          }).addTo(map);
+          marker.bindPopup(`<b>${region}</b><br>Probability: ${values.P_final}<br>Tier: ${values.tier}`);
         }
       });
-    };
 
-    updateDisplay();
-    filterSelect.addEventListener('change', e => updateDisplay(e.target.value));
-  })
-  .catch(() => {
-    document.getElementById('forecast-container').innerHTML = "⚠️ Forecast data not available.";
+      // Render forecast list
+      const renderForecasts = (region) => {
+        let forecastsToShow = region === "ALL" ? data.forecasts : { [region]: data.forecasts[region] };
+        let html = `<p>Updated: ${data.timestamp}</p><table class="forecast-table">
+                      <tr><th>Region</th><th>Probability</th><th>Tier</th></tr>`;
+        Object.entries(forecastsToShow).forEach(([r, values]) => {
+          html += `<tr class="${values.tier}">
+                     <td>${r}</td>
+                     <td>${values.P_final}</td>
+                     <td>${values.tier}</td>
+                   </tr>`;
+        });
+        html += `</table>`;
+        forecastContainer.innerHTML = html;
+      };
+
+      regionSelector.addEventListener("change", e => {
+        renderForecasts(e.target.value);
+      });
+
+      renderForecasts("ALL");
+
+    } catch (err) {
+      console.error("Error loading forecasts:", err);
+      forecastContainer.innerHTML = "<p>⚠️ Forecast data not available. Please check again later.</p>";
+    }
   });
-</script>
-
+  </script>
 </body>
 </html>
