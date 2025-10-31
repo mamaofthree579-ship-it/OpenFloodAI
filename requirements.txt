@@ -1,5 +1,25 @@
-# Core Python dependencies for OpenFloodAI
-pandas
+# Core scientific / data libraries
 numpy
+pandas
+scipy
+geopandas
+shapely
+folium
+
+# Forecast modeling and probability handling
+scikit-learn
+
+# For fetching and parsing weather data (if using APIs later)
 requests
+
+# JSON and file handling
+jsonschema
+
+# For running dashboards and automated scripts
 matplotlib
+
+# Used in GitHub Actions runners (safe to include)
+python-dateutil
+
+# Optional but useful if you expand later
+geopy
