@@ -1,0 +1,35 @@
+name: Run Forecast + Validate
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  forecast:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install --no-cache-dir pandas numpy scikit-learn
+      - name: Run forecast
+        run: python scripts/flood_predictor_runner.py
+      - name: Build dashboard
+        run: python utils_dashboard.py || true
+      - name: Commit outputs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/outputs/*.json dashboard/index.html || true
+          git commit -m "Automated forecast v1.0.1 update" || echo "No changes to commit"
+          git fetch origin main
+          git merge origin/main --no-edit || true
+          git push origin HEAD:main || echo "Push failed"
