@@ -1,72 +1,73 @@
 #!/usr/bin/env python3
 """
-flood_predictor_v2_blended.py
-------------------------------------
-Core flood probability model for OpenFloodAI.
-Combines parametric and ensemble (blended) methods.
-
-Enhancements:
-• Integrates hydrologic and atmospheric indicators
-• Includes soil moisture index (SMI)
-• Uses 24-hour rainfall lag as intensity proxy
+OpenFloodAI — Blended Flood Probability Model (v2 Multi-Region)
+---------------------------------------------------------------
+Combines seasonal signals, atmospheric rivers, and local hydrology
+to produce a unified exceedance probability (P_final).
 """
 
-def clamp(value, low, high):
-    return max(low, min(high, value))
+import math
+import random
+
+
+# --------------------------------------------------------------------
+# Helper Functions
+# --------------------------------------------------------------------
+
+def clamp(value, min_val, max_val):
+    """Ensure value stays between given bounds."""
+    return max(min_val, min(value, max_val))
+
 
 def lower_bound(prob):
-    """Apply a probabilistic floor to avoid false negatives."""
-    return prob * 0.75
+    """Provides a conservative lower bound for uncertainty estimation."""
+    return max(0, prob - 0.15)
 
-def blended_flood_probability(inputs):
+
+# --------------------------------------------------------------------
+# Core Probability Model
+# --------------------------------------------------------------------
+
+def blended_flood_probability(
+    ensemble_prob: float,
+    ENSO_bias: float,
+    PDO_pos: bool,
+    AR_cat: int,
+    hydrologic_load: str,
+    IVT: float,
+    radar_24h_accum: float,
+    tide_height: float
+) -> float:
     """
-    Compute both blended and parametric probabilities.
-    Returns:
-      blended_result, parametric_result
+    Combine global climate signals and local hydrometeorology into
+    a blended flood exceedance probability (0–1).
     """
 
-    # --- Extract inputs ---
-    ENSO_bias = inputs.get("ENSO_bias", 0.0)
-    PDO_pos = inputs.get("PDO_pos", False)
-    AR_cat = inputs.get("AR_cat", 1)
-    hydrologic_load = inputs.get("hydrologic_load", "MEDIUM")
-    IVT = inputs.get("IVT", 0)
-    IVT_90pct = inputs.get("IVT_90pct", 0)
-    radar_24h_accum = inputs.get("radar_24h_accum", 0)
-    R24_thresh = inputs.get("R24_thresh", 0)
-    tide_height = inputs.get("tide_height", 0)
-    tide_thresh = inputs.get("tide_thresh", 0)
-    smi = inputs.get("smi", 0.3)
-    rainfall_lag_24h = inputs.get("rainfall_lag_24h", 0.0)
-
-    # --- Base probability ---
-    ensemble_prob = 0.35
-
-    # --- Seasonal tilt adjustment ---
+    # --- Seasonal (climate-scale) adjustment ---
     seasonal_tilt = 0.0
-    if ENSO_bias >= 0.4 and PDO_pos and AR_cat >= 3 and hydrologic_load.upper() == "HIGH":
-        seasonal_tilt += 0.15
 
-    # --- Coastal enhancement ---
+    # ENSO and PDO influence
+    if ENSO_bias >= 0.4 and PDO_pos and AR_cat >= 3 and hydrologic_load.upper() == "HIGH":
+        seasonal_tilt += 0.15  # +15% enhancement
+    elif ENSO_bias <= -0.4 and not PDO_pos:
+        seasonal_tilt -= 0.1   # -10% suppression (La Niña + neg PDO)
+
+    # --- Local forcing multiplier ---
+    IVT_90pct = 350.0   # typical strong moisture flux threshold
+    R24_thresh = 100.0  # heavy rain threshold (mm)
+    tide_thresh = 1.5   # coastal surge threshold (m)
+
     if IVT > IVT_90pct and radar_24h_accum > R24_thresh and tide_height > tide_thresh:
         coastal_multiplier = 1.4
+    elif radar_24h_accum > R24_thresh:
+        coastal_multiplier = 1.2
     else:
         coastal_multiplier = 1.0
 
-    # --- Rainfall lag response (24h) ---
-    # Heavier recent rainfall increases short-term risk
-    rain_factor = min(1.5, 1 + (rainfall_lag_24h / 50.0))
+    # --- Final combination ---
+    P_final = clamp(ensemble_prob * (1 + seasonal_tilt) * coastal_multiplier, 0, 1)
 
-    # --- Soil moisture multiplier ---
-    smi_mult = 1.0 + (smi - 0.3) * 0.8  # Dampens or amplifies by ~±40%
-
-    # --- Combine all modifiers ---
-    P_final = clamp(
-        ensemble_prob * (1 + seasonal_tilt) * coastal_multiplier * rain_factor * smi_mult,
-        0, 1
-    )
-
-    # --- Determine tier ---
+    # --- Tier gating ---
     if P_final >= 0.60 and lower_bound(P_final) >= 0.40:
         tier = "RED"
     elif P_final >= 0.30 and lower_bound(P_final) >= 0.15:
@@ -74,19 +75,24 @@ def blended_flood_probability(inputs):
     else:
         tier = "GREEN"
 
-    # --- Parametric baseline (for comparison) ---
-    parametric_prob = clamp(
-        0.25 + 0.1 * AR_cat + 0.2 * smi + (rainfall_lag_24h / 100.0),
-        0, 1
+    return P_final
+
+
+# --------------------------------------------------------------------
+# Example test (manual validation)
+# --------------------------------------------------------------------
+if __name__ == "__main__":
+    print("🌧️ Running sample forecast test...\n")
+
+    sample = blended_flood_probability(
+        ensemble_prob=0.45,
+        ENSO_bias=0.6,
+        PDO_pos=True,
+        AR_cat=4,
+        hydrologic_load="HIGH",
+        IVT=400,
+        radar_24h_accum=120,
+        tide_height=1.8
     )
-    if parametric_prob >= 0.6:
-        parametric_tier = "RED"
-    elif parametric_prob >= 0.3:
-        parametric_tier = "AMBER"
-    else:
-        parametric_tier = "GREEN"
 
-    blended_result = {"P_final": P_final, "tier": tier}
-    parametric_result = {"P_final": parametric_prob, "tier": parametric_tier}
-
-    return blended_result, parametric_result
+    print(f"Sample blended probability: {sample:.2f}")
