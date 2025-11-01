@@ -1,9 +1,9 @@
-name: 🌊 OpenFloodAI — Daily Forecast Automation
+name: 🌊 OpenFloodAI — Automated Global Forecast
 
 on:
   schedule:
-    - cron: "0 6 * * *"
-  workflow_dispatch:
+    - cron: "0 6 * * *"  # Runs daily at 6 AM UTC
+  workflow_dispatch:      # Allows manual trigger
 
 jobs:
   run-forecast:
@@ -31,14 +31,24 @@ jobs:
       - name: 🌊 Run forecast runner
         run: python scripts/flood_predictor_runner.py
 
-      - name: 💾 Commit and push forecast data safely
+      - name: 💾 Commit & push updated forecast safely
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Add and stash local changes
+          git add data/outputs/all_forecasts.json || echo "No forecast data found"
+          git stash || echo "Nothing to stash"
+
+          # Sync with remote main
+          git pull --rebase origin main || echo "No remote updates"
+
+          # Restore local updates
+          git stash pop || echo "No stash to pop"
+
+          # Commit only if there are changes
           git add data/outputs/all_forecasts.json
-          git stash || echo "No local changes to stash"
-          git pull --rebase || echo "Nothing to pull or rebase"
-          git stash pop || echo "No stash to apply"
-          git add data/outputs/all_forecasts.json
-          git commit -m "🌊 Automated forecast update $(date -u +'%Y-%m-%d %H:%M UTC')" || echo "No changes to commit"
+          git diff --quiet && echo "No changes to commit" || git commit -m "🌍 Automated global forecast update $(date -u +'%Y-%m-%d %H:%M UTC')"
+
+          # Push with GitHub token
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git main
