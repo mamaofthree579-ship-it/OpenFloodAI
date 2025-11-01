@@ -22,7 +22,7 @@
   }
   header h1 { margin: 0; font-size: 1.5rem; }
   main { padding: 1.5rem; }
-  #controls { margin-bottom: 1.2rem; display: flex; gap: 1rem; flex-wrap: wrap; }
+  #controls { margin-bottom: 1.2rem; }
   select {
     padding: 0.5rem;
     border-radius: 6px;
@@ -51,6 +51,7 @@
     font-size: 0.9rem;
     margin-top: 2rem;
   }
+  h2 { border-bottom: 2px solid #005fa3; padding-bottom: 4px; }
 </style>
 </head>
 
@@ -62,14 +63,9 @@
 
   <main>
     <div id="controls">
-      <label for="countrySelect">Country:</label>
+      <label for="countrySelect">Select Country:</label>
       <select id="countrySelect">
-        <option value="all">All Countries</option>
-      </select>
-
-      <label for="regionSelect">Region:</label>
-      <select id="regionSelect">
-        <option value="all">All Regions</option>
+        <option value="all">🌍 All Countries</option>
       </select>
     </div>
 
@@ -90,7 +86,6 @@ async function loadForecasts() {
     const forecasts = data.forecasts;
     const timestamp = document.getElementById('timestamp');
     const countrySelect = document.getElementById('countrySelect');
-    const regionSelect = document.getElementById('regionSelect');
     const grid = document.getElementById('forecastGrid');
 
     timestamp.textContent = "Updated: " + new Date(data.timestamp).toLocaleString();
@@ -100,7 +95,7 @@ async function loadForecasts() {
     Object.keys(forecasts).forEach(key => {
       const [country, region] = key.split(':').map(s => s.trim());
       if (!countryMap[country]) countryMap[country] = [];
-      countryMap[country].push(region);
+      countryMap[country].push({ name: region, data: forecasts[key] });
     });
 
     // Populate country dropdown
@@ -111,53 +106,43 @@ async function loadForecasts() {
       countrySelect.appendChild(option);
     }
 
-    function populateRegions(selectedCountry) {
-      regionSelect.innerHTML = '<option value="all">All Regions</option>';
-      if (selectedCountry !== 'all') {
-        countryMap[selectedCountry].forEach(region => {
-          const opt = document.createElement('option');
-          opt.value = region;
-          opt.textContent = region;
-          regionSelect.appendChild(opt);
-        });
+    function render(selectedCountry) {
+      grid.innerHTML = '';
+
+      if (selectedCountry === 'all') {
+        for (const [country, regions] of Object.entries(countryMap)) {
+          const header = document.createElement('h2');
+          header.textContent = country;
+          grid.appendChild(header);
+          regions.forEach(({ name, data }) => addCard(name, country, data));
+        }
+      } else {
+        const regions = countryMap[selectedCountry];
+        const header = document.createElement('h2');
+        header.textContent = selectedCountry;
+        grid.appendChild(header);
+        regions.forEach(({ name, data }) => addCard(name, selectedCountry, data));
       }
     }
 
-    function render(selectedCountry, selectedRegion) {
-      grid.innerHTML = '';
-      Object.entries(forecasts).forEach(([key, v]) => {
-        const [country, region] = key.split(':').map(s => s.trim());
-        if (
-          (selectedCountry === 'all' || country === selectedCountry) &&
-          (selectedRegion === 'all' || region === selectedRegion)
-        ) {
-          const div = document.createElement('div');
-          div.className = `card ${v.tier}`;
-          div.innerHTML = `
-            <h3>${region}, ${country}</h3>
-            <p><strong>Flood Probability:</strong> ${(v.P_final * 100).toFixed(1)}%</p>
-            <p><strong>Tier:</strong> ${v.tier}</p>
-            <p><strong>AR Category:</strong> ${v.AR_cat}</p>
-            <p><strong>IVT:</strong> ${v.IVT}</p>
-            <p><strong>Rainfall 24h:</strong> ${v.radar_24h_accum} mm</p>
-            <p><strong>Tide Height:</strong> ${v.tide_height} m</p>
-          `;
-          grid.appendChild(div);
-        }
-      });
+    function addCard(region, country, v) {
+      const div = document.createElement('div');
+      div.className = `card ${v.tier}`;
+      div.innerHTML = `
+        <h3>${region}</h3>
+        <p><strong>Country:</strong> ${country}</p>
+        <p><strong>Flood Probability:</strong> ${(v.P_final * 100).toFixed(1)}%</p>
+        <p><strong>Tier:</strong> ${v.tier}</p>
+        <p><strong>AR Category:</strong> ${v.AR_cat}</p>
+        <p><strong>IVT:</strong> ${v.IVT}</p>
+        <p><strong>Rainfall 24h:</strong> ${v.radar_24h_accum} mm</p>
+        <p><strong>Tide Height:</strong> ${v.tide_height} m</p>
+      `;
+      grid.appendChild(div);
     }
 
-    countrySelect.addEventListener('change', e => {
-      populateRegions(e.target.value);
-      render(e.target.value, 'all');
-    });
-
-    regionSelect.addEventListener('change', e => {
-      render(countrySelect.value, e.target.value);
-    });
-
-    populateRegions('all');
-    render('all', 'all');
+    countrySelect.addEventListener('change', e => render(e.target.value));
+    render('all');
 
   } catch (err) {
     document.getElementById('forecastGrid').innerHTML =
