@@ -1,53 +1,35 @@
 {
-  "timestamp": "2025-11-01T02:06:56.994908Z",
+  "timestamp": "2025-10-31T12:00:00Z",
   "forecasts": {
-    "Sacramento Basin": {
-      "P_final": 0.2,
-      "tier": "GREEN",
-      "lat": 38.58,
-      "lon": -121.49
+    "California": {
+      "P_final": 0.72,
+      "tier": "RED",
+      "lat": 36.7783,
+      "lon": -119.4179
     },
-    "Ohio Valley": {
+    "Bangladesh": {
+      "P_final": 0.61,
+      "tier": "AMBER",
+      "lat": 23.685,
+      "lon": 90.3563
+    },
+    "London": {
       "P_final": 0.25,
       "tier": "GREEN",
-      "lat": 38.0,
-      "lon": -84.5
+      "lat": 51.5072,
+      "lon": -0.1276
     },
-    "Mississippi Tributaries": {
-      "P_final": 0.3,
+    "Queensland": {
+      "P_final": 0.48,
       "tier": "AMBER",
-      "lat": 34.7,
-      "lon": -90.2
+      "lat": -20.9176,
+      "lon": 142.7028
     },
-    "Pacific Northwest": {
-      "P_final": 0.67,
-      "tier": "RED",
-      "lat": 45.5,
-      "lon": -122.6
-    },
-    "Gulf Coast": {
-      "P_final": 0.22,
+    "Ohio Valley": {
+      "P_final": 0.34,
       "tier": "GREEN",
-      "lat": 29.9,
-      "lon": -90.1
-    },
-    "Northeast Corridor": {
-      "P_final": 0.26,
-      "tier": "GREEN",
-      "lat": 40.7,
-      "lon": -74.0
-    },
-    "Central Plains": {
-      "P_final": 0.31,
-      "tier": "AMBER",
-      "lat": 39.1,
-      "lon": -96.6
-    },
-    "Florida Peninsula": {
-      "P_final": 0.68,
-      "tier": "RED",
-      "lat": 27.9,
-      "lon": -82.5
+      "lat": 39.9612,
+      "lon": -82.9988
     }
   }
 }
