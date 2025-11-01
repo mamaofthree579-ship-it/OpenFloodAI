@@ -1,18 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🌊 OpenFloodAI — Global Flood Forecast Dashboard</title>
-
-  <!-- Leaflet CSS -->
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-sA+z0p8f0M+Kzh4+K2C3I1w4N/04gYQ+7SpfL4Rlj7Y="
-    crossorigin=""
-  />
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🌊 OpenFloodAI — Regional Flood Dashboard</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -43,17 +34,31 @@
       padding: 20px;
     }
 
-    select {
-      font-size: 1em;
-      padding: 5px;
-      margin: 10px 0;
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: white;
     }
 
-    #map {
-      height: 500px;
-      width: 100%;
-      border: 2px solid #0077cc;
-      border-radius: 5px;
+    th, td {
+      border: 1px solid #ccc;
+      text-align: center;
+      padding: 10px;
+    }
+
+    th {
+      background-color: #0077cc;
+      color: white;
+    }
+
+    .RED { background-color: #ffb3b3; }
+    .AMBER { background-color: #ffec99; }
+    .GREEN { background-color: #c8f7c5; }
+
+    .timestamp {
+      font-size: 0.9em;
+      color: #666;
       margin-top: 10px;
     }
 
@@ -62,110 +67,65 @@
       color: white;
       padding: 10px;
       text-align: center;
+      margin-top: 30px;
     }
-
-    .info-box {
-      margin-top: 15px;
-      padding: 10px;
-      border-radius: 5px;
-      background-color: #f4f4f4;
-      border: 1px solid #ccc;
-    }
-
-    .RED { background-color: #ffb3b3; }
-    .AMBER { background-color: #ffec99; }
-    .GREEN { background-color: #c8f7c5; }
   </style>
 </head>
 <body>
 
   <header>
     <img src="logo.svg" alt="OpenFloodAI Logo" />
-    <h1>🌊 OpenFloodAI Dashboard</h1>
+    <h1>🌊 OpenFloodAI — Regional Dashboard</h1>
   </header>
 
   <main>
-    <p>Explore flood probability forecasts across different regions:</p>
+    <p>Below are current flood risk estimates for monitored regions:</p>
 
-    <select id="regionSelect">
-      <option value="California">Californa,US
-       <option value="Bangladesh">Bangladesh,India</option>
-    </select>
+    <div class="timestamp" id="updateTime"></div>
 
-    <div id="map"></div>
-
-    <div id="regionInfo" class="info-box">
-      <strong>Select a region</strong> to view flood probability and tier level.
-    </div>
+    <table id="forecastTable">
+      <thead>
+        <tr>
+          <th>Region</th>
+          <th>Flood Probability</th>
+          <th>Tier</th>
+        </tr>
+      </thead>
+      <tbody id="forecastBody">
+        <tr><td colspan="3">Loading forecasts...</td></tr>
+      </tbody>
+    </table>
   </main>
 
   <footer>
     🌍 OpenFloodAI — Free, open, and community-driven flood forecasting.
   </footer>
 
-  <!-- Leaflet JS -->
-  <script
-    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-o9N1jvG8QHra1EoVh8i0Z7i0KQG7eV0vQHZ3y5v9LF0="
-    crossorigin=""
-  ></script>
-
   <script>
-    // Initialize map
-    const map = L.map('map').setView([20, 0], 2);
-
-    // Load OpenStreetMap tiles
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 18,
-      attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
-
-    let regionMarkers = {};
-
+    // Fetch forecast data
     fetch("data/outputs/all_forecasts.json")
       .then(resp => resp.json())
       .then(data => {
-        const forecasts = data.forecasts;
-        const select = document.getElementById("regionSelect");
+        const tbody = document.getElementById("forecastBody");
+        const updateTime = document.getElementById("updateTime");
+        tbody.innerHTML = "";
+        updateTime.innerText = `Updated: ${new Date(data.timestamp).toLocaleString()}`;
 
-        Object.entries(forecasts).forEach(([region, values]) => {
-          // Populate dropdown
-          const opt = document.createElement("option");
-          opt.value = region;
-          opt.textContent = region;
-          select.appendChild(opt);
-
-          // Add map marker
-          const marker = L.marker([values.lat, values.lon])
-            .addTo(map)
-            .bindPopup(`<b>${region}</b><br>Probability: ${(values.P_final * 100).toFixed(1)}%<br>Tier: ${values.tier}`);
-          regionMarkers[region] = marker;
-        });
-
-        // Update info box and zoom on selection
-        select.addEventListener("change", (e) => {
-          const selected = e.target.value;
-          const infoBox = document.getElementById("regionInfo");
-
-          if (selected === "all") {
-            map.setView([20, 0], 2);
-            infoBox.innerHTML = "<strong>All Regions:</strong> Select a specific region to view details.";
-          } else {
-            const region = forecasts[selected];
-            map.setView([region.lat, region.lon], 6);
-            infoBox.className = `info-box ${region.tier}`;
-            infoBox.innerHTML = `
-              <strong>${selected}</strong><br>
-              Probability: ${(region.P_final * 100).toFixed(1)}%<br>
-              Tier: ${region.tier}
-            `;
-            regionMarkers[selected].openPopup();
-          }
+        Object.entries(data.forecasts).forEach(([region, values]) => {
+          const row = document.createElement("tr");
+          row.className = values.tier;
+          row.innerHTML = `
+            <td>${region}</td>
+            <td>${(values.P_final * 100).toFixed(1)}%</td>
+            <td><strong>${values.tier}</strong></td>
+          `;
+          tbody.appendChild(row);
         });
       })
       .catch(err => {
         console.error("Forecast load failed:", err);
-        document.getElementById("regionInfo").innerHTML = "⚠️ Forecast data not available.";
+        document.getElementById("forecastBody").innerHTML =
+          '<tr><td colspan="3">⚠️ Forecast data not available.</td></tr>';
       });
   </script>
 </body>
