@@ -1,12 +1,18 @@
 {
-  "version": "2.0",
-  "description": "OpenFloodAI blended ensemble configuration",
-  "regions": ["Sacramento", "Ohio_Valley", "Mississippi"],
-  "probability_tiers": {
-    "RED": "High flood risk",
-    "AMBER": "Moderate risk — monitor conditions",
-    "GREEN": "Low current risk"
-  },
-  "update_schedule": "Daily 06:00 UTC",
-  "license": "AGPL-3.0"
+  "timestamp": "2025-10-31T12:00:00Z",
+  "forecasts": {
+    "USA": {
+      "Florida": { "P_final": 0.82, "tier": "RED" },
+      "Texas": { "P_final": 0.44, "tier": "AMBER" },
+      "Maine": { "P_final": 0.10, "tier": "GREEN" }
+    },
+    "India": {
+      "Kerala": { "P_final": 0.73, "tier": "RED" },
+      "Gujarat": { "P_final": 0.21, "tier": "GREEN" }
+    },
+    "UK": {
+      "London": { "P_final": 0.61, "tier": "AMBER" },
+      "Manchester": { "P_final": 0.25, "tier": "GREEN" }
+    }
+  }
 }
