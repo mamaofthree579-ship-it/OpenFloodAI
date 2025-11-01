@@ -127,7 +127,13 @@
       attribution: '&copy; OpenStreetMap contributors'
     }).addTo(map);
 
-    const forecastContainer = document.getElementById('forecast-container');
+    const forecasts = data.forecasts || {
+  "California": { "P_final": 0.72, "tier": "RED", "lat": 36.7783, "lon": -119.4179 },
+  "Bangladesh": { "P_final": 0.61, "tier": "AMBER", "lat": 23.685, "lon": 90.3563 },
+  "London": { "P_final": 0.25, "tier": "GREEN", "lat": 51.5072, "lon": -0.1276 },
+  "Queensland": { "P_final": 0.48, "tier": "AMBER", "lat": -20.9176, "lon": 142.7028 },
+  "Ohio Valley": { "P_final": 0.34, "tier": "GREEN", "lat": 39.9612, "lon": -82.9988 }
+};;
     const regionSelector = document.getElementById('regionSelector');
 
     try {
