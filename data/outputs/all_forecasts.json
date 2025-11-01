@@ -1,18 +1,65 @@
 {
-  "timestamp": "2025-10-31T12:00:00Z",
+  "timestamp": "2025-11-01T11:18:52.162496Z",
   "forecasts": {
     "USA": {
-      "Florida": { "P_final": 0.82, "tier": "RED" },
-      "Texas": { "P_final": 0.44, "tier": "AMBER" },
-      "Maine": { "P_final": 0.10, "tier": "GREEN" }
+      "Florida": {
+        "P_final": 0.169,
+        "tier": "GREEN"
+      },
+      "Texas": {
+        "P_final": 0.636,
+        "tier": "RED"
+      },
+      "California": {
+        "P_final": 0.666,
+        "tier": "RED"
+      },
+      "Maine": {
+        "P_final": 0.974,
+        "tier": "RED"
+      }
     },
     "India": {
-      "Kerala": { "P_final": 0.73, "tier": "RED" },
-      "Gujarat": { "P_final": 0.21, "tier": "GREEN" }
+      "Kerala": {
+        "P_final": 0.159,
+        "tier": "GREEN"
+      },
+      "Gujarat": {
+        "P_final": 0.671,
+        "tier": "RED"
+      },
+      "Assam": {
+        "P_final": 0.374,
+        "tier": "AMBER"
+      }
     },
     "UK": {
-      "London": { "P_final": 0.61, "tier": "AMBER" },
-      "Manchester": { "P_final": 0.25, "tier": "GREEN" }
+      "London": {
+        "P_final": 0.368,
+        "tier": "AMBER"
+      },
+      "Manchester": {
+        "P_final": 0.785,
+        "tier": "RED"
+      },
+      "Liverpool": {
+        "P_final": 0.166,
+        "tier": "GREEN"
+      }
+    },
+    "Australia": {
+      "Queensland": {
+        "P_final": 0.298,
+        "tier": "GREEN"
+      },
+      "Victoria": {
+        "P_final": 0.097,
+        "tier": "GREEN"
+      },
+      "New South Wales": {
+        "P_final": 0.253,
+        "tier": "GREEN"
+      }
     }
   }
 }
