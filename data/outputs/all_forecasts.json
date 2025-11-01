@@ -1,18 +1,53 @@
 {
-  "timestamp": "2025-10-31T12:00:00Z",
+  "timestamp": "2025-11-01T04:31:43.575742Z",
   "forecasts": {
-    "USA": {
-      "Florida": { "P_final": 0.82, "tier": "RED" },
-      "Texas": { "P_final": 0.44, "tier": "AMBER" },
-      "Maine": { "P_final": 0.10, "tier": "GREEN" }
+    "Sacramento Basin": {
+      "P_final": 0.59,
+      "tier": "AMBER",
+      "lat": 38.58,
+      "lon": -121.49
     },
-    "India": {
-      "Kerala": { "P_final": 0.73, "tier": "RED" },
-      "Gujarat": { "P_final": 0.21, "tier": "GREEN" }
+    "Ohio Valley": {
+      "P_final": 0.17,
+      "tier": "GREEN",
+      "lat": 38.0,
+      "lon": -84.5
     },
-    "UK": {
-      "London": { "P_final": 0.61, "tier": "AMBER" },
-      "Manchester": { "P_final": 0.25, "tier": "GREEN" }
+    "Mississippi Tributaries": {
+      "P_final": 0.22,
+      "tier": "GREEN",
+      "lat": 34.7,
+      "lon": -90.2
+    },
+    "Pacific Northwest": {
+      "P_final": 0.45,
+      "tier": "AMBER",
+      "lat": 45.5,
+      "lon": -122.6
+    },
+    "Gulf Coast": {
+      "P_final": 0.22,
+      "tier": "GREEN",
+      "lat": 29.9,
+      "lon": -90.1
+    },
+    "Northeast Corridor": {
+      "P_final": 0.23,
+      "tier": "GREEN",
+      "lat": 40.7,
+      "lon": -74.0
+    },
+    "Central Plains": {
+      "P_final": 0.57,
+      "tier": "AMBER",
+      "lat": 39.1,
+      "lon": -96.6
+    },
+    "Florida Peninsula": {
+      "P_final": 0.22,
+      "tier": "GREEN",
+      "lat": 27.9,
+      "lon": -82.5
     }
   }
 }
