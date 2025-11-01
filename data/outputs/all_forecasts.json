@@ -1,35 +1,18 @@
 {
   "timestamp": "2025-10-31T12:00:00Z",
   "forecasts": {
-    "California": {
-      "P_final": 0.72,
-      "tier": "RED",
-      "lat": 36.7783,
-      "lon": -119.4179
+    "USA": {
+      "Florida": { "P_final": 0.82, "tier": "RED" },
+      "Texas": { "P_final": 0.44, "tier": "AMBER" },
+      "Maine": { "P_final": 0.10, "tier": "GREEN" }
     },
-    "Bangladesh": {
-      "P_final": 0.61,
-      "tier": "AMBER",
-      "lat": 23.685,
-      "lon": 90.3563
+    "India": {
+      "Kerala": { "P_final": 0.73, "tier": "RED" },
+      "Gujarat": { "P_final": 0.21, "tier": "GREEN" }
     },
-    "London": {
-      "P_final": 0.25,
-      "tier": "GREEN",
-      "lat": 51.5072,
-      "lon": -0.1276
-    },
-    "Queensland": {
-      "P_final": 0.48,
-      "tier": "AMBER",
-      "lat": -20.9176,
-      "lon": 142.7028
-    },
-    "Ohio Valley": {
-      "P_final": 0.34,
-      "tier": "GREEN",
-      "lat": 39.9612,
-      "lon": -82.9988
+    "UK": {
+      "London": { "P_final": 0.61, "tier": "AMBER" },
+      "Manchester": { "P_final": 0.25, "tier": "GREEN" }
     }
   }
 }
