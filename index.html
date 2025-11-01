@@ -3,11 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>🌊 OpenFloodAI — Regional Flood Dashboard</title>
+  <title>🌊 OpenFloodAI — Community Flood Dashboard</title>
+
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #e6f0ff;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #eaf2ff;
       color: #333;
       margin: 0;
       padding: 0;
@@ -19,6 +20,8 @@
       padding: 15px 20px;
       display: flex;
       align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
     }
 
     header img {
@@ -27,7 +30,14 @@
     }
 
     h1 {
-      font-size: 1.8em;
+      font-size: 1.6em;
+      margin: 0;
+    }
+
+    .timestamp {
+      font-size: 0.9em;
+      color: #e0e0e0;
+      margin-top: 5px;
     }
 
     main {
@@ -39,60 +49,81 @@
       border-collapse: collapse;
       margin-top: 20px;
       background: white;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
     th, td {
-      border: 1px solid #ccc;
+      border-bottom: 1px solid #ddd;
       text-align: center;
-      padding: 10px;
+      padding: 12px;
     }
 
     th {
       background-color: #0077cc;
       color: white;
+      font-weight: bold;
+    }
+
+    tr:hover {
+      background-color: #f3f8ff;
     }
 
     .RED { background-color: #ffb3b3; }
-    .AMBER { background-color: #ffec99; }
-    .GREEN { background-color: #c8f7c5; }
+    .AMBER { background-color: #fff2b3; }
+    .GREEN { background-color: #c6f6c3; }
 
-    .timestamp {
-      font-size: 0.9em;
-      color: #666;
-      margin-top: 10px;
+    .bar-container {
+      width: 100%;
+      background-color: #e6e6e6;
+      border-radius: 4px;
+      overflow: hidden;
+      height: 12px;
+      margin-top: 4px;
     }
+
+    .bar {
+      height: 12px;
+      transition: width 0.5s;
+    }
+
+    .bar.RED { background-color: #ff4d4d; }
+    .bar.AMBER { background-color: #ffc107; }
+    .bar.GREEN { background-color: #28a745; }
 
     footer {
       background: #0077cc;
       color: white;
       padding: 10px;
       text-align: center;
-      margin-top: 30px;
+      margin-top: 40px;
     }
   </style>
 </head>
-<body>
 
+<body>
   <header>
-    <img src="logo.svg" alt="OpenFloodAI Logo" />
-    <h1>🌊 OpenFloodAI — Regional Dashboard</h1>
+    <div style="display:flex; align-items:center;">
+      <img src="logo.svg" alt="OpenFloodAI Logo" />
+      <h1>🌊 OpenFloodAI — Flood Forecast Dashboard</h1>
+    </div>
+    <div class="timestamp" id="updateTime">Loading...</div>
   </header>
 
   <main>
-    <p>Below are current flood risk estimates for monitored regions:</p>
-
-    <div class="timestamp" id="updateTime"></div>
+    <p>Latest forecast probabilities and tiers across all monitored regions:</p>
 
     <table id="forecastTable">
       <thead>
         <tr>
           <th>Region</th>
           <th>Flood Probability</th>
-          <th>Tier</th>
+          <th>Risk Tier</th>
         </tr>
       </thead>
       <tbody id="forecastBody">
-        <tr><td colspan="3">Loading forecasts...</td></tr>
+        <tr><td colspan="3">Fetching data...</td></tr>
       </tbody>
     </table>
   </main>
@@ -102,10 +133,11 @@
   </footer>
 
   <script>
-    // Fetch forecast data
-    fetch("data/outputs/all_forecasts.json")
-      .then(resp => resp.json())
-      .then(data => {
+    async function loadForecast() {
+      try {
+        const response = await fetch("data/outputs/all_forecasts.json?cacheBust=" + Date.now());
+        const data = await response.json();
+
         const tbody = document.getElementById("forecastBody");
         const updateTime = document.getElementById("updateTime");
         tbody.innerHTML = "";
@@ -113,20 +145,33 @@
 
         Object.entries(data.forecasts).forEach(([region, values]) => {
           const row = document.createElement("tr");
+          const probability = (values.P_final * 100).toFixed(1);
           row.className = values.tier;
+
           row.innerHTML = `
             <td>${region}</td>
-            <td>${(values.P_final * 100).toFixed(1)}%</td>
+            <td>
+              ${probability}% 
+              <div class="bar-container">
+                <div class="bar ${values.tier}" style="width:${probability}%"></div>
+              </div>
+            </td>
             <td><strong>${values.tier}</strong></td>
           `;
           tbody.appendChild(row);
         });
-      })
-      .catch(err => {
+      } catch (err) {
         console.error("Forecast load failed:", err);
         document.getElementById("forecastBody").innerHTML =
           '<tr><td colspan="3">⚠️ Forecast data not available.</td></tr>';
-      });
+      }
+    }
+
+    // Initial load
+    loadForecast();
+
+    // Auto-refresh every 6 hours
+    setInterval(loadForecast, 6 * 60 * 60 * 1000);
   </script>
 </body>
 </html>
