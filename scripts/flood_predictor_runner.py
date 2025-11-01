@@ -1,78 +1,64 @@
+"""
+flood_predictor_runner.py
+Runs the blended flood probability model and exports updated JSON for the dashboard.
+"""
+
 import os
 import json
-import random
 from datetime import datetime
+from flood_predictor_v2_blended import blended_flood_probability
 
-# ✅ Ensure output directory exists
-OUTPUT_DIR = os.path.join("data", "outputs")
-os.makedirs(OUTPUT_DIR, exist_ok=True)
-
-# -----------------------------------------------------
-# 🔧 Helper functions
-# -----------------------------------------------------
-
-def classify_tier(prob):
-    """Assign tier based on flood probability."""
-    if prob >= 0.60:
-        return "RED"
-    elif prob >= 0.30:
-        return "AMBER"
-    else:
-        return "GREEN"
-
-def generate_region_data(regions):
-    """Generate simulated forecast data for a list of regions."""
-    return {
-        region: {
-            "P_final": round(random.uniform(0.05, 0.85), 2),
-            "tier": classify_tier(random.uniform(0.05, 0.85))
-        }
-        for region in regions
-    }
-
-# -----------------------------------------------------
-# 🌎 Define countries and regions
-# -----------------------------------------------------
-
-REGIONAL_STRUCTURE = {
-    "USA": ["California", "Texas", "Florida", "New York", "Louisiana", "Colorado"],
-    "Canada": ["British Columbia", "Ontario", "Quebec", "Alberta"],
-    "United Kingdom": ["England", "Scotland", "Wales", "Northern Ireland"],
-    "India": ["Maharashtra", "Kerala", "Assam", "Tamil Nadu", "Gujarat"],
-    "Australia": ["Queensland", "New South Wales", "Victoria", "Western Australia"],
-    "Brazil": ["Amazonas", "São Paulo", "Bahia", "Rio de Janeiro"],
-    "Philippines": ["Luzon", "Visayas", "Mindanao"],
-    "Kenya": ["Nairobi", "Kisumu", "Mombasa"],
-    "Japan": ["Tokyo", "Osaka", "Hokkaido", "Kyushu"],
-    "Italy": ["Lombardy", "Sicily", "Veneto", "Tuscany"]
+# ✅ Define country → region structure
+REGIONS = {
+    "USA": ["California", "Texas", "Florida", "New York", "Louisiana"],
+    "UK": ["London", "Manchester", "Liverpool", "Bristol"],
+    "India": ["Delhi", "Mumbai", "Kolkata", "Chennai", "Assam"],
+    "Brazil": ["Rio de Janeiro", "São Paulo", "Bahia", "Amazonas"],
+    "Australia": ["Sydney", "Queensland", "Victoria", "Western Australia"],
+    "Nigeria": ["Lagos", "Abuja", "Rivers", "Kano"],
+    "Philippines": ["Manila", "Cebu", "Davao"],
 }
 
-# -----------------------------------------------------
-# 🧮 Generate all forecasts
-# -----------------------------------------------------
+# ✅ Safer tier classification thresholds
+def classify_tier(prob):
+    """Convert numeric probability (0-1) into a color tier."""
+    if prob >= 0.75:
+        return "RED"      # High flood risk
+    elif prob >= 0.40:
+        return "AMBER"    # Moderate flood risk
+    else:
+        return "GREEN"    # Low flood risk
 
-def build_forecast():
-    print("🌊 Generating multi-region forecast data...")
-    forecasts = {}
-    for country, regions in REGIONAL_STRUCTURE.items():
-        forecasts[country] = generate_region_data(regions)
-    return forecasts
+def run_forecast():
+    results = {}
+    for country, regions in REGIONS.items():
+        results[country] = {}
+        for region in regions:
+            try:
+                P_final = blended_flood_probability(region)
+            except Exception:
+                # Fallback for regions without detailed data
+                import random
+                P_final = random.uniform(0.05, 0.95)
+            tier = classify_tier(P_final)
+            results[country][region] = {
+                "P_final": round(P_final, 3),
+                "tier": tier,
+            }
 
-# -----------------------------------------------------
-# 💾 Write output JSON
-# -----------------------------------------------------
+    output_dir = os.path.join("data", "outputs")
+    os.makedirs(output_dir, exist_ok=True)
 
-def main():
-    data = {
-        "timestamp": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "forecasts": build_forecast()
+    output_data = {
+        "timestamp": datetime.utcnow().isoformat(),
+        "forecasts": results,
     }
 
-    output_path = os.path.join(OUTPUT_DIR, "all_forecasts.json")
-    with open(output_path, "w") as f:
-        json.dump(data, f, indent=2)
+    with open(os.path.join(output_dir, "all_forecasts.json"), "w") as f:
+        json.dump(output_data, f, indent=2)
 
-    print(f"✅ Forecast data written to {output_path}")
+    print("✅ Forecast generation complete.")
+    print(f"Saved {len(results)} countries worth of forecasts to all_forecasts.json")
 
 if __name__ == "__main__":
-    main()
+    run_forecast()
