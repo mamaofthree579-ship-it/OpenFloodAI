@@ -1,72 +1,210 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>🌊 OpenFloodAI — Multi-Region Flood Dashboard</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>🌊 OpenFloodAI — Global Flood Forecasts</title>
+
   <style>
-    body { font-family: Arial, sans-serif; background: #e6f0ff; color: #333; margin: 0; padding: 0; }
-    header { background: #0077cc; color: white; padding: 15px 20px; display: flex; align-items: center; }
-    header img { height: 40px; margin-right: 10px; }
-    h1 { font-size: 1.8em; margin: 0; }
-    main { padding: 20px; }
-    select { padding: 6px; margin: 5px; font-size: 1em; }
-    .region-card {
-      border: 1px solid #ccc; border-radius: 5px; padding: 10px; margin: 10px 0;
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background: #eef6ff;
+      color: #333;
+      margin: 0;
+      padding: 0;
     }
-    .RED { background: #ff9999; }
-    .AMBER { background: #ffdb66; }
-    .GREEN { background: #a8f0a5; }
+
+    header {
+      background: #0077cc;
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    header img {
+      height: 40px;
+      margin-right: 10px;
+    }
+
+    h1 {
+      font-size: 1.6em;
+      margin: 0;
+    }
+
+    main {
+      padding: 20px;
+    }
+
+    select {
+      padding: 8px;
+      margin: 5px;
+      font-size: 1em;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background: white;
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    th, td {
+      border-bottom: 1px solid #ddd;
+      text-align: center;
+      padding: 12px;
+    }
+
+    th {
+      background-color: #0077cc;
+      color: white;
+    }
+
+    tr:hover {
+      background-color: #f3f8ff;
+    }
+
+    .RED { background-color: #ffb3b3; }
+    .AMBER { background-color: #fff2b3; }
+    .GREEN { background-color: #c6f6c3; }
+
+    .bar-container {
+      width: 100%;
+      background-color: #e6e6e6;
+      border-radius: 4px;
+      overflow: hidden;
+      height: 12px;
+      margin-top: 4px;
+    }
+
+    .bar {
+      height: 12px;
+    }
+
+    .bar.RED { background-color: #ff4d4d; }
+    .bar.AMBER { background-color: #ffc107; }
+    .bar.GREEN { background-color: #28a745; }
+
+    footer {
+      background: #0077cc;
+      color: white;
+      padding: 10px;
+      text-align: center;
+      margin-top: 40px;
+    }
   </style>
 </head>
 
 <body>
   <header>
-    <img src="logo.svg" alt="OpenFloodAI logo">
-    <h1>OpenFloodAI Dashboard</h1>
+    <div style="display:flex; align-items:center;">
+      <img src="logo.svg" alt="Logo">
+      <h1>🌊 OpenFloodAI — Global Dashboard</h1>
+    </div>
+    <div id="updateTime">Loading...</div>
   </header>
 
   <main>
-    <label for="countrySelect">🌍 Country:</label>
-    <select id="countrySelect"></select>
-
-    <label for="regionSelect">📍 Region:</label>
-    <select id="regionSelect">
-      <option value="all">All Regions</option>
+    <label for="countrySelect">🌍 Select Country:</label>
+    <select id="countrySelect">
+      <option value="">-- Choose a Country --</option>
     </select>
 
-    <div id="forecastContainer">
-      <p>Loading forecast data...</p>
-    </div>
+    <label for="regionSelect">🏙️ Select Region:</label>
+    <select id="regionSelect" disabled>
+      <option value="">-- Choose a Region --</option>
+    </select>
+
+    <table id="forecastTable" style="display:none;">
+      <thead>
+        <tr><th>Region</th><th>Flood Probability</th><th>Risk Tier</th></tr>
+      </thead>
+      <tbody id="forecastBody"></tbody>
+    </table>
   </main>
 
-  <footer>
-    <p style="text-align:center; padding: 10px; background: #0077cc; color: white;">
-      OpenFloodAI — Open-source community flood forecasting.
-    </p>
-  </footer>
+  <footer>🌍 OpenFloodAI — Open & Community Flood Forecasting</footer>
 
   <script>
-    async function loadForecastData() {
+    let forecastData = {};
+
+    async function loadForecast() {
       try {
-        const response = await fetch('data/outputs/all_forecasts.json');
-        const data = await response.json();
+        const res = await fetch("data/outputs/all_forecasts.json?cb=" + Date.now());
+        const data = await res.json();
+        forecastData = data.forecasts;
+        document.getElementById("updateTime").innerText = 
+          "Updated: " + new Date(data.timestamp).toLocaleString();
 
-        const forecasts = data.forecasts || {};
-        const countries = {};
-        
-        // Organize forecasts by country → region
-        Object.keys(forecasts).forEach(key => {
-          const [country, region] = key.split(':').map(s => s.trim());
-          if (!countries[country]) countries[country] = [];
-          countries[country].push(region);
-        });
-
-        const countrySelect = document.getElementById('countrySelect');
-        const regionSelect = document.getElementById('regionSelect');
-        const container = document.getElementById('forecastContainer');
-
-        // Populate country dropdown
-        countrySelect.innerHTML = '<option value="">Select a country</option>';
-        Object.keys(countries).forEach(country => {
-          const opt = document.createElement('option');
+        const countrySelect = document.getElementById("countrySelect");
+        Object.keys(forecastData).forEach(country => {
+          const opt = document.createElement("option");
           opt.value = country;
+          opt.textContent = country;
+          countrySelect.appendChild(opt);
+        });
+      } catch (err) {
+        document.getElementById("updateTime").innerText = "⚠️ Could not load forecast data.";
+        console.error(err);
+      }
+    }
+
+    document.getElementById("countrySelect").addEventListener("change", e => {
+      const selectedCountry = e.target.value;
+      const regionSelect = document.getElementById("regionSelect");
+      regionSelect.innerHTML = '<option value="">-- Choose a Region --</option>';
+      document.getElementById("forecastTable").style.display = "none";
+
+      if (!selectedCountry) {
+        regionSelect.disabled = true;
+        return;
+      }
+
+      regionSelect.disabled = false;
+      Object.keys(forecastData[selectedCountry]).forEach(region => {
+        const opt = document.createElement("option");
+        opt.value = region;
+        opt.textContent = region;
+        regionSelect.appendChild(opt);
+      });
+    });
+
+    document.getElementById("regionSelect").addEventListener("change", e => {
+      const country = document.getElementById("countrySelect").value;
+      const region = e.target.value;
+      const table = document.getElementById("forecastTable");
+      const tbody = document.getElementById("forecastBody");
+      tbody.innerHTML = "";
+
+      if (!region) {
+        table.style.display = "none";
+        return;
+      }
+
+      const values = forecastData[country][region];
+      const probability = (values.P_final * 100).toFixed(1);
+      const row = document.createElement("tr");
+      row.className = values.tier;
+      row.innerHTML = `
+        <td>${region}</td>
+        <td>${probability}% 
+          <div class="bar-container">
+            <div class="bar ${values.tier}" style="width:${probability}%"></div>
+          </div>
+        </td>
+        <td><strong>${values.tier}</strong></td>`;
+      tbody.appendChild(row);
+      table.style.display = "table";
+    });
+
+    loadForecast();
+  </script>
+</body>
+</html>
