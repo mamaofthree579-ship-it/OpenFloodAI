@@ -1,125 +1,117 @@
-#!/usr/bin/env python3
+#!/#!/usr/bin/env python3
 """
-🌊 OpenFloodAI — Automated Flood Forecast Runner (v2)
-----------------------------------------------------
-This script generates daily regional flood probability forecasts and saves them
-to data/outputs/all_forecasts.json for the dashboard.
-
-It uses blended ensemble logic combining:
-- Seasonal indicators (ENSO, PDO, etc.)
-- Atmospheric river (AR) category
-- Hydrologic load factors
-- Coastal and IVT multipliers
-
-By default, it runs with simulated data but can easily be extended to real feeds.
+OpenFloodAI — Automated Flood Forecast Runner (Multi-Region v3)
+---------------------------------------------------------------
+Generates a hierarchical JSON structure:
+{
+  "timestamp": "...",
+  "forecasts": {
+    "USA": {
+      "Florida": {"P_final": 0.82, "tier": "RED"},
+      "Texas": {"P_final": 0.44, "tier": "AMBER"}
+    },
+    "India": {
+      "Kerala": {"P_final": 0.73, "tier": "RED"}
+    }
+  }
+}
 """
 
-import os
 import json
+import os
 import random
 from datetime import datetime
+from pathlib import Path
 
-# ---------------------------------------------------------------------------
-# Simulated Region Data (You can expand these or connect to real feeds)
-# ---------------------------------------------------------------------------
+# Try to import the probability model
+try:
+    from scripts.flood_predictor_v2_blended import blended_flood_probability
+except ImportError:
+    # Fallback (for local / GitHub Action runs)
+    from flood_predictor_v2_blended import blended_flood_probability
 
+
+# ----------------------------------------------------------
+# CONFIGURATION
+# ----------------------------------------------------------
+OUTPUT_DIR = Path("data/outputs")
+OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+
+# Define monitored countries and regions
 REGIONS = {
-    "Sacramento Basin": {"lat": 38.58, "lon": -121.49},
-    "Ohio Valley": {"lat": 38.0, "lon": -84.5},
-    "Mississippi Tributaries": {"lat": 34.7, "lon": -90.2},
-    "Pacific Northwest": {"lat": 45.5, "lon": -122.6},
-    "Gulf Coast": {"lat": 29.9, "lon": -90.1},
-    "Northeast Corridor": {"lat": 40.7, "lon": -74.0},
-    "Central Plains": {"lat": 39.1, "lon": -96.6},
-    "Florida Peninsula": {"lat": 27.9, "lon": -82.5}
+    "USA": ["Florida", "Texas", "California", "Maine"],
+    "India": ["Kerala", "Gujarat", "Assam"],
+    "UK": ["London", "Manchester", "Liverpool"],
+    "Australia": ["Queensland", "Victoria", "New South Wales"]
 }
 
-# ---------------------------------------------------------------------------
-# Utility Functions
-# ---------------------------------------------------------------------------
-
-def clamp(value, minv=0, maxv=1):
-    return max(min(value, maxv), minv)
-
-def blended_flood_probability(region_name):
-    """
-    Generate a blended flood probability for a given region.
-    This uses pseudo-random logic mimicking an ensemble forecast.
-    """
-    # Core factors (these could be replaced with real hydrologic data)
-    ENSO_bias = random.uniform(-0.5, 0.8)
-    PDO_pos = random.choice([True, False])
-    AR_cat = random.randint(1, 5)
-    hydrologic_load = random.choice(["LOW", "MODERATE", "HIGH"])
-    IVT = random.uniform(200, 900)  # Integrated Vapor Transport
-    IVT_90pct = 750
-    radar_24h_accum = random.uniform(0, 150)  # mm
-    R24_thresh = 100
-    tide_height = random.uniform(0.2, 2.0)
-    tide_thresh = 1.5
-
-    # Seasonal tilt
-    seasonal_tilt = 0.0
-    if ENSO_bias >= 0.4 and PDO_pos and AR_cat >= 3 and hydrologic_load == "HIGH":
-        seasonal_tilt += 0.15
-
-    # Coastal multiplier
-    coastal_multiplier = 1.4 if (IVT > IVT_90pct and radar_24h_accum > R24_thresh and tide_height > tide_thresh) else 1.0
-
-    # Base ensemble probability
-    ensemble_prob = random.uniform(0.15, 0.75)
-
-    # Final probability
-    P_final = clamp(ensemble_prob * (1 + seasonal_tilt) * coastal_multiplier)
-
-    # Tier mapping
-    if P_final >= 0.60:
-        tier = "RED"
-    elif P_final >= 0.30:
-        tier = "AMBER"
+# Probability → Tier mapping
+def tier_from_prob(p):
+    if p >= 0.6:
+        return "RED"
+    elif p >= 0.3:
+        return "AMBER"
     else:
-        tier = "GREEN"
+        return "GREEN"
+
+
+# ----------------------------------------------------------
+# MAIN FORECAST LOGIC
+# ----------------------------------------------------------
+def generate_forecast_for_region(country: str, region: str):
+    """
+    Generate a synthetic forecast entry.
+    Replace randoms with real sensor data when available.
+    """
+    # Example synthetic parameters
+    ensemble_prob = random.uniform(0.05, 0.95)
+    enso_bias = random.uniform(-1.0, 1.0)
+    pdo_pos = random.choice([True, False])
+    ar_cat = random.randint(1, 5)
+    hydrologic_load = random.choice(["LOW", "MEDIUM", "HIGH"])
+    ivt = random.uniform(100, 500)
+    radar_24h_accum = random.uniform(0, 200)
+    tide_height = random.uniform(0, 2.5)
+
+    # Compute blended probability
+    p_final = blended_flood_probability(
+        ensemble_prob=ensemble_prob,
+        ENSO_bias=enso_bias,
+        PDO_pos=pdo_pos,
+        AR_cat=ar_cat,
+        hydrologic_load=hydrologic_load,
+        IVT=ivt,
+        radar_24h_accum=radar_24h_accum,
+        tide_height=tide_height
+    )
 
     return {
-        "P_final": round(P_final, 2),
-        "tier": tier
+        "P_final": round(p_final, 3),
+        "tier": tier_from_prob(p_final)
     }
 
-# ---------------------------------------------------------------------------
-# Main Forecast Generation
-# ---------------------------------------------------------------------------
 
 def main():
-    print("🌊 Running OpenFloodAI forecast runner...")
-    results = {}
+    print("🌊 Running multi-region forecast generator...")
 
-    for region, coords in REGIONS.items():
-        values = blended_flood_probability(region)
-        results[region] = {
-            **values,
-            "lat": coords["lat"],
-            "lon": coords["lon"]
-        }
-        print(f"✅ {region}: {values['tier']} ({values['P_final']})")
+    all_forecasts = {}
+    for country, subregions in REGIONS.items():
+        all_forecasts[country] = {}
+        for region in subregions:
+            all_forecasts[country][region] = generate_forecast_for_region(country, region)
 
-    # Output directory
-    output_dir = os.path.join("data", "outputs")
-    os.makedirs(output_dir, exist_ok=True)
-
-    # Save JSON
-    output_path = os.path.join(output_dir, "all_forecasts.json")
-    output_data = {
+    result = {
         "timestamp": datetime.utcnow().isoformat() + "Z",
-        "forecasts": results
+        "forecasts": all_forecasts
     }
 
-    with open(output_path, "w", encoding="utf-8") as f:
-        json.dump(output_data, f, indent=2)
+    output_path = OUTPUT_DIR / "all_forecasts.json"
+    with open(output_path, "w") as f:
+        json.dump(result, f, indent=2)
 
-    print(f"\n📁 Saved forecast results → {output_path}")
-    print("🏁 Forecast run complete.\n")
+    print(f"✅ Forecast updated: {output_path}")
+    print(json.dumps(result, indent=2))
 
-# ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
     main()
