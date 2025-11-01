@@ -20,16 +20,9 @@
     align-items: center;
     justify-content: space-between;
   }
-  header h1 {
-    margin: 0;
-    font-size: 1.5rem;
-  }
-  main {
-    padding: 1.5rem;
-  }
-  #controls {
-    margin-bottom: 1rem;
-  }
+  header h1 { margin: 0; font-size: 1.5rem; }
+  main { padding: 1.5rem; }
+  #controls { margin-bottom: 1.2rem; display: flex; gap: 1rem; flex-wrap: wrap; }
   select {
     padding: 0.5rem;
     border-radius: 6px;
@@ -44,14 +37,12 @@
   .card {
     border-radius: 8px;
     padding: 1rem;
-    color: #222;
     background: #fff;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   }
   .RED { background-color: #ffcccc; }
   .AMBER { background-color: #ffe680; }
   .GREEN { background-color: #b3ffb3; }
-
   footer {
     background: #005fa3;
     color: white;
@@ -59,14 +50,6 @@
     padding: 0.75rem;
     font-size: 0.9rem;
     margin-top: 2rem;
-  }
-
-  .flag {
-    width: 24px;
-    height: 16px;
-    vertical-align: middle;
-    margin-right: 6px;
-    border: 1px solid #999;
   }
 </style>
 </head>
@@ -79,7 +62,12 @@
 
   <main>
     <div id="controls">
-      <label for="regionSelect">Select Region:</label>
+      <label for="countrySelect">Country:</label>
+      <select id="countrySelect">
+        <option value="all">All Countries</option>
+      </select>
+
+      <label for="regionSelect">Region:</label>
       <select id="regionSelect">
         <option value="all">All Regions</option>
       </select>
@@ -99,50 +87,81 @@ async function loadForecasts() {
   try {
     const response = await fetch('data/outputs/all_forecasts.json');
     const data = await response.json();
-    const regions = Object.keys(data.forecasts);
-    const select = document.getElementById('regionSelect');
-    const grid = document.getElementById('forecastGrid');
+    const forecasts = data.forecasts;
     const timestamp = document.getElementById('timestamp');
+    const countrySelect = document.getElementById('countrySelect');
+    const regionSelect = document.getElementById('regionSelect');
+    const grid = document.getElementById('forecastGrid');
 
     timestamp.textContent = "Updated: " + new Date(data.timestamp).toLocaleString();
 
-    // Populate dropdown
-    select.innerHTML = '<option value="all">All Regions</option>';
-    regions.forEach(region => {
-      const option = document.createElement('option');
-      option.value = region;
-      option.textContent = region;
-      select.appendChild(option);
+    // Parse countries and regions
+    const countryMap = {};
+    Object.keys(forecasts).forEach(key => {
+      const [country, region] = key.split(':').map(s => s.trim());
+      if (!countryMap[country]) countryMap[country] = [];
+      countryMap[country].push(region);
     });
 
-    function render(selected) {
+    // Populate country dropdown
+    for (const country of Object.keys(countryMap).sort()) {
+      const option = document.createElement('option');
+      option.value = country;
+      option.textContent = country;
+      countrySelect.appendChild(option);
+    }
+
+    function populateRegions(selectedCountry) {
+      regionSelect.innerHTML = '<option value="all">All Regions</option>';
+      if (selectedCountry !== 'all') {
+        countryMap[selectedCountry].forEach(region => {
+          const opt = document.createElement('option');
+          opt.value = region;
+          opt.textContent = region;
+          regionSelect.appendChild(opt);
+        });
+      }
+    }
+
+    function render(selectedCountry, selectedRegion) {
       grid.innerHTML = '';
-      regions
-        .filter(r => selected === 'all' || r === selected)
-        .forEach(region => {
-          const v = data.forecasts[region];
+      Object.entries(forecasts).forEach(([key, v]) => {
+        const [country, region] = key.split(':').map(s => s.trim());
+        if (
+          (selectedCountry === 'all' || country === selectedCountry) &&
+          (selectedRegion === 'all' || region === selectedRegion)
+        ) {
           const div = document.createElement('div');
           div.className = `card ${v.tier}`;
           div.innerHTML = `
-            <h3>${region}</h3>
-            <p><strong>Flood Probability:</strong> ${(v.P_final*100).toFixed(1)}%</p>
+            <h3>${region}, ${country}</h3>
+            <p><strong>Flood Probability:</strong> ${(v.P_final * 100).toFixed(1)}%</p>
             <p><strong>Tier:</strong> ${v.tier}</p>
-            <p><strong>Atmospheric River Cat:</strong> ${v.AR_cat}</p>
+            <p><strong>AR Category:</strong> ${v.AR_cat}</p>
             <p><strong>IVT:</strong> ${v.IVT}</p>
             <p><strong>Rainfall 24h:</strong> ${v.radar_24h_accum} mm</p>
             <p><strong>Tide Height:</strong> ${v.tide_height} m</p>
           `;
           grid.appendChild(div);
-        });
+        }
+      });
     }
 
-    select.addEventListener('change', e => render(e.target.value));
-    render('all');
+    countrySelect.addEventListener('change', e => {
+      populateRegions(e.target.value);
+      render(e.target.value, 'all');
+    });
+
+    regionSelect.addEventListener('change', e => {
+      render(countrySelect.value, e.target.value);
+    });
+
+    populateRegions('all');
+    render('all', 'all');
 
   } catch (err) {
-    document.getElementById('forecastGrid').innerHTML = `
-      <p style="color:red;">⚠️ Error loading forecast data.</p>
-    `;
+    document.getElementById('forecastGrid').innerHTML =
+      `<p style="color:red;">⚠️ Error loading forecast data.</p>`;
     console.error(err);
   }
 }
