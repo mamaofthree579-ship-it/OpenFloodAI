@@ -2,17 +2,37 @@
   "timestamp": "2025-10-31T12:00:00Z",
   "forecasts": {
     "USA": {
+      "California": { "P_final": 0.12, "tier": "GREEN" },
       "Florida": { "P_final": 0.82, "tier": "RED" },
       "Texas": { "P_final": 0.44, "tier": "AMBER" },
-      "Maine": { "P_final": 0.10, "tier": "GREEN" }
+      "Maine": { "P_final": 0.10, "tier": "GREEN" },
+      "New York": { "P_final": 0.21, "tier": "GREEN" }
+    },
+    "Canada": {
+      "British Columbia": { "P_final": 0.27, "tier": "AMBER" },
+      "Ontario": { "P_final": 0.19, "tier": "GREEN" },
+      "Quebec": { "P_final": 0.43, "tier": "AMBER" }
     },
     "India": {
       "Kerala": { "P_final": 0.73, "tier": "RED" },
-      "Gujarat": { "P_final": 0.21, "tier": "GREEN" }
+      "Maharashtra": { "P_final": 0.71, "tier": "RED" },
+      "Gujarat": { "P_final": 0.21, "tier": "GREEN" },
+      "Assam": { "P_final": 0.64, "tier": "RED" },
+      "Tamil Nadu": { "P_final": 0.32, "tier": "AMBER" }
     },
     "UK": {
+      "England": { "P_final": 0.22, "tier": "GREEN" },
+      "Scotland": { "P_final": 0.38, "tier": "AMBER" },
+      "Wales": { "P_final": 0.49, "tier": "AMBER" },
+      "Northern Ireland": { "P_final": 0.15, "tier": "GREEN" },
       "London": { "P_final": 0.61, "tier": "AMBER" },
       "Manchester": { "P_final": 0.25, "tier": "GREEN" }
-    }
+    },
+     "Australia": {
+      "Queensland": { "P_final": 0.25, "tier": "GREEN" },
+      "New South Wales": { "P_final": 0.44, "tier": "AMBER" },
+      "Victoria": { "P_final": 0.18, "tier": "GREEN" },
+      "Western Australia": { "P_final": 0.37, "tier": "AMBER" }
+     }
   }
 }
