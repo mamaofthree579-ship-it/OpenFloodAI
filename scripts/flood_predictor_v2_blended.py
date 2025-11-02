@@ -72,12 +72,3 @@ def blended_flood_probability(env_data, region):
             "region_factor": region_factor
         }
     }
-
-
-# Optional quick test
-if __name__ == "__main__":
-    from live_data_fetcher import get_live_environmental_data
-    region = "Texas"
-    sample = get_live_environmental_data(region)
-    result = blended_flood_probability(sample, region)
-    print(f"Sample forecast for {region}:\n", result)
