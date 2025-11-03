@@ -28,7 +28,7 @@ jobs:
       - name: 🌊 Run Forecast Script
         run: |
           echo "Running OpenFloodAI forecast generator..."
-          python flood_predictor_runner.py
+          python /flood_predictor_runner.py
 
       - name: 🗂 Commit and Push Results
         run: |
