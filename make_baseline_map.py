@@ -4,8 +4,6 @@ import matplotlib.pyplot as plt
 from shapely.geometry import Polygon, LineString
 import pandas as pd
 import requests, json, os
-
-# Optional basemap library
 import contextily as ctx
 
 # ------------------------------------------
