@@ -4,8 +4,8 @@ make_baseline_map.py
 Generates a baseline environmental map centered on the Sacramento–Verona USGS gauge.
 
 Features:
- - Auto-fetch catchment basin geometry from USGS NLDI API (live open data)
- - Reads DEM, land cover, streams, and roads
+ - Auto-fetch catchment basin and stream flowlines from USGS NLDI API (live open data)
+ - Reads DEM, land cover, and roads
  - Creates GeoPackage + PNG map outputs
 """
 
@@ -29,24 +29,44 @@ os.makedirs(OUT_DIR, exist_ok=True)
 gauge_csv = "data/raw/usgs_11425500_meta.csv"   # optional
 dem_tif = "data/raw/dem_sacramento_10m.tif"
 nlcd_tif = "data/raw/nlcd_2019_ca_clip.tif"
-smap_tif = "data/raw/smap_sacramento_anom.tif"  # optional
-streams_shp = "data/raw/nhd_streams.shp"
 roads_shp = "data/raw/roads.shp"
 
 out_gpkg = os.path.join(OUT_DIR, "sacramento_baseline.gpkg")
 out_png = os.path.join(OUT_DIR, "sacramento_baseline_map.png")
 
 # -----------------------------------------------------------------------------
-# LOAD / FETCH CATCHMENT
+# HELPER: Safe read for local vector
 # -----------------------------------------------------------------------------
-nldi_url = f"https://labs.waterdata.usgs.gov/api/nldi/linked-data/nwissite/USGS-{GAUGE_ID}/basin"
+def safe_read_vector(path):
+    if os.path.exists(path):
+        print(f"Loading {path}")
+        return gpd.read_file(path).to_crs("EPSG:3857")
+    else:
+        print(f"⚠️ Missing vector file: {path}")
+        return gpd.GeoDataFrame(geometry=[], crs="EPSG:3857")
 
-print("Fetching catchment from:", nldi_url)
-try:
-    catch = gpd.read_file(nldi_url).to_crs("EPSG:3857")
-    print("✅ Retrieved catchment from USGS NLDI API")
-except Exception as e:
-    print(f"⚠️ Failed to load catchment from NLDI ({e}). Using fallback polygon.")
+# -----------------------------------------------------------------------------
+# FETCH CATCHMENT AND STREAMS FROM USGS NLDI
+# -----------------------------------------------------------------------------
+def fetch_nldi_feature(gauge_id, feature_type):
+    """Fetch a GeoJSON layer from USGS NLDI API."""
+    base = "https://labs.waterdata.usgs.gov/api/nldi/linked-data"
+    url = f"{base}/nwissite/USGS-{gauge_id}/{feature_type}"
+    try:
+        gdf = gpd.read_file(url)
+        print(f"✅ Retrieved {feature_type} from NLDI ({len(gdf)} features)")
+        return gdf.to_crs("EPSG:3857")
+    except Exception as e:
+        print(f"⚠️ Failed to load {feature_type} from NLDI ({e})")
+        return None
+
+print("Fetching NLDI catchment and flowlines...")
+catch = fetch_nldi_feature(GAUGE_ID, "basin")
+streams = fetch_nldi_feature(GAUGE_ID, "flowlines")
+
+# Fallback if catchment retrieval fails
+if catch is None or catch.empty:
+    print("⚠️ Using fallback catchment polygon.")
     poly = Polygon([
         (-121.7, 38.6),
         (-121.5, 38.6),
@@ -59,22 +79,10 @@ except Exception as e:
                               crs="EPSG:4326").to_crs("EPSG:3857")
 
 # -----------------------------------------------------------------------------
-# LOAD VECTOR LAYERS (if they exist)
+# LOAD REMAINING VECTOR + POINT DATA
 # -----------------------------------------------------------------------------
-def safe_read_vector(path):
-    if os.path.exists(path):
-        print(f"Loading {path}")
-        return gpd.read_file(path).to_crs("EPSG:3857")
-    else:
-        print(f"⚠️ Missing vector file: {path}")
-        return gpd.GeoDataFrame(geometry=[], crs="EPSG:3857")
-
-streams = safe_read_vector(streams_shp)
 roads = safe_read_vector(roads_shp)
 
-# -----------------------------------------------------------------------------
-# LOAD GAUGE POINT
-# -----------------------------------------------------------------------------
 if os.path.exists(gauge_csv):
     print(f"Loading gauge metadata: {gauge_csv}")
     g = pd.read_csv(gauge_csv)
@@ -96,7 +104,7 @@ else:
 # -----------------------------------------------------------------------------
 print("Writing GeoPackage:", out_gpkg)
 catch.to_file(out_gpkg, layer="catchment", driver="GPKG")
-if not streams.empty:
+if streams is not None and not streams.empty:
     streams.to_file(out_gpkg, layer="streams", driver="GPKG")
 if not roads.empty:
     roads.to_file(out_gpkg, layer="roads", driver="GPKG")
@@ -134,15 +142,15 @@ fig, ax = plt.subplots(1, 1, figsize=(11, 11))
 if hs is not None:
     rshow(hs, transform=dem_affine, ax=ax, cmap='Greys', alpha=0.7)
 
-# Overlay land cover if present
+# Overlay land cover if available
 if os.path.exists(nlcd_tif):
     with rasterio.open(nlcd_tif) as nl:
         nl_data = nl.read(1)
         rshow(nl_data, transform=nl.transform, ax=ax, cmap='tab20', alpha=0.4)
 
 # Plot vector layers
-if not streams.empty:
-    streams.plot(ax=ax, linewidth=0.6, color='blue', label="Streams")
+if streams is not None and not streams.empty:
+    streams.plot(ax=ax, linewidth=0.8, color='blue', label="Flowlines (USGS NLDI)")
 if not roads.empty:
     roads.plot(ax=ax, linewidth=0.4, color='grey', label="Roads")
 
