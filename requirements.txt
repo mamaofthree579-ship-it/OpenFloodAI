@@ -8,3 +8,4 @@ rasterio
 matplotlib
 fiona
 rioxarray
+requests
