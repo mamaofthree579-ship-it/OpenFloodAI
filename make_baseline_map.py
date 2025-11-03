@@ -119,6 +119,8 @@ ax.set_title("Sacramento - Verona Baseline Environmental Map (Offline)")
 ax.axis('off')
 plt.legend()
 
-# show
-plt.show(out_png, dpi=300, bbox_inches='tight')
-print("✅ Offline map complete. Saved:", out_gpkg)
+# Save the figure to file
+plt.savefig(out_png, dpi=300, bbox_inches='tight')
+
+# Then show it interactively
+plt.show()  # no arguments!
