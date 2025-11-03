@@ -161,6 +161,6 @@ ax.set_title("Sacramento–Verona Baseline Environmental Map", fontsize=14)
 ax.axis('off')
 plt.legend()
 plt.savefig(out_png, dpi=300, bbox_inches='tight')
-plt.close()
+plt.show(out_png)
 
 print(f"✅ Map and data written to:\n  {out_gpkg}\n  {out_png}")
