@@ -1,7 +1,7 @@
 import os
 import json
 from datetime import datetime, timezone
-from live_data_fetcher import get_live_environmental_data
+from live_data_ingestor import get_live_environmental_data
 from flood_predictor_v2_blended import blended_flood_probability
 
 # 🌍 Define your country and region structure here
