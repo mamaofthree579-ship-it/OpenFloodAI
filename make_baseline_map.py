@@ -118,9 +118,4 @@ gauge_gdf.plot(ax=ax, color='red', markersize=50, label='USGS Gauge 11425500')
 ax.set_title("Sacramento - Verona Baseline Environmental Map (Offline)")
 ax.axis('off')
 plt.legend()
-
-# Save the figure to file
-plt.savefig(out_png, dpi=300, bbox_inches='tight')
-
-# Then show it interactively
-plt.show()  # no arguments!
+plt.show() 
