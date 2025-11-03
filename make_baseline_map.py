@@ -13,6 +13,8 @@ from rasterio.plot import show as rshow
 import matplotlib.pyplot as plt
 import numpy as np
 import os
+print(os.path.exists(catchment_shp))
+print(catchment_shp)
 
 # CONFIG - edit filepaths as needed
 gauge_csv = "data/raw/usgs_11425500_meta.csv"   # optional
