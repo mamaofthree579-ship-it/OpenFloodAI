@@ -16,52 +16,50 @@ REGION_MAP = {
     "Australia": ["Queensland", "New South Wales", "Victoria"],
 }
 
-OUTPUT_DIR = "data/outputs"
-OUTPUT_FILE = os.path.join(OUTPUT_DIR, "all_forecasts.json")
+# ✅ Flood tiers by probability threshold
+def classify_tier(prob):
+    if prob >= 0.6:
+        return "RED"
+    elif prob >= 0.3:
+        return "AMBER"
+    else:
+        return "GREEN"
 
-os.makedirs(OUTPUT_DIR, exist_ok=True)
+# ✅ Generate mock forecasts
+def generate_forecast():
+    data = {"forecasts": {}, "timestamp": datetime.datetime.utcnow().isoformat() + "Z"}
 
-def generate_forecasts():
-    forecasts = {}
-    for country, regions in REGION_MAP.items():
-        forecasts[country] = {}
+    for country, regions in REGION_STRUCTURE.items():
+        data["forecasts"][country] = {}
         for region in regions:
-            env_data = get_live_environmental_data(region)
-            result = blended_flood_probability(env_data, region)
-            forecasts[country][region] = result
-    return forecasts
+            # Slightly different probability each run
+            p_final = round(random.uniform(0.05, 0.95), 3)
+            data["forecasts"][country][region] = {
+                "P_final": p_final,
+                "tier": classify_tier(p_final)
+            }
 
-def main():
-    print("🌊 Running OpenFloodAI forecast update...")
+    return data
 
-    forecasts = generate_forecasts()
+# ✅ Save to JSON
+def save_forecast(data):
+    os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
+    with open(OUTPUT_PATH, "w") as f:
+        json.dump(data, f, indent=2)
+    print(f"✅ Forecasts saved to {OUTPUT_PATH}")
 
-    # Always update timestamp — even if no changes
-    output = {
-        "timestamp": datetime.now(timezone.utc).isoformat(),
-        "forecasts": forecasts
-    }
-
-    # Load old file to detect data changes
-    old_data = None
-    if os.path.exists(OUTPUT_FILE):
-        with open(OUTPUT_FILE, "r") as f:
-            try:
-                old_data = json.load(f)
-            except Exception:
-                old_data = None
-
-    # Save updated file (always refresh timestamp)
-    with open(OUTPUT_FILE, "w") as f:
-        json.dump(output, f, indent=2)
-
-    # Compare to detect change
+if __name__ == "__main__":
+    forecast_data = generate_forecast()
+    save_forecast(forecast_data)
+    print("✅ New forecast generated at:", forecast_data["timestamp"])
     if old_data and old_data.get("forecasts") == forecasts:
         print("✅ Forecasts unchanged — only timestamp updated.")
     else:
         print("✅ Forecasts updated successfully.")
 
     print(f"📁 Output saved to {OUTPUT_FILE}")
-
+    
 if __name__ == "__main__":
-    main()
+    forecast_data = generate_forecast()
+    save_forecast(forecast_data)
+    print("✅ New forecast generated at:", forecast_data["timestamp"])
