@@ -27,7 +27,7 @@ def classify_tier(prob):
 
 # ✅ Generate mock forecasts
 def generate_forecast():
-    data = {"forecasts": {}, "timestamp": datetime.datetime.utcnow().isoformat() + "Z"}
+    data = {"forecasts": {}, "timestamp": datetime.utcnow().isoformat() + "Z"}  # ✅ Fixed here
 
     for country, regions in REGION_STRUCTURE.items():
         data["forecasts"][country] = {}
@@ -48,17 +48,6 @@ def save_forecast(data):
         json.dump(data, f, indent=2)
     print(f"✅ Forecasts saved to {OUTPUT_PATH}")
 
-if __name__ == "__main__":
-    forecast_data = generate_forecast()
-    save_forecast(forecast_data)
-    print("✅ New forecast generated at:", forecast_data["timestamp"])
-    if old_data and old_data.get("forecasts") == forecasts:
-        print("✅ Forecasts unchanged — only timestamp updated.")
-    else:
-        print("✅ Forecasts updated successfully.")
-
-    print(f"📁 Output saved to {OUTPUT_FILE}")
-    
 if __name__ == "__main__":
     forecast_data = generate_forecast()
     save_forecast(forecast_data)
