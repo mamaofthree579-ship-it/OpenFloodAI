@@ -1,64 +1,72 @@
 """
 flood_predictor_runner.py
-Runs the blended flood probability model and exports updated JSON for the dashboard.
+Automates flood forecast updates and saves structured JSON for the dashboard.
 """
 
 import os
 import json
-from datetime import datetime
+from datetime import datetime, timezone
+from live_data_fetcher import get_live_environmental_data
 from flood_predictor_v2_blended import blended_flood_probability
 
-# ✅ Define country → region structure
-REGIONS = {
-    "USA": ["California", "Texas", "Florida", "New York", "Louisiana"],
-    "UK": ["London", "Manchester", "Liverpool", "Bristol"],
-    "India": ["Delhi", "Mumbai", "Kolkata", "Chennai", "Assam"],
-    "Brazil": ["Rio de Janeiro", "São Paulo", "Bahia", "Amazonas"],
-    "Australia": ["Sydney", "Queensland", "Victoria", "Western Australia"],
-    "Nigeria": ["Lagos", "Abuja", "Rivers", "Kano"],
+# 🌍 Define your country and region structure here
+REGION_MAP = {
+    "USA": ["Texas", "California", "Florida", "Louisiana"],
+    "UK": ["England", "Scotland", "Wales"],
+    "India": ["Delhi", "Mumbai", "Chennai", "Kolkata"],
+    "Bangladesh": ["Dhaka", "Chittagong", "Khulna"],
     "Philippines": ["Manila", "Cebu", "Davao"],
+    "Brazil": ["Amazonas", "Rio de Janeiro", "São Paulo"],
+    "Nigeria": ["Lagos", "Abuja", "Kano"],
+    "Australia": ["Queensland", "New South Wales", "Victoria"],
 }
 
-# ✅ Safer tier classification thresholds
-def classify_tier(prob):
-    """Convert numeric probability (0-1) into a color tier."""
-    if prob >= 0.75:
-        return "RED"      # High flood risk
-    elif prob >= 0.40:
-        return "AMBER"    # Moderate flood risk
-    else:
-        return "GREEN"    # Low flood risk
+OUTPUT_DIR = "data/outputs"
+OUTPUT_FILE = os.path.join(OUTPUT_DIR, "all_forecasts.json")
 
-def run_forecast():
-    results = {}
-    for country, regions in REGIONS.items():
-        results[country] = {}
+os.makedirs(OUTPUT_DIR, exist_ok=True)
+
+def generate_forecasts():
+    forecasts = {}
+    for country, regions in REGION_MAP.items():
+        forecasts[country] = {}
         for region in regions:
-            try:
-                P_final = blended_flood_probability(region)
-            except Exception:
-                # Fallback for regions without detailed data
-                import random
-                P_final = random.uniform(0.05, 0.95)
-            tier = classify_tier(P_final)
-            results[country][region] = {
-                "P_final": round(P_final, 3),
-                "tier": tier,
-            }
+            env_data = get_live_environmental_data(region)
+            result = blended_flood_probability(env_data, region)
+            forecasts[country][region] = result
+    return forecasts
 
-    output_dir = os.path.join("data", "outputs")
-    os.makedirs(output_dir, exist_ok=True)
+def main():
+    print("🌊 Running OpenFloodAI forecast update...")
 
-    output_data = {
-        "timestamp": datetime.utcnow().isoformat(),
-        "forecasts": results,
+    forecasts = generate_forecasts()
+
+    # Always update timestamp — even if no changes
+    output = {
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "forecasts": forecasts
     }
 
-    with open(os.path.join(output_dir, "all_forecasts.json"), "w") as f:
-        json.dump(output_data, f, indent=2)
+    # Load old file to detect data changes
+    old_data = None
+    if os.path.exists(OUTPUT_FILE):
+        with open(OUTPUT_FILE, "r") as f:
+            try:
+                old_data = json.load(f)
+            except Exception:
+                old_data = None
 
-    print("✅ Forecast generation complete.")
-    print(f"Saved {len(results)} countries worth of forecasts to all_forecasts.json")
+    # Save updated file (always refresh timestamp)
+    with open(OUTPUT_FILE, "w") as f:
+        json.dump(output, f, indent=2)
+
+    # Compare to detect change
+    if old_data and old_data.get("forecasts") == forecasts:
+        print("✅ Forecasts unchanged — only timestamp updated.")
+    else:
+        print("✅ Forecasts updated successfully.")
+
+    print(f"📁 Output saved to {OUTPUT_FILE}")
 
 if __name__ == "__main__":
-    run_forecast()
+    main()
