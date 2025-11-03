@@ -1,8 +1,3 @@
-"""
-flood_predictor_runner.py
-Automates flood forecast updates and saves structured JSON for the dashboard.
-"""
-
 import os
 import json
 from datetime import datetime, timezone
