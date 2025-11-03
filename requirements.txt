@@ -5,6 +5,10 @@ scipy
 geopandas
 shapely
 folium
+rasterio
+matplotlib
+fiona
+rioxarray
 
 # Forecast modeling and probability handling
 scikit-learn
