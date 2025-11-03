@@ -5,21 +5,21 @@ from shapely.geometry import Polygon, LineString
 import pandas as pd
 import requests, json, os
 
-# -----------------------------
-# Streamlit page setup
-# -----------------------------
-st.set_page_config(page_title="Sacramento – Verona Baseline Map", layout="wide")
-st.title("🗺️ Sacramento – Verona Baseline Map (Hybrid Online/Offline)")
+# Optional basemap library
+import contextily as ctx
 
-# -----------------------------
-# Try to fetch live NLDI basin
-# -----------------------------
+# ------------------------------------------
+# Streamlit app setup
+# ------------------------------------------
+st.set_page_config(page_title="Sacramento – Verona Map (Hybrid + Basemap)", layout="wide")
+st.title("🗺️ Sacramento – Verona Baseline Map (Hybrid + Basemap)")
+
+# ------------------------------------------
+# Function: fetch NLDI feature if online
+# ------------------------------------------
 @st.cache_data(show_spinner=False)
 def fetch_nldi_feature(gauge_id, feature_type):
-    """
-    Fetch GeoJSON from USGS NLDI using the current API base.
-    feature_type: 'basin' or 'navigate/UM/flowlines'
-    """
+    """Fetch GeoJSON from USGS NLDI using the current API base."""
     base = "https://labs.waterdata.usgs.gov/api/nldi/nwissite"
     url = f"{base}/USGS-{gauge_id}/{feature_type}"
     try:
@@ -37,9 +37,9 @@ st.info("Attempting to load live USGS NLDI basin and flowlines...")
 catch = fetch_nldi_feature(gauge_id, "basin")
 streams = fetch_nldi_feature(gauge_id, "navigate/UM/flowlines")
 
-# -----------------------------
-# Offline fallback if needed
-# -----------------------------
+# ------------------------------------------
+# Offline fallback
+# ------------------------------------------
 if catch is None or streams is None:
     st.write("🔁 Using offline synthetic data instead (no internet or USGS API down).")
 
@@ -74,23 +74,32 @@ gauge_gdf = gpd.GeoDataFrame(
     crs="EPSG:4326"
 ).to_crs("EPSG:3857")
 
-# -----------------------------
-# Plot map
-# -----------------------------
+# ------------------------------------------
+# Plot map with optional basemap
+# ------------------------------------------
 fig, ax = plt.subplots(figsize=(10, 10))
 
+# Plot main layers
 catch.boundary.plot(ax=ax, color="black", linewidth=1.2, label="Catchment")
 streams.plot(ax=ax, color="blue", linewidth=0.8, label="Streams")
 roads.plot(ax=ax, color="grey", linewidth=0.4, label="Roads")
 gauge_gdf.plot(ax=ax, color="red", markersize=50, label="USGS Gauge 11425500")
 
-ax.set_title("Sacramento – Verona Baseline Map (Hybrid Mode)")
+# Try to add a basemap (Carto/OSM tiles)
+try:
+    ctx.add_basemap(ax, source=ctx.providers.CartoDB.Positron)
+except Exception as e:
+    st.warning(f"🛰️ Basemap tiles could not be loaded (offline mode). Showing only vectors. [{e}]")
+
+# Adjust map extent and display
+ax.set_title("Sacramento – Verona Baseline Map (Hybrid + Basemap)")
 ax.axis("off")
 ax.legend()
 
+# Show map in Streamlit
 st.pyplot(fig)
 
-# -----------------------------
+# ------------------------------------------
 # Footer
-# -----------------------------
-st.caption("🛰️ Displays live USGS NLDI data when available; otherwise uses offline synthetic geometry.")
+# ------------------------------------------
+st.caption("🛰️ Displays live USGS NLDI data and CartoDB basemap when online; uses offline synthetic data when not.")
