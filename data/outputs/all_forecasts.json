@@ -1,188 +1,306 @@
 {
-  "timestamp": "2025-11-01T15:59:23Z",
+  "timestamp": "2025-11-03T23:40:37.705782+00:00",
   "forecasts": {
     "USA": {
-      "California": {
-        "P_final": 0.16,
-        "tier": "GREEN"
-      },
       "Texas": {
-        "P_final": 0.52,
-        "tier": "AMBER"
+        "P_final": 0.499,
+        "tier": "AMBER",
+        "details": {
+          "rainfall_intensity": 0.512,
+          "river_level": 0.349,
+          "soil_saturation": 0.091,
+          "rainfall_last_24h": 0.656,
+          "region_factor": 1.25
+        }
+      },
+      "California": {
+        "P_final": 0.517,
+        "tier": "AMBER",
+        "details": {
+          "rainfall_intensity": 0.703,
+          "river_level": 0.328,
+          "soil_saturation": 0.96,
+          "rainfall_last_24h": 0.658,
+          "region_factor": 0.85
+        }
       },
       "Florida": {
-        "P_final": 0.22,
-        "tier": "GREEN"
-      },
-      "New York": {
-        "P_final": 0.68,
-        "tier": "AMBER"
+        "P_final": 0.663,
+        "tier": "AMBER",
+        "details": {
+          "rainfall_intensity": 0.751,
+          "river_level": 0.199,
+          "soil_saturation": 0.491,
+          "rainfall_last_24h": 0.994,
+          "region_factor": 1.25
+        }
       },
       "Louisiana": {
-        "P_final": 0.18,
-        "tier": "GREEN"
-      },
-      "Colorado": {
-        "P_final": 0.27,
-        "tier": "GREEN"
+        "P_final": 1.0,
+        "tier": "RED",
+        "details": {
+          "rainfall_intensity": 0.998,
+          "river_level": 0.966,
+          "soil_saturation": 0.288,
+          "rainfall_last_24h": 0.549,
+          "region_factor": 1.25
+        }
       }
     },
-    "Canada": {
-      "British Columbia": {
-        "P_final": 0.56,
-        "tier": "AMBER"
-      },
-      "Ontario": {
-        "P_final": 0.62,
-        "tier": "AMBER"
-      },
-      "Quebec": {
-        "P_final": 0.34,
-        "tier": "GREEN"
-      },
-      "Alberta": {
-        "P_final": 0.41,
-        "tier": "GREEN"
-      }
-    },
-    "United Kingdom": {
+    "UK": {
       "England": {
-        "P_final": 0.75,
-        "tier": "RED"
+        "P_final": 0.221,
+        "tier": "GREEN",
+        "details": {
+          "rainfall_intensity": 0.142,
+          "river_level": 0.005,
+          "soil_saturation": 0.93,
+          "rainfall_last_24h": 0.325,
+          "region_factor": 1.0
+        }
       },
       "Scotland": {
-        "P_final": 0.26,
-        "tier": "GREEN"
+        "P_final": 0.56,
+        "tier": "AMBER",
+        "details": {
+          "rainfall_intensity": 0.762,
+          "river_level": 0.374,
+          "soil_saturation": 0.339,
+          "rainfall_last_24h": 0.701,
+          "region_factor": 1.0
+        }
       },
       "Wales": {
-        "P_final": 0.34,
-        "tier": "GREEN"
-      },
-      "Northern Ireland": {
-        "P_final": 0.21,
-        "tier": "GREEN"
+        "P_final": 0.448,
+        "tier": "AMBER",
+        "details": {
+          "rainfall_intensity": 0.375,
+          "river_level": 0.577,
+          "soil_saturation": 0.474,
+          "rainfall_last_24h": 0.134,
+          "region_factor": 1.0
+        }
       }
     },
     "India": {
-      "Maharashtra": {
-        "P_final": 0.59,
-        "tier": "AMBER"
+      "Delhi": {
+        "P_final": 0.489,
+        "tier": "AMBER",
+        "details": {
+          "rainfall_intensity": 0.126,
+          "river_level": 0.904,
+          "soil_saturation": 0.49,
+          "rainfall_last_24h": 0.861,
+          "region_factor": 1.0
+        }
       },
-      "Kerala": {
-        "P_final": 0.18,
-        "tier": "GREEN"
+      "Mumbai": {
+        "P_final": 0.149,
+        "tier": "GREEN",
+        "details": {
+          "rainfall_intensity": 0.073,
+          "river_level": 0.086,
+          "soil_saturation": 0.555,
+          "rainfall_last_24h": 0.061,
+          "region_factor": 1.0
+        }
       },
-      "Assam": {
-        "P_final": 0.68,
-        "tier": "AMBER"
+      "Chennai": {
+        "P_final": 0.461,
+        "tier": "AMBER",
+        "details": {
+          "rainfall_intensity": 0.377,
+          "river_level": 0.578,
+          "soil_saturation": 0.527,
+          "rainfall_last_24h": 0.198,
+          "region_factor": 1.0
+        }
       },
-      "Tamil Nadu": {
-        "P_final": 0.42,
-        "tier": "GREEN"
-      },
-      "Gujarat": {
-        "P_final": 0.4,
-        "tier": "GREEN"
+      "Kolkata": {
+        "P_final": 0.533,
+        "tier": "AMBER",
+        "details": {
+          "rainfall_intensity": 0.762,
+          "river_level": 0.251,
+          "soil_saturation": 0.486,
+          "rainfall_last_24h": 0.599,
+          "region_factor": 1.0
+        }
       }
     },
-    "Australia": {
-      "Queensland": {
-        "P_final": 0.42,
-        "tier": "GREEN"
+    "Bangladesh": {
+      "Dhaka": {
+        "P_final": 0.59,
+        "tier": "AMBER",
+        "details": {
+          "rainfall_intensity": 0.888,
+          "river_level": 0.114,
+          "soil_saturation": 0.757,
+          "rainfall_last_24h": 0.728,
+          "region_factor": 1.0
+        }
       },
-      "New South Wales": {
-        "P_final": 0.35,
-        "tier": "GREEN"
+      "Chittagong": {
+        "P_final": 0.425,
+        "tier": "AMBER",
+        "details": {
+          "rainfall_intensity": 0.49,
+          "river_level": 0.493,
+          "soil_saturation": 0.029,
+          "rainfall_last_24h": 0.554,
+          "region_factor": 1.0
+        }
       },
-      "Victoria": {
-        "P_final": 0.12,
-        "tier": "GREEN"
+      "Khulna": {
+        "P_final": 0.529,
+        "tier": "AMBER",
+        "details": {
+          "rainfall_intensity": 0.374,
+          "river_level": 0.85,
+          "soil_saturation": 0.089,
+          "rainfall_last_24h": 0.985,
+          "region_factor": 1.0
+        }
+      }
+    },
+    "Philippines": {
+      "Manila": {
+        "P_final": 0.512,
+        "tier": "AMBER",
+        "details": {
+          "rainfall_intensity": 0.471,
+          "river_level": 0.519,
+          "soil_saturation": 0.648,
+          "rainfall_last_24h": 0.415,
+          "region_factor": 1.0
+        }
       },
-      "Western Australia": {
-        "P_final": 0.34,
-        "tier": "GREEN"
+      "Cebu": {
+        "P_final": 0.579,
+        "tier": "AMBER",
+        "details": {
+          "rainfall_intensity": 0.86,
+          "river_level": 0.386,
+          "soil_saturation": 0.271,
+          "rainfall_last_24h": 0.318,
+          "region_factor": 1.0
+        }
+      },
+      "Davao": {
+        "P_final": 0.484,
+        "tier": "AMBER",
+        "details": {
+          "rainfall_intensity": 0.778,
+          "river_level": 0.319,
+          "soil_saturation": 0.056,
+          "rainfall_last_24h": 0.282,
+          "region_factor": 1.0
+        }
       }
     },
     "Brazil": {
       "Amazonas": {
-        "P_final": 0.23,
-        "tier": "GREEN"
-      },
-      "S\u00e3o Paulo": {
-        "P_final": 0.63,
-        "tier": "AMBER"
-      },
-      "Bahia": {
-        "P_final": 0.65,
-        "tier": "AMBER"
+        "P_final": 0.54,
+        "tier": "AMBER",
+        "details": {
+          "rainfall_intensity": 0.386,
+          "river_level": 0.591,
+          "soil_saturation": 0.838,
+          "rainfall_last_24h": 0.68,
+          "region_factor": 1.0
+        }
       },
       "Rio de Janeiro": {
-        "P_final": 0.69,
-        "tier": "AMBER"
+        "P_final": 0.507,
+        "tier": "AMBER",
+        "details": {
+          "rainfall_intensity": 0.583,
+          "river_level": 0.325,
+          "soil_saturation": 0.801,
+          "rainfall_last_24h": 0.224,
+          "region_factor": 1.0
+        }
+      },
+      "S\u00e3o Paulo": {
+        "P_final": 0.508,
+        "tier": "AMBER",
+        "details": {
+          "rainfall_intensity": 0.85,
+          "river_level": 0.096,
+          "soil_saturation": 0.581,
+          "rainfall_last_24h": 0.087,
+          "region_factor": 1.0
+        }
       }
     },
-    "Philippines": {
-      "Luzon": {
-        "P_final": 0.37,
-        "tier": "GREEN"
+    "Nigeria": {
+      "Lagos": {
+        "P_final": 0.377,
+        "tier": "GREEN",
+        "details": {
+          "rainfall_intensity": 0.601,
+          "river_level": 0.108,
+          "soil_saturation": 0.199,
+          "rainfall_last_24h": 0.777,
+          "region_factor": 1.0
+        }
       },
-      "Visayas": {
-        "P_final": 0.12,
-        "tier": "GREEN"
+      "Abuja": {
+        "P_final": 0.43,
+        "tier": "AMBER",
+        "details": {
+          "rainfall_intensity": 0.352,
+          "river_level": 0.632,
+          "soil_saturation": 0.228,
+          "rainfall_last_24h": 0.331,
+          "region_factor": 1.0
+        }
       },
-      "Mindanao": {
-        "P_final": 0.7,
-        "tier": "AMBER"
+      "Kano": {
+        "P_final": 0.22,
+        "tier": "GREEN",
+        "details": {
+          "rainfall_intensity": 0.337,
+          "river_level": 0.036,
+          "soil_saturation": 0.159,
+          "rainfall_last_24h": 0.643,
+          "region_factor": 1.0
+        }
       }
     },
-    "Kenya": {
-      "Nairobi": {
-        "P_final": 0.54,
-        "tier": "AMBER"
+    "Australia": {
+      "Queensland": {
+        "P_final": 0.365,
+        "tier": "GREEN",
+        "details": {
+          "rainfall_intensity": 0.631,
+          "river_level": 0.011,
+          "soil_saturation": 0.48,
+          "rainfall_last_24h": 0.102,
+          "region_factor": 1.0
+        }
       },
-      "Kisumu": {
-        "P_final": 0.09,
-        "tier": "GREEN"
+      "New South Wales": {
+        "P_final": 0.566,
+        "tier": "AMBER",
+        "details": {
+          "rainfall_intensity": 0.817,
+          "river_level": 0.123,
+          "soil_saturation": 0.853,
+          "rainfall_last_24h": 0.547,
+          "region_factor": 1.0
+        }
       },
-      "Mombasa": {
-        "P_final": 0.57,
-        "tier": "AMBER"
-      }
-    },
-    "Japan": {
-      "Tokyo": {
-        "P_final": 0.12,
-        "tier": "GREEN"
-      },
-      "Osaka": {
-        "P_final": 0.51,
-        "tier": "AMBER"
-      },
-      "Hokkaido": {
-        "P_final": 0.32,
-        "tier": "GREEN"
-      },
-      "Kyushu": {
-        "P_final": 0.27,
-        "tier": "GREEN"
-      }
-    },
-    "Italy": {
-      "Lombardy": {
-        "P_final": 0.13,
-        "tier": "GREEN"
-      },
-      "Sicily": {
-        "P_final": 0.58,
-        "tier": "AMBER"
-      },
-      "Veneto": {
-        "P_final": 0.77,
-        "tier": "GREEN"
-      },
-      "Tuscany": {
-        "P_final": 0.34,
-        "tier": "GREEN"
+      "Victoria": {
+        "P_final": 0.621,
+        "tier": "AMBER",
+        "details": {
+          "rainfall_intensity": 0.532,
+          "river_level": 0.815,
+          "soil_saturation": 0.54,
+          "rainfall_last_24h": 0.299,
+          "region_factor": 1.0
+        }
       }
     }
   }
