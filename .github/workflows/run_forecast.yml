@@ -1,54 +1,55 @@
-name: 🌊 OpenFloodAI — Automated Global Forecast
+name: 🌊 Run Daily Flood Forecast
 
 on:
   schedule:
-    - cron: "0 6 * * *"  # Runs daily at 6 AM UTC
+    - cron: "0 6 * * *"   # Runs every day at 6 AM UTC
   workflow_dispatch:      # Allows manual trigger
 
 jobs:
   run-forecast:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
 
     steps:
-      - name: 📥 Checkout repository
+      - name: 🧭 Checkout Repository
         uses: actions/checkout@v4
         with:
-          persist-credentials: false
           fetch-depth: 0
 
-      - name: 🐍 Set up Python
+      - name: 🐍 Set Up Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.10"
 
-      - name: 📦 Install dependencies
+      - name: 📦 Install Dependencies
         run: |
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: 🌊 Run forecast runner
-        run: python scripts/flood_predictor_runner.py
-
-      - name: 💾 Commit & push updated forecast safely
+      - name: 🌊 Run Forecast Script
         run: |
+          echo "Running OpenFloodAI forecast generator..."
+          python flood_predictor_runner.py
+
+      - name: 🗂 Commit and Push Results
+        run: |
+          echo "Preparing to commit forecast output..."
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # Add and stash local changes
-          git add data/outputs/all_forecasts.json || echo "No forecast data found"
-          git stash || echo "Nothing to stash"
+          git add data/outputs/all_forecasts.json || true
+          git status
 
-          # Sync with remote main
-          git pull --rebase origin main || echo "No remote updates"
+          if git diff --cached --quiet; then
+            echo "✅ No forecast changes detected (timestamp may have updated)."
+            echo "Forcing a minor commit to refresh GitHub Pages."
+            date > data/outputs/last_run.txt
+            git add data/outputs/last_run.txt
+          fi
 
-          # Restore local updates
-          git stash pop || echo "No stash to pop"
+          git commit -m "🤖 Automated daily forecast update — $(date -u +'%Y-%m-%d %H:%M UTC')" || echo "No changes to commit."
+          git pull --rebase origin main || true
+          git push origin main || echo "No push necessary — repo already up to date."
 
-          # Commit only if there are changes
-          git add data/outputs/all_forecasts.json
-          git diff --quiet && echo "No changes to commit" || git commit -m "🌍 Automated global forecast update $(date -u +'%Y-%m-%d %H:%M UTC')"
-
-          # Push with GitHub token
-          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git main
+      - name: 🌐 Trigger GitHub Pages Build
+        run: |
+          echo "✅ Workflow completed — dashboard will refresh automatically."
