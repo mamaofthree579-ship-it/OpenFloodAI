@@ -1,5 +1,13 @@
 # make_baseline_map.py
 import geopandas as gpd
+
+catchment_shp = "/path/to/your/catchment.shp"
+print("Reading:", catchment_shp)
+catch = gpd.read_file(catchment_shp)
+print(catch.head())
+print(catch.crs)
+catch = catch.to_crs("EPSG:3857")
+
 import rasterio
 from rasterio.plot import show as rshow
 import matplotlib.pyplot as plt
