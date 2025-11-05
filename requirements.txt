@@ -11,3 +11,4 @@ rioxarray
 requests
 elevation
 contextily
+plotly.graph_objects
