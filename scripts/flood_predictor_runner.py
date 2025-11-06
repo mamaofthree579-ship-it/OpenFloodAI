@@ -29,7 +29,7 @@ def classify_tier(prob):
 def generate_forecast():
     data = {"forecasts": {}, "timestamp": datetime.utcnow().isoformat() + "Z"}  # ✅ Fixed here
 
-    for country, regions in REGION_STRUCTURE.items():
+    for country, regions in REGION_STRUCTURE.items('option'):
         data["forecasts"][country] = {}
         for region in regions:
             # Slightly different probability each run
