@@ -2,104 +2,104 @@
   "forecasts": {
     "USA": {
       "California": {
-        "P_final": 0.149,
-        "tier": "GREEN"
+        "P_final": 0.886,
+        "tier": "RED"
       },
       "Texas": {
-        "P_final": 0.441,
+        "P_final": 0.69,
         "tier": "AMBER"
       },
       "Florida": {
-        "P_final": 0.169,
-        "tier": "GREEN"
-      },
-      "New York": {
-        "P_final": 0.828,
+        "P_final": 0.748,
         "tier": "RED"
       },
+      "New York": {
+        "P_final": 0.403,
+        "tier": "AMBER"
+      },
       "Louisiana": {
-        "P_final": 0.218,
-        "tier": "GREEN"
+        "P_final": 0.437,
+        "tier": "AMBER"
       }
     },
     "UK": {
       "England": {
-        "P_final": 0.68,
-        "tier": "AMBER"
-      },
-      "Scotland": {
-        "P_final": 0.802,
+        "P_final": 0.747,
         "tier": "RED"
       },
+      "Scotland": {
+        "P_final": 0.234,
+        "tier": "GREEN"
+      },
       "Wales": {
-        "P_final": 0.53,
-        "tier": "AMBER"
+        "P_final": 0.063,
+        "tier": "GREEN"
       }
     },
     "India": {
       "Maharashtra": {
-        "P_final": 0.15,
-        "tier": "GREEN"
+        "P_final": 0.805,
+        "tier": "RED"
       },
       "Kerala": {
-        "P_final": 0.151,
-        "tier": "GREEN"
+        "P_final": 0.841,
+        "tier": "RED"
       },
       "Assam": {
-        "P_final": 0.1,
+        "P_final": 0.162,
         "tier": "GREEN"
       },
       "West Bengal": {
-        "P_final": 0.147,
+        "P_final": 0.218,
         "tier": "GREEN"
       }
     },
     "Philippines": {
       "Luzon": {
-        "P_final": 0.417,
+        "P_final": 0.696,
         "tier": "AMBER"
       },
       "Visayas": {
-        "P_final": 0.482,
-        "tier": "AMBER"
+        "P_final": 0.852,
+        "tier": "RED"
       },
       "Mindanao": {
-        "P_final": 0.076,
-        "tier": "GREEN"
+        "P_final": 0.789,
+        "tier": "RED"
       }
     },
     "Nigeria": {
       "Lagos": {
-        "P_final": 0.944,
-        "tier": "RED"
+        "P_final": 0.631,
+        "tier": "AMBER"
       },
       "Rivers": {
-        "P_final": 0.521,
-        "tier": "AMBER"
+        "P_final": 0.137,
+        "tier": "GREEN"
       },
       "Anambra": {
-        "P_final": 0.496,
-        "tier": "AMBER"
+        "P_final": 0.078,
+        "tier": "GREEN"
       },
       "Kano": {
-        "P_final": 0.44,
+        "P_final": 0.426,
         "tier": "AMBER"
       }
     },
     "Australia": {
       "New South Wales": {
-        "P_final": 0.741,
-        "tier": "RED"
-      },
-      "Queensland": {
-        "P_final": 0.552,
+        "P_final": 0.474,
         "tier": "AMBER"
       },
+      "Queensland": {
+        "P_final": 0.36,
+        "tier": "GREEN"
+      },
       "Victoria": {
-        "P_final": 0.892,
-        "tier": "RED"
+        "P_final": 0.091,
+        "tier": "GREEN"
       }
     }
   },
-  "timestamp": "2025-11-08T06:48:59.422436Z"
+  "timestamp": "2025-11-09T06:49:43.274937Z"
 }
