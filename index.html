@@ -133,78 +133,120 @@
   <footer>🌍 OpenFloodAI — Open & Community Flood Forecasting</footer>
 
   <script>
-    let forecastData = {};
+let forecastData = {};
 
-    async function loadForecast() {
-      try {
-        const res = await fetch("data/outputs/all_forecasts.json?cb=" + Date.now());
-        const data = await res.json();
-        forecastData = data.forecasts;
-        document.getElementById("updateTime").innerText = 
-          "Updated: " + new Date(data.timestamp).toLocaleString();
+async function loadForecast() {
+  try {
+    const res = await fetch("data/outputs/all_forecasts.json?cb=" + Date.now());
+    const data = await res.json();
+    forecastData = data.forecasts;
 
-        const countrySelect = document.getElementById("countrySelect");
-        Object.keys(forecastData).forEach(country => {
-          const opt = document.createElement("option");
-          opt.value = country;
-          opt.textContent = country;
-          countrySelect.appendChild(opt);
-        });
-      } catch (err) {
-        document.getElementById("updateTime").innerText = "⚠️ Could not load forecast data.";
-        console.error(err);
-      }
-    }
+    const updateEl = document.getElementById("updateTime");
+    updateEl.innerText = "Updated: " + new Date(data.timestamp).toLocaleString();
 
-    document.getElementById("countrySelect").addEventListener("change", e => {
-      const selectedCountry = e.target.value;
-      const regionSelect = document.getElementById("regionSelect");
-      regionSelect.innerHTML = '<option value="">-- Choose a Region --</option>';
-      document.getElementById("forecastTable").style.display = "none";
+    const countrySelect = document.getElementById("countrySelect");
+    countrySelect.innerHTML = '<option value="">🌍 Global Overview</option>';
 
-      if (!selectedCountry) {
-        regionSelect.disabled = true;
-        return;
-      }
-
-      regionSelect.disabled = false;
-      Object.keys(forecastData[selectedCountry]).forEach(region => {
-        const opt = document.createElement("option");
-        opt.value = region;
-        opt.textContent = region;
-        regionSelect.appendChild(opt);
-      });
+    // Sort countries alphabetically
+    Object.keys(forecastData).sort().forEach(country => {
+      const opt = document.createElement("option");
+      opt.value = country;
+      opt.textContent = country;
+      countrySelect.appendChild(opt);
     });
 
-    document.getElementById("regionSelect").addEventListener("change", e => {
-      const country = document.getElementById("countrySelect").value;
-      const region = e.target.value;
-      const table = document.getElementById("forecastTable");
-      const tbody = document.getElementById("forecastBody");
-      tbody.innerHTML = "";
+    showGlobalOverview();
+  } catch (err) {
+    document.getElementById("updateTime").innerText = "⚠️ Could not load forecast data.";
+    console.error(err);
+  }
+}
 
-      if (!region) {
-        table.style.display = "none";
-        return;
-      }
+function showGlobalOverview() {
+  const tbody = document.getElementById("forecastBody");
+  const table = document.getElementById("forecastTable");
+  tbody.innerHTML = "";
 
-      const values = forecastData[country][region];
-      const probability = (values.P_final * 100).toFixed(1);
-      const row = document.createElement("tr");
-      row.className = values.tier;
-      row.innerHTML = `
-        <td>${region}</td>
-        <td>${probability}% 
-          <div class="bar-container">
-            <div class="bar ${values.tier}" style="width:${probability}%"></div>
-          </div>
-        </td>
-        <td><strong>${values.tier}</strong></td>`;
-      tbody.appendChild(row);
-      table.style.display = "table";
-    });
+  for (const [country, regions] of Object.entries(forecastData)) {
+    let avgProb = 0;
+    const allProbs = Object.values(regions).map(r => r.P_final);
+    avgProb = allProbs.reduce((a, b) => a + b, 0) / allProbs.length;
+    const tier =
+      avgProb > 0.7 ? "RED" : avgProb > 0.4 ? "AMBER" : "GREEN";
+    const percent = (avgProb * 100).toFixed(1);
 
-    loadForecast();
-  </script>
+    const row = document.createElement("tr");
+    row.className = tier;
+    row.innerHTML = `
+      <td>${country}</td>
+      <td>${percent}% 
+        <div class="bar-container">
+          <div class="bar ${tier}" style="width:${percent}%"></div>
+        </div>
+      </td>
+      <td><strong>${tier}</strong></td>
+    `;
+    tbody.appendChild(row);
+  }
+
+  table.style.display = "table";
+}
+
+document.getElementById("countrySelect").addEventListener("change", e => {
+  const selectedCountry = e.target.value;
+  const regionSelect = document.getElementById("regionSelect");
+  const table = document.getElementById("forecastTable");
+  const tbody = document.getElementById("forecastBody");
+
+  regionSelect.innerHTML = '<option value="">-- Choose a Region --</option>';
+  tbody.innerHTML = "";
+
+  if (!selectedCountry) {
+    regionSelect.disabled = true;
+    showGlobalOverview();
+    return;
+  }
+
+  regionSelect.disabled = false;
+  Object.keys(forecastData[selectedCountry]).forEach(region => {
+    const opt = document.createElement("option");
+    opt.value = region;
+    opt.textContent = region;
+    regionSelect.appendChild(opt);
+  });
+
+  table.style.display = "none";
+});
+
+document.getElementById("regionSelect").addEventListener("change", e => {
+  const country = document.getElementById("countrySelect").value;
+  const region = e.target.value;
+  const table = document.getElementById("forecastTable");
+  const tbody = document.getElementById("forecastBody");
+  tbody.innerHTML = "";
+
+  if (!region) {
+    table.style.display = "none";
+    return;
+  }
+
+  const values = forecastData[country][region];
+  const probability = (values.P_final * 100).toFixed(1);
+  const row = document.createElement("tr");
+  row.className = values.tier;
+  row.innerHTML = `
+    <td>${region}</td>
+    <td>${probability}%
+      <div class="bar-container">
+        <div class="bar ${values.tier}" style="width:${probability}%"></div>
+      </div>
+    </td>
+    <td><strong>${values.tier}</strong></td>`;
+  tbody.appendChild(row);
+  table.style.display = "table";
+});
+
+loadForecast();
+</script>
 </body>
 </html>
