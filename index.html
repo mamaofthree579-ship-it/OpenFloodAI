@@ -159,7 +159,7 @@
 
   <footer>🌍 OpenFloodAI — Open & Community Flood Forecasting</footer>
 
- <script>
+<script>
 let forecastData = {};
 
 async function loadForecast() {
@@ -224,31 +224,48 @@ document.getElementById("countrySelect").addEventListener("change", e => {
     return;
   }
 
-  regionSelect.disabled = false;
-  Object.keys(forecastData[continent][country])
-    .sort()
-    .forEach(region => {
-      const opt = document.createElement("option");
-      opt.value = region;
-      opt.textContent = region;
-      regionSelect.appendChild(opt);
-    });
+  const countryData = forecastData[continent][country];
+
+  // ✅ Detect whether the country has regions or just direct forecast data
+  const isDirect = countryData.P_final !== undefined && countryData.tier !== undefined;
+
+  if (isDirect) {
+    // No regions — just show this country’s forecast
+    regionSelect.disabled = true;
+    displayForecast(continent, country, country, countryData);
+  } else {
+    // Country has multiple regions — populate dropdown
+    regionSelect.disabled = false;
+    Object.keys(countryData)
+      .sort()
+      .forEach(region => {
+        const opt = document.createElement("option");
+        opt.value = region;
+        opt.textContent = region;
+        regionSelect.appendChild(opt);
+      });
+  }
 });
 
 document.getElementById("regionSelect").addEventListener("change", e => {
   const continent = document.getElementById("continentSelect").value;
   const country = document.getElementById("countrySelect").value;
   const region = e.target.value;
-  const table = document.getElementById("forecastTable");
-  const tbody = document.getElementById("forecastBody");
-  tbody.innerHTML = "";
 
   if (!region) {
-    table.style.display = "none";
+    document.getElementById("forecastTable").style.display = "none";
     return;
   }
 
   const values = forecastData[continent][country][region];
+  displayForecast(continent, country, region, values);
+});
+
+function displayForecast(continent, country, region, values) {
+  const table = document.getElementById("forecastTable");
+  const tbody = document.getElementById("forecastBody");
+  tbody.innerHTML = "";
+
   const probability = (values.P_final * 100).toFixed(1);
   const row = document.createElement("tr");
   row.className = values.tier;
@@ -264,7 +281,7 @@ document.getElementById("regionSelect").addEventListener("change", e => {
     <td><strong>${values.tier}</strong></td>`;
   tbody.appendChild(row);
   table.style.display = "table";
-});
+}
 
 loadForecast();
 </script>
