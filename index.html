@@ -111,48 +111,61 @@
     <div id="updateTime">Loading...</div>
   </header>
 
-  <main>
-    <label for="countrySelect">🌍 Select Country:</label>
-    <select id="countrySelect">
-      <option value="">-- Choose a Country --</option>
-    </select>
+ <main>
+  <label for="continentSelect">🌍 Select Continent:</label>
+  <select id="continentSelect">
+    <option value="">-- Choose a Continent --</option>
+  </select>
 
-    <label for="regionSelect">🏙️ Select Region:</label>
-    <select id="regionSelect" disabled>
-      <option value="">-- Choose a Region --</option>
-    </select>
+  <label for="countrySelect">🏴 Select Country:</label>
+  <select id="countrySelect" disabled>
+    <option value="">-- Choose a Country --</option>
+  </select>
 
-    <table id="forecastTable" style="display:none;">
-      <thead>
-        <tr><th>Region</th><th>Flood Probability</th><th>Risk Tier</th></tr>
-      </thead>
-      <tbody id="forecastBody"></tbody>
-    </table>
-  </main>
+  <label for="regionSelect">🏙️ Select Region:</label>
+  <select id="regionSelect" disabled>
+    <option value="">-- Choose a Region --</option>
+  </select>
 
-  <footer>🌍 OpenFloodAI — Open & Community Flood Forecasting</footer>
+  <table id="forecastTable" style="display:none;">
+    <thead>
+      <tr><th>Region</th><th>Flood Probability</th><th>Risk Tier</th></tr>
+    </thead>
+    <tbody id="forecastBody"></tbody>
+  </table>
+</main>
 
-  <script>
+<footer>🌊 OpenFloodAI — Open & Community Flood Forecasting</footer>
+
+<script>
 let forecastData = {};
+let continentMap = {};
 
 async function loadForecast() {
   try {
     const res = await fetch("data/outputs/all_forecasts.json?cb=" + Date.now());
     const data = await res.json();
     forecastData = data.forecasts;
+    document.getElementById("updateTime").innerText =
+      "Updated: " + new Date(data.timestamp).toLocaleString();
 
-    const updateEl = document.getElementById("updateTime");
-    updateEl.innerText = "Updated: " + new Date(data.timestamp).toLocaleString();
+    // Organize countries by continent
+    continentMap = {
+      "North America": ["United States", "Canada", "Mexico"],
+      "South America": ["Brazil", "Argentina", "Colombia", "Chile"],
+      "Europe": ["United Kingdom", "France", "Germany", "Italy", "Spain"],
+      "Africa": ["Nigeria", "South Africa", "Kenya", "Egypt"],
+      "Asia": ["China", "India", "Japan", "Indonesia"],
+      "Oceania": ["Australia", "New Zealand"],
+    };
 
-    const countrySelect = document.getElementById("countrySelect");
-    countrySelect.innerHTML = '<option value="">🌍 Global Overview</option>';
-
-    // Sort countries alphabetically
-    Object.keys(forecastData).sort().forEach(country => {
+    // Populate continent dropdown
+    const continentSelect = document.getElementById("continentSelect");
+    Object.keys(continentMap).forEach(continent => {
       const opt = document.createElement("option");
-      opt.value = country;
-      opt.textContent = country;
-      countrySelect.appendChild(opt);
+      opt.value = continent;
+      opt.textContent = continent;
+      continentSelect.appendChild(opt);
     });
 
     showGlobalOverview();
@@ -162,35 +175,34 @@ async function loadForecast() {
   }
 }
 
-function showGlobalOverview() {
-  const tbody = document.getElementById("forecastBody");
-  const table = document.getElementById("forecastTable");
-  tbody.innerHTML = "";
+document.getElementById("continentSelect").addEventListener("change", e => {
+  const selectedContinent = e.target.value;
+  const countrySelect = document.getElementById("countrySelect");
+  const regionSelect = document.getElementById("regionSelect");
+  countrySelect.innerHTML = '<option value="">-- Choose a Country --</option>';
+  regionSelect.innerHTML = '<option value="">-- Choose a Region --</option>';
+  countrySelect.disabled = true;
+  regionSelect.disabled = true;
+  document.getElementById("forecastTable").style.display = "none";
 
-  for (const [country, regions] of Object.entries(forecastData)) {
-    let avgProb = 0;
-    const allProbs = Object.values(regions).map(r => r.P_final);
-    avgProb = allProbs.reduce((a, b) => a + b, 0) / allProbs.length;
-    const tier =
-      avgProb > 0.7 ? "RED" : avgProb > 0.4 ? "AMBER" : "GREEN";
-    const percent = (avgProb * 100).toFixed(1);
-
-    const row = document.createElement("tr");
-    row.className = tier;
-    row.innerHTML = `
-      <td>${country}</td>
-      <td>${percent}% 
-        <div class="bar-container">
-          <div class="bar ${tier}" style="width:${percent}%"></div>
-        </div>
-      </td>
-      <td><strong>${tier}</strong></td>
-    `;
-    tbody.appendChild(row);
+  if (!selectedContinent) {
+    showGlobalOverview();
+    return;
   }
 
-  table.style.display = "table";
-}
+  const countries = continentMap[selectedContinent] || [];
+  countries
+    .filter(c => forecastData[c])
+    .sort()
+    .forEach(country => {
+      const opt = document.createElement("option");
+      opt.value = country;
+      opt.textContent = country;
+      countrySelect.appendChild(opt);
+    });
+
+  if (countries.length > 0) countrySelect.disabled = false;
+});
 
 document.getElementById("countrySelect").addEventListener("change", e => {
   const selectedCountry = e.target.value;
@@ -236,7 +248,7 @@ document.getElementById("regionSelect").addEventListener("change", e => {
   row.className = values.tier;
   row.innerHTML = `
     <td>${region}</td>
-    <td>${probability}%
+    <td>${probability}% 
       <div class="bar-container">
         <div class="bar ${values.tier}" style="width:${probability}%"></div>
       </div>
@@ -245,6 +257,34 @@ document.getElementById("regionSelect").addEventListener("change", e => {
   tbody.appendChild(row);
   table.style.display = "table";
 });
+
+function showGlobalOverview() {
+  const tbody = document.getElementById("forecastBody");
+  const table = document.getElementById("forecastTable");
+  tbody.innerHTML = "";
+
+  for (const [country, regions] of Object.entries(forecastData)) {
+    const probs = Object.values(regions).map(r => r.P_final);
+    const avg = probs.reduce((a, b) => a + b, 0) / probs.length;
+    const tier = avg > 0.7 ? "RED" : avg > 0.4 ? "AMBER" : "GREEN";
+    const percent = (avg * 100).toFixed(1);
+
+    const row = document.createElement("tr");
+    row.className = tier;
+    row.innerHTML = `
+      <td>${country}</td>
+      <td>${percent}% 
+        <div class="bar-container">
+          <div class="bar ${tier}" style="width:${percent}%"></div>
+        </div>
+      </td>
+      <td><strong>${tier}</strong></td>
+    `;
+    tbody.appendChild(row);
+  }
+
+  table.style.display = "table";
+}
 
 loadForecast();
 </script>
