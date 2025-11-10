@@ -111,22 +111,26 @@
     <div id="updateTime">Loading...</div>
   </header>
 
- <main>
-  <label for="continentSelect">🌍 Select Continent:</label>
-  <select id="continentSelect">
-    <option value="">-- Choose a Continent --</option>
-  </select>
+<main>
+  <h2>🌎 Global Flood Forecasts</h2>
 
-  <label for="countrySelect">🏴 Select Country:</label>
-  <select id="countrySelect" disabled>
-    <option value="">-- Choose a Country --</option>
-  </select>
+  <!-- Continent Tabs -->
+  <div id="continentTabs" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:15px;">
+    <!-- Buttons dynamically added here -->
+  </div>
 
+  <!-- Country Tabs -->
+  <div id="countryTabs" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:15px; display:none;">
+    <!-- Buttons dynamically added here -->
+  </div>
+
+  <!-- Region Dropdown -->
   <label for="regionSelect">🏙️ Select Region:</label>
   <select id="regionSelect" disabled>
     <option value="">-- Choose a Region --</option>
   </select>
 
+  <!-- Forecast Table -->
   <table id="forecastTable" style="display:none;">
     <thead>
       <tr><th>Region</th><th>Flood Probability</th><th>Risk Tier</th></tr>
@@ -140,6 +144,29 @@
 <script>
 let forecastData = {};
 let continentMap = {};
+let selectedContinent = null;
+let selectedCountry = null;
+
+// Create styled buttons
+function createButton(label, value, onClick, active = false) {
+  const btn = document.createElement("button");
+  btn.textContent = label;
+  btn.value = value;
+  btn.onclick = () => onClick(value);
+  btn.style = `
+    background:${active ? "#0077cc" : "#e0e0e0"};
+    color:${active ? "white" : "#333"};
+    border:none;
+    border-radius:6px;
+    padding:8px 14px;
+    cursor:pointer;
+    font-size:0.95em;
+    transition:0.2s all;
+  `;
+  btn.onmouseover = () => (btn.style.background = active ? "#005fa3" : "#d0d0d0");
+  btn.onmouseout = () => (btn.style.background = active ? "#0077cc" : "#e0e0e0");
+  return btn;
+}
 
 async function loadForecast() {
   try {
@@ -149,24 +176,25 @@ async function loadForecast() {
     document.getElementById("updateTime").innerText =
       "Updated: " + new Date(data.timestamp).toLocaleString();
 
-    // Organize countries by continent
+    // Continent → Country map
     continentMap = {
       "North America": ["United States", "Canada", "Mexico"],
       "South America": ["Brazil", "Argentina", "Colombia", "Chile"],
       "Europe": ["United Kingdom", "France", "Germany", "Italy", "Spain"],
       "Africa": ["Nigeria", "South Africa", "Kenya", "Egypt"],
       "Asia": ["China", "India", "Japan", "Indonesia"],
-      "Oceania": ["Australia", "New Zealand"],
+      "Oceania": ["Australia", "New Zealand"]
     };
 
-    // Populate continent dropdown
-    const continentSelect = document.getElementById("continentSelect");
-    Object.keys(continentMap).forEach(continent => {
-      const opt = document.createElement("option");
-      opt.value = continent;
-      opt.textContent = continent;
-      continentSelect.appendChild(opt);
-    });
+    // Populate continent buttons
+    const continentTabs = document.getElementById("continentTabs");
+    continentTabs.innerHTML = "";
+    Object.keys(continentMap)
+      .sort()
+      .forEach(continent => {
+        const btn = createButton(continent, continent, handleContinentSelect);
+        continentTabs.appendChild(btn);
+      });
 
     showGlobalOverview();
   } catch (err) {
@@ -175,37 +203,43 @@ async function loadForecast() {
   }
 }
 
-document.getElementById("continentSelect").addEventListener("change", e => {
-  const selectedContinent = e.target.value;
-  const countrySelect = document.getElementById("countrySelect");
+function handleContinentSelect(continent) {
+  selectedContinent = continent;
+  selectedCountry = null;
+
+  // Highlight active continent
+  document.querySelectorAll("#continentTabs button").forEach(b => {
+    b.style.background = b.value === continent ? "#0077cc" : "#e0e0e0";
+    b.style.color = b.value === continent ? "white" : "#333";
+  });
+
+  const countryTabs = document.getElementById("countryTabs");
   const regionSelect = document.getElementById("regionSelect");
-  countrySelect.innerHTML = '<option value="">-- Choose a Country --</option>';
+  const table = document.getElementById("forecastTable");
+  countryTabs.innerHTML = "";
   regionSelect.innerHTML = '<option value="">-- Choose a Region --</option>';
-  countrySelect.disabled = true;
-  regionSelect.disabled = true;
-  document.getElementById("forecastTable").style.display = "none";
+  table.style.display = "none";
 
-  if (!selectedContinent) {
-    showGlobalOverview();
-    return;
-  }
-
-  const countries = continentMap[selectedContinent] || [];
-  countries
-    .filter(c => forecastData[c])
-    .sort()
-    .forEach(country => {
-      const opt = document.createElement("option");
-      opt.value = country;
-      opt.textContent = country;
-      countrySelect.appendChild(opt);
+  const countries = continentMap[continent].filter(c => forecastData[c]);
+  if (countries.length > 0) {
+    countries.sort().forEach(country => {
+      const btn = createButton(country, country, handleCountrySelect);
+      countryTabs.appendChild(btn);
     });
+    countryTabs.style.display = "flex";
+  } else {
+    countryTabs.style.display = "none";
+  }
+}
 
-  if (countries.length > 0) countrySelect.disabled = false;
-});
+function handleCountrySelect(country) {
+  selectedCountry = country;
 
-document.getElementById("countrySelect").addEventListener("change", e => {
-  const selectedCountry = e.target.value;
+  document.querySelectorAll("#countryTabs button").forEach(b => {
+    b.style.background = b.value === country ? "#0077cc" : "#e0e0e0";
+    b.style.color = b.value === country ? "white" : "#333";
+  });
+
   const regionSelect = document.getElementById("regionSelect");
   const table = document.getElementById("forecastTable");
   const tbody = document.getElementById("forecastBody");
@@ -213,14 +247,14 @@ document.getElementById("countrySelect").addEventListener("change", e => {
   regionSelect.innerHTML = '<option value="">-- Choose a Region --</option>';
   tbody.innerHTML = "";
 
-  if (!selectedCountry) {
+  if (!country) {
     regionSelect.disabled = true;
     showGlobalOverview();
     return;
   }
 
   regionSelect.disabled = false;
-  Object.keys(forecastData[selectedCountry]).forEach(region => {
+  Object.keys(forecastData[country]).forEach(region => {
     const opt = document.createElement("option");
     opt.value = region;
     opt.textContent = region;
@@ -228,21 +262,20 @@ document.getElementById("countrySelect").addEventListener("change", e => {
   });
 
   table.style.display = "none";
-});
+}
 
 document.getElementById("regionSelect").addEventListener("change", e => {
-  const country = document.getElementById("countrySelect").value;
   const region = e.target.value;
   const table = document.getElementById("forecastTable");
   const tbody = document.getElementById("forecastBody");
   tbody.innerHTML = "";
 
-  if (!region) {
+  if (!region || !selectedCountry) {
     table.style.display = "none";
     return;
   }
 
-  const values = forecastData[country][region];
+  const values = forecastData[selectedCountry][region];
   const probability = (values.P_final * 100).toFixed(1);
   const row = document.createElement("tr");
   row.className = values.tier;
