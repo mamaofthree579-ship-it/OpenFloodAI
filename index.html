@@ -135,104 +135,138 @@
 
   <main>
     <div class="tab-container" id="continentTabs"></div>
+<label for="continentSelect">🌎 Select Continent:</label>
+<select id="continentSelect">
+  <option value="">-- Choose a Continent --</option>
+</select>
 
+<label for="countrySelect">🌍 Select Country:</label>
+<select id="countrySelect" disabled>
+  <option value="">-- Choose a Country --</option>
+</select>
+
+<label for="regionSelect">🏙️ Select Region:</label>
+<select id="regionSelect" disabled>
+  <option value="">-- Choose a Region --</option>
+</select>
     <table id="forecastTable" style="display:none;">
-      <thead>
-        <tr><th>Country / Region</th><th>Flood Probability</th><th>Risk Tier</th></tr>
-      </thead>
-      <tbody id="forecastBody"></tbody>
-    </table>
+  <thead>
+    <tr><th>Continent</th><th>Country</th><th>Region</th><th>Flood Probability</th><th>Risk Tier</th></tr>
+  </thead>
+  <tbody id="forecastBody"></tbody>
+</table>
   </main>
 
   <footer>🌍 OpenFloodAI — Open & Community Flood Forecasting</footer>
 
-  <script>
-    let forecastData = {};
-    let continentMap = {
-      "North America": ["United States", "Canada", "Mexico"],
-      "South America": ["Brazil", "Argentina", "Chile", "Colombia"],
-      "Europe": ["United Kingdom", "France", "Germany", "Italy", "Spain", "Norway", "Sweden", "Netherlands"],
-      "Africa": ["Nigeria", "South Africa", "Kenya", "Egypt", "Ghana", "Ethiopia"],
-      "Asia": ["China", "India", "Japan", "Indonesia", "Philippines", "Thailand"],
-      "Oceania": ["Australia", "New Zealand"]
-    };
+ <script>
+let forecastData = {};
 
-    async function loadForecast() {
-      try {
-        const res = await fetch("data/outputs/all_forecasts.json?cb=" + Date.now());
-        const data = await res.json();
-        forecastData = data.forecasts;
-        document.getElementById("updateTime").innerText = "Updated: " + new Date(data.timestamp).toLocaleString();
+async function loadForecast() {
+  try {
+    const res = await fetch("data/outputs/all_forecasts.json?cb=" + Date.now());
+    const data = await res.json();
+    forecastData = data.forecasts;
+    document.getElementById("updateTime").innerText =
+      "Updated: " + new Date(data.timestamp).toLocaleString();
 
-        // Normalize and include missing countries
-        const countriesInData = Object.keys(forecastData);
-        countriesInData.forEach(country => {
-          let found = false;
-          for (const [cont, list] of Object.entries(continentMap)) {
-            if (list.includes(country)) found = true;
-          }
-          if (!found) {
-            console.warn(`⚠️ '${country}' not mapped to any continent. Added to "Other".`);
-            continentMap["Other"] = continentMap["Other"] || [];
-            continentMap["Other"].push(country);
-          }
-        });
+    const continentSelect = document.getElementById("continentSelect");
+    continentSelect.innerHTML = '<option value="">-- Choose a Continent --</option>';
 
-        // Sort alphabetically
-        for (const cont in continentMap) {
-          continentMap[cont].sort();
-        }
+    Object.keys(forecastData).sort().forEach(continent => {
+      const opt = document.createElement("option");
+      opt.value = continent;
+      opt.textContent = continent;
+      continentSelect.appendChild(opt);
+    });
+  } catch (err) {
+    document.getElementById("updateTime").innerText = "⚠️ Could not load forecast data.";
+    console.error(err);
+  }
+}
 
-        // Create continent tabs
-        const tabContainer = document.getElementById("continentTabs");
-        tabContainer.innerHTML = "";
-        Object.keys(continentMap).forEach((cont, idx) => {
-          const tab = document.createElement("div");
-          tab.textContent = cont;
-          tab.className = "tab" + (idx === 0 ? " active" : "");
-          tab.onclick = () => showContinent(cont, tab);
-          tabContainer.appendChild(tab);
-        });
+document.getElementById("continentSelect").addEventListener("change", e => {
+  const selectedContinent = e.target.value;
+  const countrySelect = document.getElementById("countrySelect");
+  const regionSelect = document.getElementById("regionSelect");
 
-        showContinent(Object.keys(continentMap)[0]); // Default: first tab
-      } catch (err) {
-        document.getElementById("updateTime").innerText = "⚠️ Could not load forecast data.";
-        console.error(err);
-      }
-    }
+  countrySelect.innerHTML = '<option value="">-- Choose a Country --</option>';
+  regionSelect.innerHTML = '<option value="">-- Choose a Region --</option>';
+  regionSelect.disabled = true;
+  document.getElementById("forecastTable").style.display = "none";
 
-    function showContinent(continent, tabEl) {
-      document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
-      if (tabEl) tabEl.classList.add("active");
+  if (!selectedContinent) {
+    countrySelect.disabled = true;
+    return;
+  }
 
-      const tbody = document.getElementById("forecastBody");
-      tbody.innerHTML = "";
+  countrySelect.disabled = false;
+  Object.keys(forecastData[selectedContinent])
+    .sort()
+    .forEach(country => {
+      const opt = document.createElement("option");
+      opt.value = country;
+      opt.textContent = country;
+      countrySelect.appendChild(opt);
+    });
+});
 
-      (continentMap[continent] || []).forEach(country => {
-        const countryData = forecastData[country];
-        if (!countryData) return;
+document.getElementById("countrySelect").addEventListener("change", e => {
+  const continent = document.getElementById("continentSelect").value;
+  const country = e.target.value;
+  const regionSelect = document.getElementById("regionSelect");
 
-        const avgProb = Object.values(countryData).reduce((sum, v) => sum + v.P_final, 0) / Object.keys(countryData).length;
-        const tier = avgProb >= 0.66 ? "RED" : avgProb >= 0.33 ? "AMBER" : "GREEN";
-        const probability = (avgProb * 100).toFixed(1);
+  regionSelect.innerHTML = '<option value="">-- Choose a Region --</option>';
+  document.getElementById("forecastTable").style.display = "none";
 
-        const row = document.createElement("tr");
-        row.className = tier;
-        row.innerHTML = `
-          <td>${country}</td>
-          <td>${probability}% 
-            <div class="bar-container">
-              <div class="bar ${tier}" style="width:${probability}%"></div>
-            </div>
-          </td>
-          <td><strong>${tier}</strong></td>`;
-        tbody.appendChild(row);
-      });
+  if (!country) {
+    regionSelect.disabled = true;
+    return;
+  }
 
-      document.getElementById("forecastTable").style.display = "table";
-    }
+  regionSelect.disabled = false;
+  Object.keys(forecastData[continent][country])
+    .sort()
+    .forEach(region => {
+      const opt = document.createElement("option");
+      opt.value = region;
+      opt.textContent = region;
+      regionSelect.appendChild(opt);
+    });
+});
 
-    loadForecast();
-  </script>
+document.getElementById("regionSelect").addEventListener("change", e => {
+  const continent = document.getElementById("continentSelect").value;
+  const country = document.getElementById("countrySelect").value;
+  const region = e.target.value;
+  const table = document.getElementById("forecastTable");
+  const tbody = document.getElementById("forecastBody");
+  tbody.innerHTML = "";
+
+  if (!region) {
+    table.style.display = "none";
+    return;
+  }
+
+  const values = forecastData[continent][country][region];
+  const probability = (values.P_final * 100).toFixed(1);
+  const row = document.createElement("tr");
+  row.className = values.tier;
+  row.innerHTML = `
+    <td>${continent}</td>
+    <td>${country}</td>
+    <td>${region}</td>
+    <td>${probability}% 
+      <div class="bar-container">
+        <div class="bar ${values.tier}" style="width:${probability}%"></div>
+      </div>
+    </td>
+    <td><strong>${values.tier}</strong></td>`;
+  tbody.appendChild(row);
+  table.style.display = "table";
+});
+
+loadForecast();
+</script>
 </body>
 </html>
