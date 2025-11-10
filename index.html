@@ -99,246 +99,140 @@
       text-align: center;
       margin-top: 40px;
     }
+
+    /* Tabs */
+    .tab-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 10px;
+    }
+    .tab {
+      background: #e0ecff;
+      border: 1px solid #0077cc;
+      color: #0077cc;
+      padding: 8px 12px;
+      margin: 5px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .tab.active {
+      background: #0077cc;
+      color: white;
+      font-weight: bold;
+    }
   </style>
 </head>
 
 <body>
   <header>
     <div style="display:flex; align-items:center;">
-      <img src="dashboard/logo.svg" alt="Logo">
+      <img src="logo.svg" alt="Logo">
       <h1>🌊 OpenFloodAI — Global Dashboard</h1>
     </div>
     <div id="updateTime">Loading...</div>
   </header>
 
-<main>
-  <h2>🌎 Global Flood Forecasts</h2>
+  <main>
+    <div class="tab-container" id="continentTabs"></div>
 
-  <!-- Continent Tabs -->
-  <div id="continentTabs" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:15px;">
-    <!-- Buttons dynamically added here -->
-  </div>
+    <table id="forecastTable" style="display:none;">
+      <thead>
+        <tr><th>Country / Region</th><th>Flood Probability</th><th>Risk Tier</th></tr>
+      </thead>
+      <tbody id="forecastBody"></tbody>
+    </table>
+  </main>
 
-  <!-- Country Tabs -->
-  <div id="countryTabs" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:15px; display:none;">
-    <!-- Buttons dynamically added here -->
-  </div>
+  <footer>🌍 OpenFloodAI — Open & Community Flood Forecasting</footer>
 
-  <!-- Region Dropdown -->
-  <label for="regionSelect">🏙️ Select Region:</label>
-  <select id="regionSelect" disabled>
-    <option value="">-- Choose a Region --</option>
-  </select>
-
-  <!-- Forecast Table -->
-  <table id="forecastTable" style="display:none;">
-    <thead>
-      <tr><th>Region</th><th>Flood Probability</th><th>Risk Tier</th></tr>
-    </thead>
-    <tbody id="forecastBody"></tbody>
-  </table>
-</main>
-
-<footer>🌊 OpenFloodAI — Open & Community Flood Forecasting</footer>
-
-<script>
-let forecastData = {};
-let continentMap = {};
-let selectedContinent = null;
-let selectedCountry = null;
-
-// Create styled buttons
-function createButton(label, value, onClick, active = false) {
-  const btn = document.createElement("button");
-  btn.textContent = label;
-  btn.value = value;
-  btn.onclick = () => onClick(value);
-  btn.style = `
-    background:${active ? "#0077cc" : "#e0e0e0"};
-    color:${active ? "white" : "#333"};
-    border:none;
-    border-radius:6px;
-    padding:8px 14px;
-    cursor:pointer;
-    font-size:0.95em;
-    transition:0.2s all;
-  `;
-  btn.onmouseover = () => (btn.style.background = active ? "#005fa3" : "#d0d0d0");
-  btn.onmouseout = () => (btn.style.background = active ? "#0077cc" : "#e0e0e0");
-  return btn;
-}
-
-async function loadForecast() {
-  try {
-    const res = await fetch("data/outputs/all_forecasts.json?cb=" + Date.now());
-    const data = await res.json();
-    forecastData = data.forecasts;
-    document.getElementById("updateTime").innerText =
-      "Updated: " + new Date(data.timestamp).toLocaleString();
-
-    // Continent → Country map
-    continentMap = {
+  <script>
+    let forecastData = {};
+    let continentMap = {
       "North America": ["United States", "Canada", "Mexico"],
-      "South America": ["Brazil", "Argentina", "Colombia", "Chile"],
-      "Europe": ["United Kingdom", "France", "Germany", "Italy", "Spain"],
-      "Africa": ["Nigeria", "South Africa", "Kenya", "Egypt"],
-      "Asia": ["China", "India", "Japan", "Indonesia"],
+      "South America": ["Brazil", "Argentina", "Chile", "Colombia"],
+      "Europe": ["United Kingdom", "France", "Germany", "Italy", "Spain", "Norway", "Sweden", "Netherlands"],
+      "Africa": ["Nigeria", "South Africa", "Kenya", "Egypt", "Ghana", "Ethiopia"],
+      "Asia": ["China", "India", "Japan", "Indonesia", "Philippines", "Thailand"],
       "Oceania": ["Australia", "New Zealand"]
     };
 
-    // After you load forecastData:
-const countriesInData = Object.keys(forecastData);
-countriesInData.forEach(country => {
-  let found = false;
-  for (const [cont, list] of Object.entries(continentMap)) {
-    if (list.includes(country)) {
-      found = true;
-      break;
+    async function loadForecast() {
+      try {
+        const res = await fetch("data/outputs/all_forecasts.json?cb=" + Date.now());
+        const data = await res.json();
+        forecastData = data.forecasts;
+        document.getElementById("updateTime").innerText = "Updated: " + new Date(data.timestamp).toLocaleString();
+
+        // Normalize and include missing countries
+        const countriesInData = Object.keys(forecastData);
+        countriesInData.forEach(country => {
+          let found = false;
+          for (const [cont, list] of Object.entries(continentMap)) {
+            if (list.includes(country)) found = true;
+          }
+          if (!found) {
+            console.warn(`⚠️ '${country}' not mapped to any continent. Added to "Other".`);
+            continentMap["Other"] = continentMap["Other"] || [];
+            continentMap["Other"].push(country);
+          }
+        });
+
+        // Sort alphabetically
+        for (const cont in continentMap) {
+          continentMap[cont].sort();
+        }
+
+        // Create continent tabs
+        const tabContainer = document.getElementById("continentTabs");
+        tabContainer.innerHTML = "";
+        Object.keys(continentMap).forEach((cont, idx) => {
+          const tab = document.createElement("div");
+          tab.textContent = cont;
+          tab.className = "tab" + (idx === 0 ? " active" : "");
+          tab.onclick = () => showContinent(cont, tab);
+          tabContainer.appendChild(tab);
+        });
+
+        showContinent(Object.keys(continentMap)[0]); // Default: first tab
+      } catch (err) {
+        document.getElementById("updateTime").innerText = "⚠️ Could not load forecast data.";
+        console.error(err);
+      }
     }
-  }
-  if (!found) {
-    console.warn(
-      `⚠️ Country '${country}' in data but not mapped to any continent. It will appear under "Other".`
-    );
-    continentMap["Other"] = continentMap["Other"] || [];
-    continentMap["Other"].push(country);
-  }
-});
-    
-    // Populate continent buttons
-    const continentTabs = document.getElementById("continentTabs");
-    continentTabs.innerHTML = "";
-    Object.keys(continentMap)
-      .sort()
-      .forEach(continent => {
-        const btn = createButton(continent, continent, handleContinentSelect);
-        continentTabs.appendChild(btn);
+
+    function showContinent(continent, tabEl) {
+      document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
+      if (tabEl) tabEl.classList.add("active");
+
+      const tbody = document.getElementById("forecastBody");
+      tbody.innerHTML = "";
+
+      (continentMap[continent] || []).forEach(country => {
+        const countryData = forecastData[country];
+        if (!countryData) return;
+
+        const avgProb = Object.values(countryData).reduce((sum, v) => sum + v.P_final, 0) / Object.keys(countryData).length;
+        const tier = avgProb >= 0.66 ? "RED" : avgProb >= 0.33 ? "AMBER" : "GREEN";
+        const probability = (avgProb * 100).toFixed(1);
+
+        const row = document.createElement("tr");
+        row.className = tier;
+        row.innerHTML = `
+          <td>${country}</td>
+          <td>${probability}% 
+            <div class="bar-container">
+              <div class="bar ${tier}" style="width:${probability}%"></div>
+            </div>
+          </td>
+          <td><strong>${tier}</strong></td>`;
+        tbody.appendChild(row);
       });
 
-    showGlobalOverview();
-  } catch (err) {
-    document.getElementById("updateTime").innerText = "⚠️ Could not load forecast data.";
-    console.error(err);
-  }
-}
+      document.getElementById("forecastTable").style.display = "table";
+    }
 
-function handleContinentSelect(continent) {
-  selectedContinent = continent;
-  selectedCountry = null;
-
-  // Highlight active continent
-  document.querySelectorAll("#continentTabs button").forEach(b => {
-    b.style.background = b.value === continent ? "#0077cc" : "#e0e0e0";
-    b.style.color = b.value === continent ? "white" : "#333";
-  });
-
-  const countryTabs = document.getElementById("countryTabs");
-  const regionSelect = document.getElementById("regionSelect");
-  const table = document.getElementById("forecastTable");
-  countryTabs.innerHTML = "";
-  regionSelect.innerHTML = '<option value="">-- Choose a Region --</option>';
-  table.style.display = "none";
-
-  const countries = continentMap[continent].filter(c => forecastData[c]);
-  if (countries.length > 0) {
-    countries.sort().forEach(country => {
-      const btn = createButton(country, country, handleCountrySelect);
-      countryTabs.appendChild(btn);
-    });
-    countryTabs.style.display = "flex";
-  } else {
-    countryTabs.style.display = "none";
-  }
-}
-
-function handleCountrySelect(country) {
-  selectedCountry = country;
-
-  document.querySelectorAll("#countryTabs button").forEach(b => {
-    b.style.background = b.value === country ? "#0077cc" : "#e0e0e0";
-    b.style.color = b.value === country ? "white" : "#333";
-  });
-
-  const regionSelect = document.getElementById("regionSelect");
-  const table = document.getElementById("forecastTable");
-  const tbody = document.getElementById("forecastBody");
-
-  regionSelect.innerHTML = '<option value="">-- Choose a Region --</option>';
-  tbody.innerHTML = "";
-
-  if (!country) {
-    regionSelect.disabled = true;
-    showGlobalOverview();
-    return;
-  }
-
-  regionSelect.disabled = false;
-  Object.keys(forecastData[country]).forEach(region => {
-    const opt = document.createElement("option");
-    opt.value = region;
-    opt.textContent = region;
-    regionSelect.appendChild(opt);
-  });
-
-  table.style.display = "none";
-}
-
-document.getElementById("regionSelect").addEventListener("change", e => {
-  const region = e.target.value;
-  const table = document.getElementById("forecastTable");
-  const tbody = document.getElementById("forecastBody");
-  tbody.innerHTML = "";
-
-  if (!region || !selectedCountry) {
-    table.style.display = "none";
-    return;
-  }
-
-  const values = forecastData[selectedCountry][region];
-  const probability = (values.P_final * 100).toFixed(1);
-  const row = document.createElement("tr");
-  row.className = values.tier;
-  row.innerHTML = `
-    <td>${region}</td>
-    <td>${probability}% 
-      <div class="bar-container">
-        <div class="bar ${values.tier}" style="width:${probability}%"></div>
-      </div>
-    </td>
-    <td><strong>${values.tier}</strong></td>`;
-  tbody.appendChild(row);
-  table.style.display = "table";
-});
-
-function showGlobalOverview() {
-  const tbody = document.getElementById("forecastBody");
-  const table = document.getElementById("forecastTable");
-  tbody.innerHTML = "";
-
-  for (const [country, regions] of Object.entries(forecastData)) {
-    const probs = Object.values(regions).map(r => r.P_final);
-    const avg = probs.reduce((a, b) => a + b, 0) / probs.length;
-    const tier = avg > 0.7 ? "RED" : avg > 0.4 ? "AMBER" : "GREEN";
-    const percent = (avg * 100).toFixed(1);
-
-    const row = document.createElement("tr");
-    row.className = tier;
-    row.innerHTML = `
-      <td>${country}</td>
-      <td>${percent}% 
-        <div class="bar-container">
-          <div class="bar ${tier}" style="width:${percent}%"></div>
-        </div>
-      </td>
-      <td><strong>${tier}</strong></td>
-    `;
-    tbody.appendChild(row);
-  }
-
-  table.style.display = "table";
-}
-
-loadForecast();
-</script>
+    loadForecast();
+  </script>
 </body>
 </html>
