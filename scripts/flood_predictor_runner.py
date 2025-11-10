@@ -55,7 +55,6 @@ REGION_STRUCTURE = {
     "West Virginia": ["Kanawha County", "Berkeley County", "Monongalia County"],
     "Wisconsin": ["Milwaukee County", "Dane County", "Waukesha County"],
     "Wyoming": ["Laramie County", "Natrona County", "Sweetwater County"]
-}
         },
         "Canada": {
             "Ontario": ["Toronto", "Ottawa"],
