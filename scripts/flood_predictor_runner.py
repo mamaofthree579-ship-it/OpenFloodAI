@@ -78,15 +78,18 @@ def generate_forecast():
 # 💾 Write forecast output
 # --------------------------------------------------------
 def save_forecast_to_file(forecast_data):
-    output_dir = Path("data/outputs")
-    output_dir.mkdir(parents=True, exist_ok=True)
-    output_path = output_dir / "all_forecasts.json"
+    output_path = "data/outputs/all_forecasts.json"
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
-    with open(output_path, "w") as f:
-        json.dump(forecast_data, f, indent=2)
+with open(output_path, "w") as f:
+    json.dump(data, f, indent=2)
 
-    print(f"✅ Forecast written to {output_path}")
+    print(f"✅ Forecast data written to {output_path}")
 
+    print("Writing forecasts for", len(REGION_STRUCTURE), "countries...")
+for country, regions in REGION_STRUCTURE.items():
+    print("  ", country, ":", len(regions), "regions")
+    
 # --------------------------------------------------------
 # 🚀 Main runner
 # --------------------------------------------------------
