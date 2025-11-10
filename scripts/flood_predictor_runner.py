@@ -7,12 +7,41 @@ from pathlib import Path
 # 🌍 Define the regions by country for multi-region forecast
 # --------------------------------------------------------
 REGION_STRUCTURE = {
-    "USA": ["California", "Texas", "Florida", "New York", "Louisiana"],
-    "UK": ["England", "Scotland", "Wales"],
-    "India": ["Maharashtra", "Kerala", "Assam", "West Bengal"],
-    "Philippines": ["Luzon", "Visayas", "Mindanao"],
-    "Nigeria": ["Lagos", "Rivers", "Anambra", "Kano"],
-    "Australia": ["New South Wales", "Queensland", "Victoria"],
+    # 🌎 North America
+    "USA": [
+        "California", "Texas", "Florida", "New York",
+        "Louisiana", "Illinois", "Pennsylvania", "Washington"
+    ],
+    "Canada": [
+        "British Columbia", "Ontario", "Quebec",
+        "Alberta", "Nova Scotia", "Manitoba"
+    ],
+    "Mexico": [
+        "Jalisco", "Chiapas", "Veracruz", "Nuevo León",
+        "Yucatán", "Puebla"
+    ],
+
+    # 🌍 Europe
+    "UK": ["England", "Scotland", "Wales", "Northern Ireland"],
+    "France": ["Île-de-France", "Occitanie", "Provence-Alpes-Côte d’Azur", "Brittany", "Normandy"],
+    "Germany": ["Bavaria", "North Rhine-Westphalia", "Berlin", "Hamburg", "Saxony"],
+
+    # 🌏 Asia
+    "India": ["Maharashtra", "Kerala", "Assam", "Tamil Nadu", "West Bengal", "Gujarat"],
+    "China": ["Guangdong", "Sichuan", "Beijing", "Shanghai", "Yunnan", "Hunan"],
+    "Philippines": ["Luzon", "Visayas", "Mindanao", "Metro Manila"],
+    "Japan": ["Tokyo", "Osaka", "Kyoto", "Hokkaido", "Okinawa"],
+
+    # 🌍 Africa
+    "Nigeria": ["Lagos", "Rivers", "Anambra", "Kano", "Ogun"],
+    "South Africa": ["Gauteng", "KwaZulu-Natal", "Western Cape", "Eastern Cape", "Limpopo"],
+
+    # 🌏 Oceania
+    "Australia": ["New South Wales", "Queensland", "Victoria", "Western Australia", "Tasmania"],
+
+    # 🌎 South America
+    "Brazil": ["São Paulo", "Rio de Janeiro", "Bahia", "Amazonas", "Paraná"],
+    "Argentina": ["Buenos Aires", "Córdoba", "Santa Fe", "Mendoza", "Salta"]
 }
 
 # --------------------------------------------------------
