@@ -52,15 +52,25 @@ REGION_STRUCTURE = {
     "Vermont": ["Chittenden County", "Rutland County", "Washington County"],
     "Virginia": ["Fairfax County", "Prince William County", "Loudoun County"],
     "Washington": ["King County", "Pierce County", "Snohomish County"],
-    "West Virginia": ["Kanawha County", "Berkeley County", "Monongalia County"],
+    "West Virginia": ["Kanawha County", "Berkeley County", "Monongalia County", "Jefferson County"],
     "Wisconsin": ["Milwaukee County", "Dane County", "Waukesha County"],
     "Wyoming": ["Laramie County", "Natrona County", "Sweetwater County"]
         },
         "Canada": {
-            "Ontario": ["Toronto", "Ottawa"],
-            "British Columbia": ["Vancouver", "Victoria"],
-            "Quebec": ["Montreal", "Quebec City"]
-        },
+    "Alberta": ["Calgary", "Edmonton", "Red Deer"],
+    "British Columbia": ["Vancouver", "Victoria", "Kelowna", "Prince George"],
+    "Manitoba": ["Winnipeg", "Brandon", "Steinbach"],
+    "New Brunswick": ["Fredericton", "Saint John", "Moncton"],
+    "Newfoundland and Labrador": ["St. John's", "Corner Brook", "Gander"],
+    "Nova Scotia": ["Halifax", "Sydney", "Truro"],
+    "Ontario": ["Toronto", "Ottawa", "Hamilton", "London"],
+    "Prince Edward Island": ["Charlottetown", "Summerside"],
+    "Quebec": ["Montreal", "Quebec City", "Sherbrooke", "Gatineau"],
+    "Saskatchewan": ["Saskatoon", "Regina", "Prince Albert"],
+    "Northwest Territories": ["Yellowknife", "Inuvik"],
+    "Nunavut": ["Iqaluit", "Rankin Inlet"],
+    "Yukon": ["Whitehorse", "Dawson City"]
+    },
         "Mexico": {
             "Jalisco": ["Guadalajara", "Puerto Vallarta"],
             "Nuevo León": ["Monterrey", "San Nicolás de los Garza"]
