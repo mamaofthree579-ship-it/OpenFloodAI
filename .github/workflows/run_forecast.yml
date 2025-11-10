@@ -1,60 +1,39 @@
-name: 🌊 Run Daily Flood Forecast
+name: 🌀 Run Daily OpenFloodAI Forecast
 
 on:
   schedule:
-    - cron: "0 6 * * *"   # Runs every day at 6 AM UTC
-  workflow_dispatch:      # Allows manual trigger
+    - cron: "0 0 * * *"  # Runs daily at midnight UTC
+  workflow_dispatch:
 
 jobs:
-  run-forecast:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: 🧭 Checkout Repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: 🐍 Set Up Python
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.10"
+          python-version: '3.10'
 
-      - name: 📦 Install Dependencies
+      - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      - name: 🌊 Run Forecast Script
+      - name: Run Forecast Generator
         run: |
           echo "Running OpenFloodAI forecast generator..."
           python scripts/flood_predictor_runner.py
 
-      - name: 🗂 Commit and Push Results
+      - name: Commit and Push Updates
         run: |
-          echo "Preparing to commit forecast output..."
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          git add data/outputs/all_forecasts.json || true
-          git status
-
-          if git diff --cached --quiet; then
-            echo "✅ No forecast changes detected (timestamp may have updated)."
-            echo "Forcing a minor commit to refresh GitHub Pages."
-            date > data/outputs/last_run.txt
-            git add data/outputs/last_run.txt
-          fi
-
-          git commit -m "🤖 Automated daily forecast update — $(date -u +'%Y-%m-%d %H:%M UTC')" || echo "No changes to commit."
-          git pull --rebase origin main || true
-          git push origin main || echo "No push necessary — repo already up to date."
-
-         - name: Commit and push forecast results
-      run: |
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
-        git pull --rebase
-        git add data/outputs/all_forecasts.json
-        git commit -m "Automated forecast update" || echo "No changes to commit"
-        git push
+          git pull --rebase || true
+          git add data/outputs/all_forecasts.json
+          git commit -m "🤖 Automated daily forecast update $(date -u +'%Y-%m-%d %H:%M:%S UTC')" || echo "No changes to commit"
+          git push
