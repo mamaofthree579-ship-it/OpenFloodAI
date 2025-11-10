@@ -1,293 +1,165 @@
 {
   "forecasts": {
-    "United States": {
-      "California": {
-        "P_final": 0.407,
-        "tier": "AMBER"
+    "North America": {
+      "United States": {
+        "California": {
+          "Los Angeles County": {
+            "P_final": 0.7,
+            "tier": "RED"
+          },
+          "San Diego County": {
+            "P_final": 0.26,
+            "tier": "GREEN"
+          },
+          "Sacramento County": {
+            "P_final": 0.42,
+            "tier": "AMBER"
+          }
+        },
+        "Texas": {
+          "Harris County": {
+            "P_final": 0.53,
+            "tier": "AMBER"
+          },
+          "Travis County": {
+            "P_final": 0.44,
+            "tier": "AMBER"
+          },
+          "Dallas County": {
+            "P_final": 0.88,
+            "tier": "RED"
+          }
+        },
+        "Florida": {
+          "Miami-Dade County": {
+            "P_final": 0.1,
+            "tier": "GREEN"
+          },
+          "Orange County": {
+            "P_final": 0.77,
+            "tier": "RED"
+          },
+          "Hillsborough County": {
+            "P_final": 0.83,
+            "tier": "RED"
+          }
+        }
       },
-      "Florida": {
-        "P_final": 0.786,
-        "tier": "RED"
-      },
-      "Texas": {
-        "P_final": 0.556,
-        "tier": "AMBER"
-      },
-      "New York": {
-        "P_final": 0.43,
-        "tier": "AMBER"
+      "Canada": {
+        "Ontario": {
+          "Toronto": {
+            "P_final": 0.7,
+            "tier": "RED"
+          },
+          "Ottawa": {
+            "P_final": 0.25,
+            "tier": "GREEN"
+          }
+        },
+        "British Columbia": {
+          "Vancouver": {
+            "P_final": 0.87,
+            "tier": "RED"
+          },
+          "Victoria": {
+            "P_final": 0.6,
+            "tier": "AMBER"
+          }
+        }
       }
     },
-    "Canada": {
-      "Ontario": {
-        "P_final": 0.539,
-        "tier": "AMBER"
+    "Europe": {
+      "United Kingdom": {
+        "England": {
+          "London": {
+            "P_final": 0.18,
+            "tier": "GREEN"
+          },
+          "Manchester": {
+            "P_final": 0.9,
+            "tier": "RED"
+          }
+        },
+        "Scotland": {
+          "Edinburgh": {
+            "P_final": 0.47,
+            "tier": "AMBER"
+          },
+          "Glasgow": {
+            "P_final": 0.24,
+            "tier": "GREEN"
+          }
+        }
       },
-      "Quebec": {
-        "P_final": 0.298,
-        "tier": "GREEN"
-      },
-      "British Columbia": {
-        "P_final": 0.634,
-        "tier": "AMBER"
+      "France": {
+        "\u00cele-de-France": {
+          "Paris": {
+            "P_final": 0.1,
+            "tier": "GREEN"
+          },
+          "Versailles": {
+            "P_final": 0.14,
+            "tier": "GREEN"
+          }
+        },
+        "Provence-Alpes-C\u00f4te d'Azur": {
+          "Marseille": {
+            "P_final": 0.1,
+            "tier": "GREEN"
+          },
+          "Nice": {
+            "P_final": 0.87,
+            "tier": "RED"
+          }
+        }
       }
     },
-    "Mexico": {
-      "Yucat\u00e1n": {
-        "P_final": 0.407,
-        "tier": "AMBER"
+    "Asia": {
+      "Japan": {
+        "Tokyo": {
+          "Chiyoda": {
+            "P_final": 0.12,
+            "tier": "GREEN"
+          },
+          "Shinjuku": {
+            "P_final": 0.8,
+            "tier": "RED"
+          }
+        },
+        "Osaka": {
+          "Kita": {
+            "P_final": 0.65,
+            "tier": "AMBER"
+          },
+          "Naniwa": {
+            "P_final": 0.21,
+            "tier": "GREEN"
+          }
+        }
       },
-      "Chiapas": {
-        "P_final": 0.471,
-        "tier": "AMBER"
-      },
-      "Baja California": {
-        "P_final": 0.652,
-        "tier": "AMBER"
-      }
-    },
-    "Brazil": {
-      "S\u00e3o Paulo": {
-        "P_final": 0.425,
-        "tier": "AMBER"
-      },
-      "Amazonas": {
-        "P_final": 0.753,
-        "tier": "RED"
-      },
-      "Bahia": {
-        "P_final": 0.392,
-        "tier": "AMBER"
-      }
-    },
-    "Argentina": {
-      "Buenos Aires": {
-        "P_final": 0.236,
-        "tier": "GREEN"
-      },
-      "Cordoba": {
-        "P_final": 0.448,
-        "tier": "AMBER"
-      }
-    },
-    "Chile": {
-      "Santiago": {
-        "P_final": 0.648,
-        "tier": "AMBER"
-      },
-      "Valpara\u00edso": {
-        "P_final": 0.427,
-        "tier": "AMBER"
-      }
-    },
-    "United Kingdom": {
-      "England": {
-        "P_final": 0.691,
-        "tier": "RED"
-      },
-      "Scotland": {
-        "P_final": 0.272,
-        "tier": "GREEN"
-      },
-      "Wales": {
-        "P_final": 0.536,
-        "tier": "AMBER"
-      }
-    },
-    "France": {
-      "\u00cele-de-France": {
-        "P_final": 0.656,
-        "tier": "AMBER"
-      },
-      "Normandy": {
-        "P_final": 0.765,
-        "tier": "RED"
-      },
-      "Provence": {
-        "P_final": 0.373,
-        "tier": "AMBER"
-      }
-    },
-    "Germany": {
-      "Bavaria": {
-        "P_final": 0.421,
-        "tier": "AMBER"
-      },
-      "Saxony": {
-        "P_final": 0.625,
-        "tier": "AMBER"
-      },
-      "Berlin": {
-        "P_final": 0.396,
-        "tier": "AMBER"
-      }
-    },
-    "Italy": {
-      "Lombardy": {
-        "P_final": 0.269,
-        "tier": "GREEN"
-      },
-      "Tuscany": {
-        "P_final": 0.688,
-        "tier": "RED"
-      },
-      "Sicily": {
-        "P_final": 0.524,
-        "tier": "AMBER"
-      }
-    },
-    "Spain": {
-      "Madrid": {
-        "P_final": 0.538,
-        "tier": "AMBER"
-      },
-      "Catalonia": {
-        "P_final": 0.41,
-        "tier": "AMBER"
-      },
-      "Andalusia": {
-        "P_final": 0.417,
-        "tier": "AMBER"
-      }
-    },
-    "Nigeria": {
-      "Lagos": {
-        "P_final": 0.356,
-        "tier": "AMBER"
-      },
-      "Abuja": {
-        "P_final": 0.557,
-        "tier": "AMBER"
-      },
-      "Kano": {
-        "P_final": 0.629,
-        "tier": "AMBER"
-      }
-    },
-    "South Africa": {
-      "Gauteng": {
-        "P_final": 0.62,
-        "tier": "AMBER"
-      },
-      "Western Cape": {
-        "P_final": 0.397,
-        "tier": "AMBER"
-      },
-      "KwaZulu-Natal": {
-        "P_final": 0.556,
-        "tier": "AMBER"
-      }
-    },
-    "Kenya": {
-      "Nairobi": {
-        "P_final": 0.324,
-        "tier": "GREEN"
-      },
-      "Mombasa": {
-        "P_final": 0.57,
-        "tier": "AMBER"
-      }
-    },
-    "Egypt": {
-      "Cairo": {
-        "P_final": 0.504,
-        "tier": "AMBER"
-      },
-      "Alexandria": {
-        "P_final": 0.582,
-        "tier": "AMBER"
-      }
-    },
-    "India": {
-      "Maharashtra": {
-        "P_final": 0.485,
-        "tier": "AMBER"
-      },
-      "Tamil Nadu": {
-        "P_final": 0.578,
-        "tier": "AMBER"
-      },
-      "Kerala": {
-        "P_final": 0.64,
-        "tier": "AMBER"
-      }
-    },
-    "China": {
-      "Beijing": {
-        "P_final": 0.566,
-        "tier": "AMBER"
-      },
-      "Guangdong": {
-        "P_final": 0.313,
-        "tier": "GREEN"
-      },
-      "Sichuan": {
-        "P_final": 0.564,
-        "tier": "AMBER"
-      }
-    },
-    "Japan": {
-      "Tokyo": {
-        "P_final": 0.301,
-        "tier": "GREEN"
-      },
-      "Osaka": {
-        "P_final": 0.563,
-        "tier": "AMBER"
-      }
-    },
-    "Indonesia": {
-      "Jakarta": {
-        "P_final": 0.757,
-        "tier": "RED"
-      },
-      "Bali": {
-        "P_final": 0.466,
-        "tier": "AMBER"
-      }
-    },
-    "Philippines": {
-      "Luzon": {
-        "P_final": 0.611,
-        "tier": "AMBER"
-      },
-      "Visayas": {
-        "P_final": 0.315,
-        "tier": "GREEN"
-      },
-      "Mindanao": {
-        "P_final": 0.786,
-        "tier": "RED"
-      }
-    },
-    "Australia": {
-      "New South Wales": {
-        "P_final": 0.213,
-        "tier": "GREEN"
-      },
-      "Queensland": {
-        "P_final": 0.527,
-        "tier": "AMBER"
-      },
-      "Victoria": {
-        "P_final": 0.686,
-        "tier": "RED"
-      }
-    },
-    "New Zealand": {
-      "Auckland": {
-        "P_final": 0.432,
-        "tier": "AMBER"
-      },
-      "Wellington": {
-        "P_final": 0.527,
-        "tier": "AMBER"
-      },
-      "Canterbury": {
-        "P_final": 0.442,
-        "tier": "AMBER"
+      "India": {
+        "Maharashtra": {
+          "Mumbai": {
+            "P_final": 0.06,
+            "tier": "GREEN"
+          },
+          "Pune": {
+            "P_final": 0.41,
+            "tier": "AMBER"
+          }
+        },
+        "Tamil Nadu": {
+          "Chennai": {
+            "P_final": 0.38,
+            "tier": "AMBER"
+          },
+          "Madurai": {
+            "P_final": 0.6,
+            "tier": "AMBER"
+          }
+        }
       }
     }
   },
-  "timestamp": "2025-11-10T15:15:36.841229Z"
+  "timestamp": "2025-11-10T18:27:24.919964Z"
 }
