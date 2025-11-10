@@ -2,59 +2,735 @@
   "forecasts": {
     "North America": {
       "United States": {
-        "California": {
-          "Los Angeles County": {
-            "P_final": 0.78,
-            "tier": "RED"
-          },
-          "San Diego County": {
-            "P_final": 0.18,
+        "Alabama": {
+          "Jefferson County": {
+            "P_final": 0.22,
             "tier": "GREEN"
           },
-          "Sacramento County": {
-            "P_final": 0.21,
+          "Mobile County": {
+            "P_final": 0.15,
+            "tier": "GREEN"
+          },
+          "Madison County": {
+            "P_final": 0.26,
             "tier": "GREEN"
           }
         },
-        "Texas": {
-          "Harris County": {
-            "P_final": 0.12,
+        "Alaska": {
+          "Anchorage Municipality": {
+            "P_final": 0.61,
+            "tier": "AMBER"
+          },
+          "Fairbanks North Star Borough": {
+            "P_final": 0.73,
+            "tier": "AMBER"
+          },
+          "Matanuska-Susitna Borough": {
+            "P_final": 0.09,
+            "tier": "GREEN"
+          }
+        },
+        "Arizona": {
+          "Maricopa County": {
+            "P_final": 0.55,
+            "tier": "AMBER"
+          },
+          "Pima County": {
+            "P_final": 0.22,
             "tier": "GREEN"
           },
-          "Travis County": {
-            "P_final": 0.77,
+          "Pinal County": {
+            "P_final": 0.41,
+            "tier": "GREEN"
+          }
+        },
+        "Arkansas": {
+          "Pulaski County": {
+            "P_final": 0.15,
+            "tier": "GREEN"
+          },
+          "Benton County": {
+            "P_final": 0.83,
             "tier": "RED"
           },
-          "Dallas County": {
-            "P_final": 0.3,
+          "Washington County": {
+            "P_final": 0.14,
+            "tier": "GREEN"
+          }
+        },
+        "California": {
+          "Los Angeles County": {
+            "P_final": 0.35,
+            "tier": "GREEN"
+          },
+          "San Diego County": {
+            "P_final": 0.83,
+            "tier": "RED"
+          },
+          "Orange County": {
+            "P_final": 0.64,
+            "tier": "AMBER"
+          },
+          "Sacramento County": {
+            "P_final": 0.37,
+            "tier": "GREEN"
+          },
+          "San Francisco County": {
+            "P_final": 0.68,
+            "tier": "AMBER"
+          }
+        },
+        "Colorado": {
+          "Denver County": {
+            "P_final": 0.37,
+            "tier": "GREEN"
+          },
+          "El Paso County": {
+            "P_final": 0.08,
+            "tier": "GREEN"
+          },
+          "Arapahoe County": {
+            "P_final": 0.87,
+            "tier": "RED"
+          }
+        },
+        "Connecticut": {
+          "Fairfield County": {
+            "P_final": 0.32,
+            "tier": "GREEN"
+          },
+          "Hartford County": {
+            "P_final": 0.39,
+            "tier": "GREEN"
+          },
+          "New Haven County": {
+            "P_final": 0.33,
+            "tier": "GREEN"
+          }
+        },
+        "Delaware": {
+          "New Castle County": {
+            "P_final": 0.69,
+            "tier": "AMBER"
+          },
+          "Kent County": {
+            "P_final": 0.42,
+            "tier": "GREEN"
+          },
+          "Sussex County": {
+            "P_final": 0.14,
             "tier": "GREEN"
           }
         },
         "Florida": {
           "Miami-Dade County": {
-            "P_final": 0.1,
-            "tier": "GREEN"
+            "P_final": 0.77,
+            "tier": "RED"
           },
-          "Orange County": {
-            "P_final": 0.21,
+          "Broward County": {
+            "P_final": 0.38,
             "tier": "GREEN"
           },
           "Hillsborough County": {
-            "P_final": 0.06,
+            "P_final": 0.79,
+            "tier": "RED"
+          },
+          "Orange County": {
+            "P_final": 0.68,
+            "tier": "AMBER"
+          }
+        },
+        "Georgia": {
+          "Fulton County": {
+            "P_final": 0.13,
             "tier": "GREEN"
+          },
+          "Cobb County": {
+            "P_final": 0.79,
+            "tier": "RED"
+          },
+          "DeKalb County": {
+            "P_final": 0.41,
+            "tier": "GREEN"
+          },
+          "Gwinnett County": {
+            "P_final": 0.86,
+            "tier": "RED"
+          }
+        },
+        "Hawaii": {
+          "Honolulu County": {
+            "P_final": 0.92,
+            "tier": "RED"
+          },
+          "Maui County": {
+            "P_final": 0.74,
+            "tier": "AMBER"
+          },
+          "Hawaii County": {
+            "P_final": 0.31,
+            "tier": "GREEN"
+          }
+        },
+        "Idaho": {
+          "Ada County": {
+            "P_final": 0.53,
+            "tier": "AMBER"
+          },
+          "Canyon County": {
+            "P_final": 0.55,
+            "tier": "AMBER"
+          },
+          "Kootenai County": {
+            "P_final": 0.1,
+            "tier": "GREEN"
+          }
+        },
+        "Illinois": {
+          "Cook County": {
+            "P_final": 0.11,
+            "tier": "GREEN"
+          },
+          "DuPage County": {
+            "P_final": 0.83,
+            "tier": "RED"
+          },
+          "Lake County": {
+            "P_final": 0.49,
+            "tier": "AMBER"
+          }
+        },
+        "Indiana": {
+          "Marion County": {
+            "P_final": 0.71,
+            "tier": "AMBER"
+          },
+          "Lake County": {
+            "P_final": 0.3,
+            "tier": "GREEN"
+          },
+          "Allen County": {
+            "P_final": 0.76,
+            "tier": "RED"
+          }
+        },
+        "Iowa": {
+          "Polk County": {
+            "P_final": 0.69,
+            "tier": "AMBER"
+          },
+          "Linn County": {
+            "P_final": 0.39,
+            "tier": "GREEN"
+          },
+          "Scott County": {
+            "P_final": 0.11,
+            "tier": "GREEN"
+          }
+        },
+        "Kansas": {
+          "Johnson County": {
+            "P_final": 0.36,
+            "tier": "GREEN"
+          },
+          "Sedgwick County": {
+            "P_final": 0.93,
+            "tier": "RED"
+          },
+          "Wyandotte County": {
+            "P_final": 0.13,
+            "tier": "GREEN"
+          }
+        },
+        "Kentucky": {
+          "Jefferson County": {
+            "P_final": 0.58,
+            "tier": "AMBER"
+          },
+          "Fayette County": {
+            "P_final": 0.54,
+            "tier": "AMBER"
+          },
+          "Kenton County": {
+            "P_final": 0.6,
+            "tier": "AMBER"
+          }
+        },
+        "Louisiana": {
+          "Orleans Parish": {
+            "P_final": 0.38,
+            "tier": "GREEN"
+          },
+          "Jefferson Parish": {
+            "P_final": 0.73,
+            "tier": "AMBER"
+          },
+          "East Baton Rouge Parish": {
+            "P_final": 0.87,
+            "tier": "RED"
+          }
+        },
+        "Maine": {
+          "Cumberland County": {
+            "P_final": 0.78,
+            "tier": "RED"
+          },
+          "York County": {
+            "P_final": 0.2,
+            "tier": "GREEN"
+          },
+          "Penobscot County": {
+            "P_final": 0.71,
+            "tier": "AMBER"
+          }
+        },
+        "Maryland": {
+          "Baltimore County": {
+            "P_final": 0.76,
+            "tier": "RED"
+          },
+          "Montgomery County": {
+            "P_final": 0.1,
+            "tier": "GREEN"
+          },
+          "Prince George\u2019s County": {
+            "P_final": 0.69,
+            "tier": "AMBER"
+          }
+        },
+        "Massachusetts": {
+          "Middlesex County": {
+            "P_final": 0.43,
+            "tier": "GREEN"
+          },
+          "Suffolk County": {
+            "P_final": 0.82,
+            "tier": "RED"
+          },
+          "Worcester County": {
+            "P_final": 0.7,
+            "tier": "AMBER"
+          }
+        },
+        "Michigan": {
+          "Wayne County": {
+            "P_final": 0.2,
+            "tier": "GREEN"
+          },
+          "Oakland County": {
+            "P_final": 0.83,
+            "tier": "RED"
+          },
+          "Macomb County": {
+            "P_final": 0.7,
+            "tier": "AMBER"
+          }
+        },
+        "Minnesota": {
+          "Hennepin County": {
+            "P_final": 0.26,
+            "tier": "GREEN"
+          },
+          "Ramsey County": {
+            "P_final": 0.83,
+            "tier": "RED"
+          },
+          "Dakota County": {
+            "P_final": 0.46,
+            "tier": "AMBER"
+          }
+        },
+        "Mississippi": {
+          "Hinds County": {
+            "P_final": 0.3,
+            "tier": "GREEN"
+          },
+          "Harrison County": {
+            "P_final": 0.34,
+            "tier": "GREEN"
+          },
+          "DeSoto County": {
+            "P_final": 0.16,
+            "tier": "GREEN"
+          }
+        },
+        "Missouri": {
+          "St. Louis County": {
+            "P_final": 0.88,
+            "tier": "RED"
+          },
+          "Jackson County": {
+            "P_final": 0.81,
+            "tier": "RED"
+          },
+          "Greene County": {
+            "P_final": 0.49,
+            "tier": "AMBER"
+          }
+        },
+        "Montana": {
+          "Yellowstone County": {
+            "P_final": 0.8,
+            "tier": "RED"
+          },
+          "Gallatin County": {
+            "P_final": 0.42,
+            "tier": "GREEN"
+          },
+          "Missoula County": {
+            "P_final": 0.76,
+            "tier": "RED"
+          }
+        },
+        "Nebraska": {
+          "Douglas County": {
+            "P_final": 0.82,
+            "tier": "RED"
+          },
+          "Lancaster County": {
+            "P_final": 0.45,
+            "tier": "GREEN"
+          },
+          "Sarpy County": {
+            "P_final": 0.32,
+            "tier": "GREEN"
+          }
+        },
+        "Nevada": {
+          "Clark County": {
+            "P_final": 0.3,
+            "tier": "GREEN"
+          },
+          "Washoe County": {
+            "P_final": 0.87,
+            "tier": "RED"
+          },
+          "Carson City": {
+            "P_final": 0.83,
+            "tier": "RED"
+          }
+        },
+        "New Hampshire": {
+          "Hillsborough County": {
+            "P_final": 0.85,
+            "tier": "RED"
+          },
+          "Rockingham County": {
+            "P_final": 0.61,
+            "tier": "AMBER"
+          },
+          "Merrimack County": {
+            "P_final": 0.2,
+            "tier": "GREEN"
+          }
+        },
+        "New Jersey": {
+          "Bergen County": {
+            "P_final": 0.9,
+            "tier": "RED"
+          },
+          "Middlesex County": {
+            "P_final": 0.56,
+            "tier": "AMBER"
+          },
+          "Essex County": {
+            "P_final": 0.44,
+            "tier": "GREEN"
+          }
+        },
+        "New Mexico": {
+          "Bernalillo County": {
+            "P_final": 0.22,
+            "tier": "GREEN"
+          },
+          "Do\u00f1a Ana County": {
+            "P_final": 0.93,
+            "tier": "RED"
+          },
+          "Santa Fe County": {
+            "P_final": 0.8,
+            "tier": "RED"
           }
         },
         "New York": {
           "New York County": {
-            "P_final": 0.22,
+            "P_final": 0.32,
             "tier": "GREEN"
+          },
+          "Kings County": {
+            "P_final": 0.77,
+            "tier": "RED"
+          },
+          "Queens County": {
+            "P_final": 0.71,
+            "tier": "AMBER"
           },
           "Erie County": {
-            "P_final": 0.08,
-            "tier": "GREEN"
+            "P_final": 0.52,
+            "tier": "AMBER"
           },
           "Monroe County": {
+            "P_final": 0.79,
+            "tier": "RED"
+          }
+        },
+        "North Carolina": {
+          "Mecklenburg County": {
+            "P_final": 0.46,
+            "tier": "AMBER"
+          },
+          "Wake County": {
+            "P_final": 0.46,
+            "tier": "AMBER"
+          },
+          "Guilford County": {
+            "P_final": 0.53,
+            "tier": "AMBER"
+          }
+        },
+        "North Dakota": {
+          "Cass County": {
+            "P_final": 0.62,
+            "tier": "AMBER"
+          },
+          "Burleigh County": {
+            "P_final": 0.17,
+            "tier": "GREEN"
+          },
+          "Grand Forks County": {
+            "P_final": 0.9,
+            "tier": "RED"
+          }
+        },
+        "Ohio": {
+          "Cuyahoga County": {
+            "P_final": 0.23,
+            "tier": "GREEN"
+          },
+          "Franklin County": {
+            "P_final": 0.19,
+            "tier": "GREEN"
+          },
+          "Hamilton County": {
+            "P_final": 0.08,
+            "tier": "GREEN"
+          }
+        },
+        "Oklahoma": {
+          "Oklahoma County": {
+            "P_final": 0.56,
+            "tier": "AMBER"
+          },
+          "Tulsa County": {
+            "P_final": 0.7,
+            "tier": "AMBER"
+          },
+          "Cleveland County": {
+            "P_final": 0.74,
+            "tier": "AMBER"
+          }
+        },
+        "Oregon": {
+          "Multnomah County": {
+            "P_final": 0.41,
+            "tier": "GREEN"
+          },
+          "Washington County": {
+            "P_final": 0.46,
+            "tier": "AMBER"
+          },
+          "Lane County": {
+            "P_final": 0.08,
+            "tier": "GREEN"
+          }
+        },
+        "Pennsylvania": {
+          "Philadelphia County": {
+            "P_final": 0.81,
+            "tier": "RED"
+          },
+          "Allegheny County": {
+            "P_final": 0.89,
+            "tier": "RED"
+          },
+          "Montgomery County": {
+            "P_final": 0.53,
+            "tier": "AMBER"
+          }
+        },
+        "Rhode Island": {
+          "Providence County": {
+            "P_final": 0.06,
+            "tier": "GREEN"
+          },
+          "Kent County": {
+            "P_final": 0.92,
+            "tier": "RED"
+          },
+          "Washington County": {
+            "P_final": 0.34,
+            "tier": "GREEN"
+          }
+        },
+        "South Carolina": {
+          "Charleston County": {
+            "P_final": 0.21,
+            "tier": "GREEN"
+          },
+          "Greenville County": {
+            "P_final": 0.16,
+            "tier": "GREEN"
+          },
+          "Richland County": {
+            "P_final": 0.21,
+            "tier": "GREEN"
+          }
+        },
+        "South Dakota": {
+          "Minnehaha County": {
+            "P_final": 0.56,
+            "tier": "AMBER"
+          },
+          "Pennington County": {
+            "P_final": 0.83,
+            "tier": "RED"
+          },
+          "Lincoln County": {
+            "P_final": 0.69,
+            "tier": "AMBER"
+          }
+        },
+        "Tennessee": {
+          "Shelby County": {
             "P_final": 0.73,
+            "tier": "AMBER"
+          },
+          "Davidson County": {
+            "P_final": 0.1,
+            "tier": "GREEN"
+          },
+          "Knox County": {
+            "P_final": 0.71,
+            "tier": "AMBER"
+          }
+        },
+        "Texas": {
+          "Harris County": {
+            "P_final": 0.93,
+            "tier": "RED"
+          },
+          "Dallas County": {
+            "P_final": 0.8,
+            "tier": "RED"
+          },
+          "Tarrant County": {
+            "P_final": 0.61,
+            "tier": "AMBER"
+          },
+          "Bexar County": {
+            "P_final": 0.17,
+            "tier": "GREEN"
+          },
+          "Travis County": {
+            "P_final": 0.33,
+            "tier": "GREEN"
+          }
+        },
+        "Utah": {
+          "Salt Lake County": {
+            "P_final": 0.23,
+            "tier": "GREEN"
+          },
+          "Utah County": {
+            "P_final": 0.81,
+            "tier": "RED"
+          },
+          "Davis County": {
+            "P_final": 0.05,
+            "tier": "GREEN"
+          }
+        },
+        "Vermont": {
+          "Chittenden County": {
+            "P_final": 0.87,
+            "tier": "RED"
+          },
+          "Rutland County": {
+            "P_final": 0.27,
+            "tier": "GREEN"
+          },
+          "Washington County": {
+            "P_final": 0.32,
+            "tier": "GREEN"
+          }
+        },
+        "Virginia": {
+          "Fairfax County": {
+            "P_final": 0.57,
+            "tier": "AMBER"
+          },
+          "Prince William County": {
+            "P_final": 0.82,
+            "tier": "RED"
+          },
+          "Loudoun County": {
+            "P_final": 0.1,
+            "tier": "GREEN"
+          }
+        },
+        "Washington": {
+          "King County": {
+            "P_final": 0.3,
+            "tier": "GREEN"
+          },
+          "Pierce County": {
+            "P_final": 0.95,
+            "tier": "RED"
+          },
+          "Snohomish County": {
+            "P_final": 0.37,
+            "tier": "GREEN"
+          }
+        },
+        "West Virginia": {
+          "Kanawha County": {
+            "P_final": 0.69,
+            "tier": "AMBER"
+          },
+          "Berkeley County": {
+            "P_final": 0.31,
+            "tier": "GREEN"
+          },
+          "Monongalia County": {
+            "P_final": 0.36,
+            "tier": "GREEN"
+          }
+        },
+        "Wisconsin": {
+          "Milwaukee County": {
+            "P_final": 0.73,
+            "tier": "AMBER"
+          },
+          "Dane County": {
+            "P_final": 0.8,
+            "tier": "RED"
+          },
+          "Waukesha County": {
+            "P_final": 0.5,
+            "tier": "AMBER"
+          }
+        },
+        "Wyoming": {
+          "Laramie County": {
+            "P_final": 0.39,
+            "tier": "GREEN"
+          },
+          "Natrona County": {
+            "P_final": 0.43,
+            "tier": "GREEN"
+          },
+          "Sweetwater County": {
+            "P_final": 0.68,
             "tier": "AMBER"
           }
         }
@@ -62,54 +738,54 @@
       "Canada": {
         "Ontario": {
           "Toronto": {
-            "P_final": 0.63,
+            "P_final": 0.73,
             "tier": "AMBER"
           },
           "Ottawa": {
-            "P_final": 0.21,
-            "tier": "GREEN"
+            "P_final": 0.59,
+            "tier": "AMBER"
           }
         },
         "British Columbia": {
           "Vancouver": {
-            "P_final": 0.59,
-            "tier": "AMBER"
+            "P_final": 0.76,
+            "tier": "RED"
           },
           "Victoria": {
-            "P_final": 0.4,
-            "tier": "GREEN"
+            "P_final": 0.62,
+            "tier": "AMBER"
           }
         },
         "Quebec": {
           "Montreal": {
-            "P_final": 0.31,
-            "tier": "GREEN"
+            "P_final": 0.95,
+            "tier": "RED"
           },
           "Quebec City": {
-            "P_final": 0.79,
-            "tier": "RED"
+            "P_final": 0.4,
+            "tier": "GREEN"
           }
         }
       },
       "Mexico": {
         "Jalisco": {
           "Guadalajara": {
-            "P_final": 0.27,
+            "P_final": 0.24,
             "tier": "GREEN"
           },
           "Puerto Vallarta": {
-            "P_final": 0.41,
+            "P_final": 0.4,
             "tier": "GREEN"
           }
         },
         "Nuevo Le\u00f3n": {
           "Monterrey": {
-            "P_final": 0.32,
+            "P_final": 0.25,
             "tier": "GREEN"
           },
           "San Nicol\u00e1s de los Garza": {
-            "P_final": 0.19,
-            "tier": "GREEN"
+            "P_final": 0.81,
+            "tier": "RED"
           }
         }
       }
@@ -118,43 +794,43 @@
       "Brazil": {
         "S\u00e3o Paulo": {
           "S\u00e3o Paulo City": {
-            "P_final": 0.48,
-            "tier": "AMBER"
+            "P_final": 0.9,
+            "tier": "RED"
           },
           "Campinas": {
-            "P_final": 0.19,
-            "tier": "GREEN"
+            "P_final": 0.89,
+            "tier": "RED"
           }
         },
         "Rio de Janeiro": {
           "Rio de Janeiro City": {
-            "P_final": 0.1,
-            "tier": "GREEN"
+            "P_final": 0.76,
+            "tier": "RED"
           },
           "Niter\u00f3i": {
-            "P_final": 0.8,
-            "tier": "RED"
+            "P_final": 0.09,
+            "tier": "GREEN"
           }
         }
       },
       "Argentina": {
         "Buenos Aires": {
           "Buenos Aires City": {
-            "P_final": 0.92,
-            "tier": "RED"
+            "P_final": 0.73,
+            "tier": "AMBER"
           },
           "La Plata": {
-            "P_final": 0.36,
+            "P_final": 0.14,
             "tier": "GREEN"
           }
         },
         "C\u00f3rdoba": {
           "C\u00f3rdoba City": {
-            "P_final": 0.82,
+            "P_final": 0.85,
             "tier": "RED"
           },
           "Villa Carlos Paz": {
-            "P_final": 0.55,
+            "P_final": 0.69,
             "tier": "AMBER"
           }
         }
@@ -162,21 +838,21 @@
       "Chile": {
         "Santiago Metropolitan": {
           "Santiago": {
-            "P_final": 0.44,
+            "P_final": 0.19,
             "tier": "GREEN"
           },
           "Puente Alto": {
-            "P_final": 0.14,
+            "P_final": 0.06,
             "tier": "GREEN"
           }
         },
         "Valpara\u00edso": {
           "Valpara\u00edso": {
-            "P_final": 0.89,
-            "tier": "RED"
+            "P_final": 0.27,
+            "tier": "GREEN"
           },
           "Vi\u00f1a del Mar": {
-            "P_final": 0.68,
+            "P_final": 0.56,
             "tier": "AMBER"
           }
         }
@@ -186,98 +862,98 @@
       "United Kingdom": {
         "England": {
           "London": {
-            "P_final": 0.21,
-            "tier": "GREEN"
+            "P_final": 0.47,
+            "tier": "AMBER"
           },
           "Manchester": {
-            "P_final": 0.41,
+            "P_final": 0.15,
             "tier": "GREEN"
           }
         },
         "Scotland": {
           "Edinburgh": {
-            "P_final": 0.3,
+            "P_final": 0.29,
             "tier": "GREEN"
           },
           "Glasgow": {
-            "P_final": 0.78,
-            "tier": "RED"
+            "P_final": 0.05,
+            "tier": "GREEN"
           }
         },
         "Wales": {
           "Cardiff": {
-            "P_final": 0.47,
+            "P_final": 0.58,
             "tier": "AMBER"
           },
           "Swansea": {
-            "P_final": 0.06,
-            "tier": "GREEN"
+            "P_final": 0.92,
+            "tier": "RED"
           }
         }
       },
       "France": {
         "\u00cele-de-France": {
           "Paris": {
-            "P_final": 0.56,
-            "tier": "AMBER"
+            "P_final": 0.29,
+            "tier": "GREEN"
           },
           "Versailles": {
-            "P_final": 0.55,
-            "tier": "AMBER"
+            "P_final": 0.78,
+            "tier": "RED"
           }
         },
         "Provence-Alpes-C\u00f4te d'Azur": {
           "Marseille": {
-            "P_final": 0.65,
+            "P_final": 0.63,
             "tier": "AMBER"
           },
           "Nice": {
-            "P_final": 0.6,
-            "tier": "AMBER"
+            "P_final": 0.08,
+            "tier": "GREEN"
           }
         }
       },
       "Germany": {
         "Bavaria": {
           "Munich": {
-            "P_final": 0.09,
-            "tier": "GREEN"
+            "P_final": 0.86,
+            "tier": "RED"
           },
           "Nuremberg": {
-            "P_final": 0.42,
-            "tier": "GREEN"
+            "P_final": 0.6,
+            "tier": "AMBER"
           }
         },
         "North Rhine-Westphalia": {
           "Cologne": {
-            "P_final": 0.21,
+            "P_final": 0.27,
             "tier": "GREEN"
           },
           "D\u00fcsseldorf": {
-            "P_final": 0.8,
-            "tier": "RED"
+            "P_final": 0.3,
+            "tier": "GREEN"
           }
         }
       },
       "Italy": {
         "Lazio": {
           "Rome": {
-            "P_final": 0.94,
-            "tier": "RED"
+            "P_final": 0.65,
+            "tier": "AMBER"
           },
           "Viterbo": {
-            "P_final": 0.89,
+            "P_final": 0.93,
             "tier": "RED"
           }
         },
         "Lombardy": {
           "Milan": {
-            "P_final": 0.23,
+            "P_final": 0.11,
             "tier": "GREEN"
           },
           "Bergamo": {
-            "P_final": 0.87,
-            "tier": "RED"
+            "P_final": 0.29,
+            "tier": "GREEN"
           }
         }
       }
@@ -286,21 +962,21 @@
       "Nigeria": {
         "Lagos": {
           "Lagos Mainland": {
-            "P_final": 0.47,
-            "tier": "AMBER"
+            "P_final": 0.44,
+            "tier": "GREEN"
           },
           "Ikeja": {
-            "P_final": 0.14,
-            "tier": "GREEN"
+            "P_final": 0.92,
+            "tier": "RED"
           }
         },
         "Kano": {
           "Kano City": {
-            "P_final": 0.37,
-            "tier": "GREEN"
+            "P_final": 0.49,
+            "tier": "AMBER"
           },
           "Gwale": {
-            "P_final": 0.86,
+            "P_final": 0.76,
             "tier": "RED"
           }
         }
@@ -308,65 +984,65 @@
       "Kenya": {
         "Nairobi": {
           "Westlands": {
-            "P_final": 0.51,
-            "tier": "AMBER"
+            "P_final": 0.11,
+            "tier": "GREEN"
           },
           "Kasarani": {
-            "P_final": 0.15,
+            "P_final": 0.14,
             "tier": "GREEN"
           }
         },
         "Mombasa": {
           "Mvita": {
-            "P_final": 0.5,
-            "tier": "AMBER"
+            "P_final": 0.31,
+            "tier": "GREEN"
           },
           "Changamwe": {
-            "P_final": 0.13,
-            "tier": "GREEN"
+            "P_final": 0.49,
+            "tier": "AMBER"
           }
         }
       },
       "South Africa": {
         "Gauteng": {
           "Johannesburg": {
-            "P_final": 0.9,
-            "tier": "RED"
+            "P_final": 0.62,
+            "tier": "AMBER"
           },
           "Pretoria": {
-            "P_final": 0.93,
+            "P_final": 0.79,
             "tier": "RED"
           }
         },
         "Western Cape": {
           "Cape Town": {
-            "P_final": 0.4,
-            "tier": "GREEN"
+            "P_final": 0.91,
+            "tier": "RED"
           },
           "Stellenbosch": {
-            "P_final": 0.29,
-            "tier": "GREEN"
+            "P_final": 0.73,
+            "tier": "AMBER"
           }
         }
       },
       "Egypt": {
         "Cairo Governorate": {
           "Cairo": {
-            "P_final": 0.18,
+            "P_final": 0.25,
             "tier": "GREEN"
           },
           "Helwan": {
-            "P_final": 0.19,
-            "tier": "GREEN"
+            "P_final": 0.94,
+            "tier": "RED"
           }
         },
         "Alexandria": {
           "Alexandria City": {
-            "P_final": 0.45,
+            "P_final": 0.29,
             "tier": "GREEN"
           },
           "Montaza": {
-            "P_final": 0.56,
+            "P_final": 0.57,
             "tier": "AMBER"
           }
         }
@@ -376,53 +1052,53 @@
       "India": {
         "Maharashtra": {
           "Mumbai": {
-            "P_final": 0.54,
-            "tier": "AMBER"
+            "P_final": 0.11,
+            "tier": "GREEN"
           },
           "Pune": {
-            "P_final": 0.06,
+            "P_final": 0.24,
             "tier": "GREEN"
           }
         },
         "Tamil Nadu": {
           "Chennai": {
-            "P_final": 0.92,
-            "tier": "RED"
+            "P_final": 0.26,
+            "tier": "GREEN"
           },
           "Madurai": {
-            "P_final": 0.38,
-            "tier": "GREEN"
+            "P_final": 0.8,
+            "tier": "RED"
           }
         },
         "West Bengal": {
           "Kolkata": {
-            "P_final": 0.31,
-            "tier": "GREEN"
+            "P_final": 0.48,
+            "tier": "AMBER"
           },
           "Howrah": {
-            "P_final": 0.58,
-            "tier": "AMBER"
+            "P_final": 0.43,
+            "tier": "GREEN"
           }
         }
       },
       "China": {
         "Guangdong": {
           "Guangzhou": {
-            "P_final": 0.39,
+            "P_final": 0.34,
             "tier": "GREEN"
           },
           "Shenzhen": {
-            "P_final": 0.4,
-            "tier": "GREEN"
+            "P_final": 0.67,
+            "tier": "AMBER"
           }
         },
         "Beijing": {
           "Dongcheng": {
-            "P_final": 0.91,
-            "tier": "RED"
+            "P_final": 0.4,
+            "tier": "GREEN"
           },
           "Haidian": {
-            "P_final": 0.38,
+            "P_final": 0.18,
             "tier": "GREEN"
           }
         }
@@ -430,21 +1106,21 @@
       "Japan": {
         "Tokyo": {
           "Chiyoda": {
-            "P_final": 0.75,
+            "P_final": 0.65,
             "tier": "AMBER"
           },
           "Shinjuku": {
-            "P_final": 0.5,
-            "tier": "AMBER"
+            "P_final": 0.17,
+            "tier": "GREEN"
           }
         },
         "Osaka": {
           "Kita": {
-            "P_final": 0.4,
+            "P_final": 0.43,
             "tier": "GREEN"
           },
           "Naniwa": {
-            "P_final": 0.52,
+            "P_final": 0.64,
             "tier": "AMBER"
           }
         }
@@ -452,22 +1128,22 @@
       "Philippines": {
         "Metro Manila": {
           "Quezon City": {
-            "P_final": 0.09,
-            "tier": "GREEN"
+            "P_final": 0.76,
+            "tier": "RED"
           },
           "Manila": {
-            "P_final": 0.17,
+            "P_final": 0.2,
             "tier": "GREEN"
           }
         },
         "Cebu": {
           "Cebu City": {
-            "P_final": 0.07,
-            "tier": "GREEN"
+            "P_final": 0.66,
+            "tier": "AMBER"
           },
           "Mandaue": {
-            "P_final": 0.92,
-            "tier": "RED"
+            "P_final": 0.59,
+            "tier": "AMBER"
           }
         }
       }
@@ -476,44 +1152,44 @@
       "Australia": {
         "New South Wales": {
           "Sydney": {
-            "P_final": 0.83,
+            "P_final": 0.9,
             "tier": "RED"
           },
           "Newcastle": {
-            "P_final": 0.4,
+            "P_final": 0.34,
             "tier": "GREEN"
           }
         },
         "Victoria": {
           "Melbourne": {
-            "P_final": 0.89,
-            "tier": "RED"
+            "P_final": 0.64,
+            "tier": "AMBER"
           },
           "Geelong": {
-            "P_final": 0.32,
-            "tier": "GREEN"
+            "P_final": 0.81,
+            "tier": "RED"
           }
         },
         "Queensland": {
           "Brisbane": {
-            "P_final": 0.07,
+            "P_final": 0.36,
             "tier": "GREEN"
           },
           "Cairns": {
-            "P_final": 0.15,
-            "tier": "GREEN"
+            "P_final": 0.86,
+            "tier": "RED"
           }
         }
       },
       "New Zealand": {
         "Auckland Region": {
           "Auckland City": {
-            "P_final": 0.18,
-            "tier": "GREEN"
+            "P_final": 0.65,
+            "tier": "AMBER"
           },
           "Manukau": {
-            "P_final": 0.23,
-            "tier": "GREEN"
+            "P_final": 0.71,
+            "tier": "AMBER"
           }
         },
         "Canterbury": {
@@ -522,30 +1198,30 @@
             "tier": "AMBER"
           },
           "Ashburton": {
-            "P_final": 0.18,
-            "tier": "GREEN"
+            "P_final": 0.51,
+            "tier": "AMBER"
           }
         }
       },
       "Fiji": {
         "Central Division": {
           "Suva": {
-            "P_final": 0.94,
-            "tier": "RED"
+            "P_final": 0.24,
+            "tier": "GREEN"
           },
           "Nausori": {
-            "P_final": 0.44,
-            "tier": "GREEN"
+            "P_final": 0.63,
+            "tier": "AMBER"
           }
         },
         "Western Division": {
           "Lautoka": {
-            "P_final": 0.09,
-            "tier": "GREEN"
+            "P_final": 0.81,
+            "tier": "RED"
           },
           "Nadi": {
-            "P_final": 0.21,
-            "tier": "GREEN"
+            "P_final": 0.89,
+            "tier": "RED"
           }
         }
       }
@@ -554,26 +1230,26 @@
       "Research Stations": {
         "Ross Ice Shelf": {
           "McMurdo Station": {
-            "P_final": 0.57,
-            "tier": "AMBER"
+            "P_final": 0.08,
+            "tier": "GREEN"
           },
           "Scott Base": {
-            "P_final": 0.35,
-            "tier": "GREEN"
+            "P_final": 0.87,
+            "tier": "RED"
           }
         },
         "Queen Maud Land": {
           "Troll Station": {
-            "P_final": 0.81,
-            "tier": "RED"
+            "P_final": 0.39,
+            "tier": "GREEN"
           },
           "Neumayer Station III": {
-            "P_final": 0.28,
+            "P_final": 0.19,
             "tier": "GREEN"
           }
         }
       }
     }
   },
-  "timestamp": "2025-11-10T18:33:18.653671Z"
+  "timestamp": "2025-11-10T18:43:12.560194Z"
 }
