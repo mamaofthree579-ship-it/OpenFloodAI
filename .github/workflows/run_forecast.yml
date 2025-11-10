@@ -50,6 +50,11 @@ jobs:
           git pull --rebase origin main || true
           git push origin main || echo "No push necessary — repo already up to date."
 
-      - name: 🌐 Trigger GitHub Pages Build
-        run: |
-          echo "✅ Workflow completed — dashboard will refresh automatically."
+         - name: Commit and push forecast results
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git pull --rebase
+        git add data/outputs/all_forecasts.json
+        git commit -m "Automated forecast update" || echo "No changes to commit"
+        git push
