@@ -186,6 +186,27 @@ async function loadForecast() {
       "Oceania": ["Australia", "New Zealand"]
     };
 
+    // After you load forecastData:
+const countriesInData = Object.keys(forecastData);
+countriesInData.forEach(country => {
+  let found = false;
+  for (const [cont, list] of Object.entries(continentMap)) {
+    if (list.includes(country)) {
+      found = true;
+      break;
+    }
+  }
+  if (!found) {
+    console.warn(
+      `⚠️ Country '${country}' in data but not mapped to any continent. It will appear under "Other".`
+    );
+    continentMap["Other"] = continentMap["Other"] || [];
+    continentMap["Other"].push(country);
+  }
+});
+
+// Then populate tabs based on continentMap…
+    
     // Populate continent buttons
     const continentTabs = document.getElementById("continentTabs");
     continentTabs.innerHTML = "";
