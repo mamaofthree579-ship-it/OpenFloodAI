@@ -65,9 +65,11 @@ async function loadForecast() {
     const res = await fetch("data/outputs/all_forecasts.json?cb=" + Date.now());
     const data = await res.json();
     forecastData = data.forecasts;
-    document.getElementById("updateTime").innerText = "Updated: " + new Date(data.timestamp).toLocaleString();
+    document.getElementById("updateTime").innerText =
+      "Updated: " + new Date(data.timestamp).toLocaleString();
 
     const continentSelect = document.getElementById("continentSelect");
+    continentSelect.innerHTML = '<option value="">-- Choose Continent --</option>';
     Object.keys(forecastData).sort().forEach(continent => {
       const opt = document.createElement("option");
       opt.value = continent;
@@ -92,16 +94,19 @@ function populate(selectId, items) {
 }
 
 document.getElementById("continentSelect").addEventListener("change", e => {
-  const val = e.target.value;
+  const continent = e.target.value;
   const countrySelect = document.getElementById("countrySelect");
   const stateSelect = document.getElementById("stateSelect");
   const countySelect = document.getElementById("countySelect");
-  [stateSelect, countySelect].forEach(s => { s.disabled = true; s.innerHTML = ""; });
+  [countrySelect, stateSelect, countySelect].forEach(s => {
+    s.disabled = true;
+    s.innerHTML = '<option value="">-- Choose --</option>';
+  });
   document.getElementById("forecastTable").style.display = "none";
 
-  if (!val) { countrySelect.disabled = true; return; }
+  if (!continent) return;
   countrySelect.disabled = false;
-  populate("countrySelect", Object.keys(forecastData[val]));
+  populate("countrySelect", Object.keys(forecastData[continent]));
 });
 
 document.getElementById("countrySelect").addEventListener("change", e => {
@@ -109,12 +114,13 @@ document.getElementById("countrySelect").addEventListener("change", e => {
   const country = e.target.value;
   const stateSelect = document.getElementById("stateSelect");
   const countySelect = document.getElementById("countySelect");
-  countySelect.disabled = true;
-  stateSelect.innerHTML = "";
-  countySelect.innerHTML = "";
+  [stateSelect, countySelect].forEach(s => {
+    s.disabled = true;
+    s.innerHTML = '<option value="">-- Choose --</option>';
+  });
   document.getElementById("forecastTable").style.display = "none";
 
-  if (!country) { stateSelect.disabled = true; return; }
+  if (!country) return;
   stateSelect.disabled = false;
   populate("stateSelect", Object.keys(forecastData[continent][country]));
 });
@@ -124,9 +130,11 @@ document.getElementById("stateSelect").addEventListener("change", e => {
   const country = document.getElementById("countrySelect").value;
   const state = e.target.value;
   const countySelect = document.getElementById("countySelect");
+  countySelect.disabled = true;
+  countySelect.innerHTML = '<option value="">-- Choose --</option>';
   document.getElementById("forecastTable").style.display = "none";
 
-  if (!state) { countySelect.disabled = true; return; }
+  if (!state) return;
   countySelect.disabled = false;
   populate("countySelect", Object.keys(forecastData[continent][country][state]));
 });
