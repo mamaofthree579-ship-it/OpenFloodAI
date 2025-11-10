@@ -3,97 +3,84 @@ import random
 from datetime import datetime
 from pathlib import Path
 
-# --------------------------------------------------------
-# 🌍 Define the regions by country for multi-region forecast
-# --------------------------------------------------------
+# === REGION STRUCTURE ===
 REGION_STRUCTURE = {
-    # 🌎 North America
-    "USA": [
-        "California", "Texas", "Florida", "New York",
-        "Louisiana", "Illinois", "Pennsylvania", "Washington"
-    ],
-    "Canada": [
-        "British Columbia", "Ontario", "Quebec",
-        "Alberta", "Nova Scotia", "Manitoba"
-    ],
-    "Mexico": [
-        "Jalisco", "Chiapas", "Veracruz", "Nuevo León",
-        "Yucatán", "Puebla"
-    ],
-
-    # 🌍 Europe
-    "UK": ["England", "Scotland", "Wales", "Northern Ireland"],
-    "France": ["Île-de-France", "Occitanie", "Provence-Alpes-Côte d’Azur", "Brittany", "Normandy"],
-    "Germany": ["Bavaria", "North Rhine-Westphalia", "Berlin", "Hamburg", "Saxony"],
-
-    # 🌏 Asia
-    "India": ["Maharashtra", "Kerala", "Assam", "Tamil Nadu", "West Bengal", "Gujarat"],
-    "China": ["Guangdong", "Sichuan", "Beijing", "Shanghai", "Yunnan", "Hunan"],
-    "Philippines": ["Luzon", "Visayas", "Mindanao", "Metro Manila"],
-    "Japan": ["Tokyo", "Osaka", "Kyoto", "Hokkaido", "Okinawa"],
-
-    # 🌍 Africa
-    "Nigeria": ["Lagos", "Rivers", "Anambra", "Kano", "Ogun"],
-    "South Africa": ["Gauteng", "KwaZulu-Natal", "Western Cape", "Eastern Cape", "Limpopo"],
-
-    # 🌏 Oceania
-    "Australia": ["New South Wales", "Queensland", "Victoria", "Western Australia", "Tasmania"],
-
-    # 🌎 South America
-    "Brazil": ["São Paulo", "Rio de Janeiro", "Bahia", "Amazonas", "Paraná"],
-    "Argentina": ["Buenos Aires", "Córdoba", "Santa Fe", "Mendoza", "Salta"]
+    "North America": {
+        "United States": ["California", "Florida", "Texas", "New York"],
+        "Canada": ["Ontario", "Quebec", "British Columbia"],
+        "Mexico": ["Yucatán", "Chiapas", "Baja California"]
+    },
+    "South America": {
+        "Brazil": ["São Paulo", "Amazonas", "Bahia"],
+        "Argentina": ["Buenos Aires", "Cordoba"],
+        "Chile": ["Santiago", "Valparaíso"]
+    },
+    "Europe": {
+        "United Kingdom": ["England", "Scotland", "Wales"],
+        "France": ["Île-de-France", "Normandy", "Provence"],
+        "Germany": ["Bavaria", "Saxony", "Berlin"],
+        "Italy": ["Lombardy", "Tuscany", "Sicily"],
+        "Spain": ["Madrid", "Catalonia", "Andalusia"]
+    },
+    "Africa": {
+        "Nigeria": ["Lagos", "Abuja", "Kano"],
+        "South Africa": ["Gauteng", "Western Cape", "KwaZulu-Natal"],
+        "Kenya": ["Nairobi", "Mombasa"],
+        "Egypt": ["Cairo", "Alexandria"]
+    },
+    "Asia": {
+        "India": ["Maharashtra", "Tamil Nadu", "Kerala"],
+        "China": ["Beijing", "Guangdong", "Sichuan"],
+        "Japan": ["Tokyo", "Osaka"],
+        "Indonesia": ["Jakarta", "Bali"],
+        "Philippines": ["Luzon", "Visayas", "Mindanao"]
+    },
+    "Oceania": {
+        "Australia": ["New South Wales", "Queensland", "Victoria"],
+        "New Zealand": ["Auckland", "Wellington", "Canterbury"]
+    }
 }
 
-# --------------------------------------------------------
-# 🚨 Simple tier logic
-# --------------------------------------------------------
-def determine_tier(prob):
-    if prob > 0.7:
-        return "RED"
-    elif prob > 0.4:
-        return "AMBER"
-    else:
-        return "GREEN"
+# === SIMPLE SIMULATION FUNCTION ===
+def blended_flood_probability(region_name):
+    # Simulate rainfall, river flow, tide, and runoff conditions
+    rainfall = random.uniform(0, 1)
+    river_flow = random.uniform(0, 1)
+    tide_effect = random.uniform(0, 1)
+    soil_saturation = random.uniform(0, 1)
 
-# --------------------------------------------------------
-# 🧠 Simulated forecast generation
-# --------------------------------------------------------
+    # Weighted blending formula (adjustable later)
+    P_final = (0.4 * rainfall + 0.3 * river_flow + 0.2 * tide_effect + 0.1 * soil_saturation)
+    tier = "RED" if P_final > 0.66 else "AMBER" if P_final > 0.33 else "GREEN"
+
+    return {"P_final": round(P_final, 3), "tier": tier}
+
+
+# === MAIN FORECAST GENERATION ===
 def generate_forecast():
+    print("🔄 Generating multi-region forecasts...")
     data = {"forecasts": {}, "timestamp": datetime.utcnow().isoformat() + "Z"}
 
-    for country, regions in REGION_STRUCTURE.items():
-        data["forecasts"][country] = {}
-        for region in regions:
-            # Random probability generation (simulate model output)
-            prob = round(random.uniform(0.05, 0.95), 3)
-            tier = determine_tier(prob)
-            data["forecasts"][country][region] = {
-                "P_final": prob,
-                "tier": tier
-            }
+    for continent, countries in REGION_STRUCTURE.items():
+        for country, regions in countries.items():
+            data["forecasts"].setdefault(country, {})
+            for region in regions:
+                data["forecasts"][country][region] = blended_flood_probability(region)
 
+    print("✅ Forecast generation complete.")
     return data
 
-# --------------------------------------------------------
-# 💾 Write forecast output
-# --------------------------------------------------------
-def save_forecast_to_file(forecast_data):
-    output_path = "data/outputs/all_forecasts.json"
-    os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
-with open(output_path, "w") as f:
-    json.dump(data, f, indent=2)
+# === WRITE TO FILE ===
+def save_forecast(data, output_path="data/outputs/all_forecasts.json"):
+    output_file = Path(output_path)
+    output_file.parent.mkdir(parents=True, exist_ok=True)
 
-    print(f"✅ Forecast data written to {output_path}")
+    with open(output_file, "w") as f:
+        json.dump(data, f, indent=2)
+    print(f"💾 Forecast written to {output_file.resolve()}")
 
-    print("Writing forecasts for", len(REGION_STRUCTURE), "countries...")
-for country, regions in REGION_STRUCTURE.items():
-    print("  ", country, ":", len(regions), "regions")
-    
-# --------------------------------------------------------
-# 🚀 Main runner
-# --------------------------------------------------------
+
 if __name__ == "__main__":
     forecast_data = generate_forecast()
-    save_forecast_to_file(forecast_data)
-    print(f"Forecast generated at {forecast_data['timestamp']}")
+    save_forecast(forecast_data)
