@@ -1,7 +1,7 @@
 import json, random
 from datetime import datetime
 
-# 🌍 Hierarchical geographic structure
+# 🌍 Global region-to-country-to-state-to-county structure
 REGION_STRUCTURE = {
     "North America": {
         "United States": {
@@ -36,7 +36,6 @@ REGION_STRUCTURE = {
     }
 }
 
-# 🎯 Tier calculation based on flood probability
 def determine_tier(p):
     if p > 0.65:
         return "RED"
@@ -45,10 +44,8 @@ def determine_tier(p):
     else:
         return "GREEN"
 
-# 💧 Generate hierarchical forecast data
 def generate_forecast():
     data = {"forecasts": {}, "timestamp": datetime.utcnow().isoformat() + "Z"}
-
     for continent, countries in REGION_STRUCTURE.items():
         data["forecasts"][continent] = {}
         for country, states in countries.items():
