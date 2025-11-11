@@ -50,7 +50,7 @@ REGION_STRUCTURE = {
     "Texas": ["Harris County", "Dallas County", "Tarrant County", "Bexar County", "Travis County"],
     "Utah": ["Salt Lake County", "Utah County", "Davis County"],
     "Vermont": ["Chittenden County", "Rutland County", "Washington County"],
-    "Virginia": ["Fairfax County", "Prince William County", "Loudoun County"],
+    "Virginia": ["Fairfax County", "Prince William County", "Loudoun County", "Clark County"],
     "Washington": ["King County", "Pierce County", "Snohomish County"],
     "West Virginia": ["Kanawha County", "Berkeley County", "Monongalia County", "Jefferson County"],
     "Wisconsin": ["Milwaukee County", "Dane County", "Waukesha County"],
