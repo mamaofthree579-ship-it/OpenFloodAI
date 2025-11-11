@@ -5,7 +5,7 @@ from datetime import datetime
 REGION_STRUCTURE = {
     "North America": {
         "United States": {
-    "Alabama": ["Jefferson County", "Mobile County", "Madison County"],
+    "Alabama": ["Jefferson County", "Mobile County", "Madison County", "Autauga County", "Baldwin County", "Barbour County", "Bibb County", "Blount County", "Bullock County", "Butler County"],
     "Alaska": ["Anchorage Municipality", "Fairbanks North Star Borough", "Matanuska-Susitna Borough"],
     "Arizona": ["Maricopa County", "Pima County", "Pinal County"],
     "Arkansas": ["Pulaski County", "Benton County", "Washington County"],
