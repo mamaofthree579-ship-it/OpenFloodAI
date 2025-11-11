@@ -50,11 +50,11 @@ REGION_STRUCTURE = {
     "Texas": ["Harris County", "Dallas County", "Tarrant County", "Bexar County", "Travis County"],
     "Utah": ["Salt Lake County", "Utah County", "Davis County"],
     "Vermont": ["Chittenden County", "Rutland County", "Washington County"],
-    "Virginia": ["Fairfax County", "Prince William County", "Loudoun County", "Clark County"],
+    "Virginia": ["Fairfax County", "Prince William County", "Loudoun County", "Clarke County"],
     "Washington": ["King County", "Pierce County", "Snohomish County"],
     "West Virginia": ["Kanawha County", "Berkeley County", "Monongalia County", "Jefferson County"],
     "Wisconsin": ["Milwaukee County", "Dane County", "Waukesha County"],
-    "Wyoming": ["Laramie County", "Natrona County", "Sweetwater County"]
+    "Wyoming": ["Laramie County", "Natrona County", "Sweetwater County", "Albany County", "Big Horn County", "Campbell County", "Carbon County", "Converse County", "Crook County", "Fremont County", "Goshen County", "Hot Springs County", "Johnson County", "Lincoln County", "Niobrara County", "Park County", "Platte County", "Sheridan County", "Sublette County", "Teton County", "Uinta County", "Washakie County", "Weston County"]
         },
         "Canada": {
     "Alberta": ["Calgary", "Edmonton", "Red Deer"],
