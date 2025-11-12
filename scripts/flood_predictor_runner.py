@@ -195,7 +195,7 @@ REGION_STRUCTURE = {
     "Antarctica": {
         "Research Stations": {
             "Ross Ice Shelf": ["McMurdo Station", "Scott Base", "Mawson Station", "Davis Station", "Amundsen–Scott South Pole Station"],
-            "Queen Maud Land": ["Troll Station", "Neumayer Station III", "Wasa", "Svea", "Princess Elisabeth Antarctica", "Kohnen", "Maitri", "SANAE IV", "Novolazarevskaya", "Nordenskiöld Base"]
+            "Queen Maud Land": ["Troll Station", "Neumayer Station III", "Wasa", "Svea", "Princess Elisabeth Antarctica", "Kohnen", "Maitri", "SANAE IV", "Novolazarevskaya", "Nordenskiöld Base"],
             "Antarctic Peninsula": ["Frei Base", "Palmer Station", "Rothera Research Station", "Vernadsky Research Base"]
         }
     }
