@@ -175,6 +175,9 @@ REGION_STRUCTURE = {
         "Philippines": {
             "Metro Manila": ["Quezon City", "Manila"],
             "Cebu": ["Cebu City", "Mandaue"]
+        },
+        "Gaza Strip": {
+            "North Gaza Governorate": ["Jabalia", "Beit Hanoun", "Beit Lahia", "Umm al-Nasr"]
         }
     },
     "Oceania": {
