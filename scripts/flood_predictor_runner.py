@@ -178,7 +178,10 @@ REGION_STRUCTURE = {
         },
         "Gaza Strip": {
             "North Gaza Governorate": ["Jabalia", "Beit Hanoun", "Beit Lahia", "Umm al-Nasr", "Jabalia Camp"],
-            "Gaza Governorate": ["Gaza City", "Al-Mughraqa", "Az-Zahra", "Juhor ad-Dik", "Ash-Shati' Camp"]
+            "Gaza Governorate": ["Gaza City", "Al-Mughraqa", "Az-Zahra", "Juhor ad-Dik", "Ash-Shati' Camp"],
+            "Deir al-Balah Governorate": ["Deir al-Balah", "Al-Bureij", "Al-Maghazi", "An-Nuseirat", "Az-Zawaydah", "Wadi as-Salqa"],
+            "Khan Yunis Governorate": ["Khan Yunis", "Bani Suheila", "'Abasan al-Kabira", "Al-Qarara", "Khuza'a", "Khan Yunis Camp"],
+            "Rafah Governorate": ["Rafah", "Ash-Shokat", "An-Naser", "Rafah Camp"]
         }
     },
     "Oceania": {
