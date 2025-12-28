@@ -177,7 +177,8 @@ REGION_STRUCTURE = {
             "Cebu": ["Cebu City", "Mandaue"]
         },
         "Gaza Strip": {
-            "North Gaza Governorate": ["Jabalia", "Beit Hanoun", "Beit Lahia", "Umm al-Nasr"]
+            "North Gaza Governorate": ["Jabalia", "Beit Hanoun", "Beit Lahia", "Umm al-Nasr", "Jabalia Camp"],
+            "Gaza Governorate": ["Gaza City", "Al-Mughraqa", "Az-Zahra", "Juhor ad-Dik", "Ash-Shati' Camp"]
         }
     },
     "Oceania": {
