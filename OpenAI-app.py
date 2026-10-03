@@ -3,14 +3,28 @@ import os
 from datetime import datetime
 import streamlit as st
 
-# 1. Page Configuration & Custom Theme Styling
+# 1. Isolate and Cache Heavy Spatial Dependencies
+# This prevents the app from running out of RAM and disappearing on every user click.
+@st.cache_resource
+def initialize_geospatial_environment():
+    import geopandas as gpd
+    import rasterio
+    import rioxarray
+    import shapely
+    return True
+
+# Trigger the initialization once globally
+_ = initialize_geospatial_environment()
+
+
+# 2. Page Configuration & Custom Theme Styling
 st.set_page_config(
     page_title="OpenFloodAI — Global Flood Forecasts",
     page_icon="🌊",
     layout="centered",
 )
 
-# Inject custom CSS to match your original UI styling
+# Inject custom CSS to match your original HTML dashboard UI styling
 st.markdown(
     """
     <style>
@@ -92,8 +106,8 @@ st.markdown(
 )
 
 
-# 2. Data Loading Function
-@st.cache_data(ttl=60)  # Caches data for 60 seconds, acting like your cache-buster (?cb=)
+# 3. Data Loading Function with Cache-Busting Handling
+@st.cache_data(ttl=60)  # Caches data for 60 seconds (acts like your ?cb= Date.now() bypass)
 def load_forecast_data():
     data_path = os.path.join("data", "outputs", "all_forecasts.json")
     try:
@@ -103,16 +117,18 @@ def load_forecast_data():
         return None
 
 
-# Load JSON Data
+# Load data structure
 data = load_forecast_data()
 
-# 3. Render Header
+# 4. Render Layout Header
 if data and "timestamp" in data:
-    # Format timestamp similarly to JavaScript's toLocaleString()
-    formatted_time = datetime.fromisoformat(
-        data["timestamp"].replace("Z", "+00:00")
-    ).strftime("%m/%d/%Y, %I:%M:%S %p")
-    header_time_html = f"Updated: {formatted_time}"
+    try:
+        formatted_time = datetime.fromisoformat(
+            data["timestamp"].replace("Z", "+00:00")
+        ).strftime("%m/%d/%Y, %I:%M:%S %p")
+        header_time_html = f"Updated: {formatted_time}"
+    except Exception:
+        header_time_html = f"Updated: {data['timestamp']}"
 else:
     header_time_html = "⚠️ Could not load forecast data."
 
@@ -126,31 +142,40 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# 4. Application Logic / Dropdowns with Safe Failbacks
+# 5. Application Filtering Logics & Secure Fallbacks
 if data and "forecasts" in data:
     forecasts = data["forecasts"]
+
+    # Country Selector
     countries = ["-- Choose a Country --"] + sorted(list(forecasts.keys()))
-    
     selected_country = st.selectbox("🌍 Select Country:", options=countries)
 
-    # Enforce default fallback list if the environment is throttled
+    # Region Selector (Safely checks structural continuity against memory drops)
     if selected_country != "-- Choose a Country --" and selected_country in forecasts:
-        regions = ["-- Choose a Region --"] + sorted(list(forecasts[selected_country].keys()))
+        regions = ["-- Choose a Region --"] + sorted(
+            list(forecasts[selected_country].keys())
+        )
         selected_region = st.selectbox("🏙️ Select Region:", options=regions)
     else:
         st.selectbox("🏙️ Select Region:", options=["-- Choose a Region --"], disabled=True)
         selected_region = "-- Choose a Region --"
-        
-    # 5. Render Forecast Details & Table Metrics safely
-    if (selected_country != "-- Choose a Country --" and 
-        selected_region != "-- Choose a Region --" and 
-        selected_region in forecasts.get(selected_country, {})):
+
+    # 6. Render Dashboard Cards & Table Metrics
+    if (
+        selected_country != "-- Choose a Country --"
+        and selected_region != "-- Choose a Region --"
+        and selected_region in forecasts.get(selected_country, {})
+    ):
         
         entry = forecasts[selected_country][selected_region]
-        tier = entry.get("tier", "GREEN").upper()
-        probability = entry.get("P_final", 0.0) * 100
+
+        # Extract entry properties safely
+        tier = str(entry.get("tier", "GREEN")).upper()
+        p_final = entry.get("P_final", 0.0)
+        probability = p_final * 100
         generated_utc = entry.get("generated_utc", data.get("timestamp", "N/A"))
 
+        # Render visual layout representation
         st.markdown("### 📊 Active Forecast Overview")
         st.markdown(
             f"""
@@ -165,18 +190,24 @@ if data and "forecasts" in data:
             """,
             unsafe_allow_html=True,
         )
-        
+
+        # Meta Diagnostics (From your second JS file block logic)
+        st.markdown("---")
+        st.markdown(f"**Model v1.0.1** • Generated: `{generated_utc}`")
+
         if "diagnostics" in entry:
             st.markdown("#### Diagnostics JSON:")
             st.json(entry["diagnostics"])
+            
     elif selected_country != "-- Choose a Country --":
-        st.info("Select a valid region to see forecast diagnostics.")
+        st.info("💡 Please choose a specific region to output active diagnostics.")
 else:
-    # Error state message if memory throttling blocks data loading
-    st.warning("⚠️ The dashboard is loading slowly due to cloud resource optimization. Please refresh or select an active country.")
+    st.warning(
+        "⚠️ The dashboard is currently building or throttled by cloud resources. "
+        "Please check your `data/outputs/all_forecasts.json` file storage path."
+    )
 
-
-# 6. Render Footer
+# 7. Render Footer Layout
 st.markdown(
     """
     <div class="custom-footer">
