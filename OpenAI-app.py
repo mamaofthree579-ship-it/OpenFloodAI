@@ -123,7 +123,7 @@ st.markdown(
         <div>{header_time_html}</div>
     </div>
     """,
-    unsafe_html=True,
+    unsafe_allow_html=True,
 )
 
 # 4. Application Logic / Dropdowns
@@ -170,7 +170,7 @@ if data and "forecasts" in data:
                 </div>
             </div>
             """,
-            unsafe_html=True,
+            unsafe_allow_html=True,
         )
 
         # Extended Metadata & Diagnostics (from your second JS block script)
@@ -194,5 +194,5 @@ st.markdown(
         🌍 OpenFloodAI — Open & Community Flood Forecasting
     </div>
     """,
-    unsafe_html=True,
+    unsafe_allow_html=True,
 )
