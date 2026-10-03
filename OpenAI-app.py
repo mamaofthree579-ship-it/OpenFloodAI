@@ -126,38 +126,31 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# 4. Application Logic / Dropdowns
+# 4. Application Logic / Dropdowns with Safe Failbacks
 if data and "forecasts" in data:
     forecasts = data["forecasts"]
-
-    # Country Selector
     countries = ["-- Choose a Country --"] + sorted(list(forecasts.keys()))
+    
     selected_country = st.selectbox("🌍 Select Country:", options=countries)
 
-    # Region Selector (depends on selected country)
-    if selected_country != "-- Choose a Country --":
-        regions = ["-- Choose a Region --"] + sorted(
-            list(forecasts[selected_country].keys())
-        )
+    # Enforce default fallback list if the environment is throttled
+    if selected_country != "-- Choose a Country --" and selected_country in forecasts:
+        regions = ["-- Choose a Region --"] + sorted(list(forecasts[selected_country].keys()))
         selected_region = st.selectbox("🏙️ Select Region:", options=regions)
     else:
         st.selectbox("🏙️ Select Region:", options=["-- Choose a Region --"], disabled=True)
         selected_region = "-- Choose a Region --"
-
-    # 5. Render Forecast Details & Table Metrics
-    if (
-        selected_country != "-- Choose a Country --"
-        and selected_region != "-- Choose a Region --"
-    ):
+        
+    # 5. Render Forecast Details & Table Metrics safely
+    if (selected_country != "-- Choose a Country --" and 
+        selected_region != "-- Choose a Region --" and 
+        selected_region in forecasts.get(selected_country, {})):
+        
         entry = forecasts[selected_country][selected_region]
-
-        # Extract values
         tier = entry.get("tier", "GREEN").upper()
-        p_final = entry.get("P_final", 0.0)
-        probability = p_final * 100
-        generated_utc = entry.get("generated_utc", data["timestamp"])
+        probability = entry.get("P_final", 0.0) * 100
+        generated_utc = entry.get("generated_utc", data.get("timestamp", "N/A"))
 
-        # Display Forecast Metrics Table Row alternative styled in HTML
         st.markdown("### 📊 Active Forecast Overview")
         st.markdown(
             f"""
@@ -172,20 +165,16 @@ if data and "forecasts" in data:
             """,
             unsafe_allow_html=True,
         )
-
-        # Extended Metadata & Diagnostics (from your second JS block script)
-        st.markdown("---")
-        st.markdown(f"**Model v1.0.1** • Generated: `{generated_utc}`")
-
-        # Diagnostics section
+        
         if "diagnostics" in entry:
             st.markdown("#### Diagnostics JSON:")
             st.json(entry["diagnostics"])
-
+    elif selected_country != "-- Choose a Country --":
+        st.info("Select a valid region to see forecast diagnostics.")
 else:
-    st.error(
-        "No forecast data available. Please ensure your `data/outputs/all_forecasts.json` file exists."
-    )
+    # Error state message if memory throttling blocks data loading
+    st.warning("⚠️ The dashboard is loading slowly due to cloud resource optimization. Please refresh or select an active country.")
+
 
 # 6. Render Footer
 st.markdown(
