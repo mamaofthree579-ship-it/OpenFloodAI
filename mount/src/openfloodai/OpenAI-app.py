@@ -3,40 +3,20 @@ import os
 from datetime import datetime
 import streamlit as st
 
-# 1. Isolate and Cache Heavy Spatial Dependencies
-# This prevents the app from running out of RAM and disappearing on every user click.
-@st.cache_resource
-def initialize_geospatial_environment():
-    import geopandas as gpd
-    import rasterio
-    import rioxarray
-    import shapely
-    return True
-
-# Trigger the initialization once globally
-_ = initialize_geospatial_environment()
-
-
-# 2. Page Configuration & Custom Theme Styling
+# 1. Page Configuration
 st.set_page_config(
-    page_title="OpenFloodAI — Global Flood Forecasts",
+    page_title="OpenFloodAI — Global Forecasts",
     page_icon="🌊",
     layout="centered",
 )
 
-# Inject custom CSS to match your original HTML dashboard UI styling
+# 2. Inject CSS Styles to Match the New HTML Spec
 st.markdown(
     """
     <style>
-    /* Global Styles */
-    .stApp {
-        background-color: #eef6ff;
-    }
-    h1, h2, h3, p, label {
-        color: #333333 !important;
-    }
+    .stApp { background-color: #eef6ff; }
+    h1, h2, h3, p, label { color: #333333 !important; }
     
-    /* Header Container */
     .custom-header {
         background-color: #0077cc;
         color: white;
@@ -47,50 +27,46 @@ st.markdown(
         align-items: center;
         margin-bottom: 25px;
     }
-    .custom-header h1 {
-        color: white !important;
-        margin: 0;
-        font-size: 1.6em;
-    }
-    .custom-header div {
-        font-size: 0.9em;
-    }
+    .custom-header h1 { color: white !important; margin: 0; font-size: 1.6em; }
+    .custom-header div { font-size: 0.9em; }
     
-    /* Risk Tier Badges & Row Backgrounds */
-    .tier-card {
-        padding: 15px;
+    /* Table Styling mimicking HTML structure */
+    .forecast-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        background: white;
         border-radius: 6px;
-        margin-top: 15px;
+        overflow: hidden;
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
-    .RED { background-color: #ffb3b3; color: #b30000; }
-    .AMBER { background-color: #fff2b3; color: #8a6d3b; }
-    .GREEN { background-color: #c6f6c3; color: #1e5a1e; }
+    .forecast-table th, .forecast-table td {
+        border-bottom: 1px solid #ddd;
+        text-align: center;
+        padding: 12px;
+        color: #333;
+    }
+    .forecast-table th { background-color: #0077cc; color: white !important; }
     
-    /* Progress Bar Layout */
+    /* Risk Tier Row Background Colors */
+    .RED { background-color: #ffb3b3; }
+    .AMBER { background-color: #fff2b3; }
+    .GREEN { background-color: #c6f6c3; }
+    
+    /* Probability Bar Layout */
     .bar-container {
         width: 100%;
         background-color: #e6e6e6;
         border-radius: 4px;
         overflow: hidden;
         height: 12px;
-        margin-top: 6px;
+        margin-top: 4px;
     }
     .bar { height: 12px; }
     .bar.RED { background-color: #ff4d4d; }
     .bar.AMBER { background-color: #ffc107; }
     .bar.GREEN { background-color: #28a745; }
     
-    /* Diagnostic Box */
-    pre {
-        background-color: #f8f9fa;
-        padding: 10px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        color: #333;
-    }
-    
-    /* Footer */
     .custom-footer {
         background-color: #0077cc;
         color: white !important;
@@ -105,9 +81,8 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-
-# 3. Data Loading Function with Cache-Busting Handling
-@st.cache_data(ttl=60)  # Caches data for 60 seconds (acts like your ?cb= Date.now() bypass)
+# 3. Data Loading Function
+@st.cache_data(ttl=60)
 def load_forecast_data():
     data_path = os.path.join("data", "outputs", "all_forecasts.json")
     try:
@@ -116,98 +91,109 @@ def load_forecast_data():
     except FileNotFoundError:
         return None
 
-
-# Load data structure
 data = load_forecast_data()
 
-# 4. Render Layout Header
+# 4. Render Dynamic Header Timestamp
 if data and "timestamp" in data:
     try:
         formatted_time = datetime.fromisoformat(
             data["timestamp"].replace("Z", "+00:00")
         ).strftime("%m/%d/%Y, %I:%M:%S %p")
-        header_time_html = f"Updated: {formatted_time}"
+        header_time = f"Updated: {formatted_time}"
     except Exception:
-        header_time_html = f"Updated: {data['timestamp']}"
+        header_time = f"Updated: {data['timestamp']}"
 else:
-    header_time_html = "⚠️ Could not load forecast data."
+    header_time = "⚠️ Could not load forecast data."
 
 st.markdown(
     f"""
     <div class="custom-header">
-        <h1>🌊 OpenFloodAI — Global Dashboard</h1>
-        <div>{header_time_html}</div>
+        <h1>🌊 OpenFloodAI — Global Forecasts</h1>
+        <div>{header_time}</div>
     </div>
     """,
     unsafe_allow_html=True,
 )
 
-# 5. Application Filtering Logics & Secure Fallbacks
+# 5. Cascading Deep Dropdowns Architecture
 if data and "forecasts" in data:
     forecasts = data["forecasts"]
 
-    # Country Selector
-    countries = ["-- Choose a Country --"] + sorted(list(forecasts.keys()))
-    selected_country = st.selectbox("🌍 Select Country:", options=countries)
+    # --- 1. CONTINENT ---
+    continents = ["-- Choose Continent --"] + sorted(list(forecasts.keys()))
+    sel_continent = st.selectbox("🌎 Continent:", options=continents)
 
-    # Region Selector (Safely checks structural continuity against memory drops)
-    if selected_country != "-- Choose a Country --" and selected_country in forecasts:
-        regions = ["-- Choose a Region --"] + sorted(
-            list(forecasts[selected_country].keys())
-        )
-        selected_region = st.selectbox("🏙️ Select Region:", options=regions)
+    # --- 2. COUNTRY ---
+    if sel_continent != "-- Choose Continent --" and sel_continent in forecasts:
+        countries = ["-- Choose Country --"] + sorted(list(forecasts[sel_continent].keys()))
+        sel_country = st.selectbox("🌍 Country:", options=countries)
     else:
-        st.selectbox("🏙️ Select Region:", options=["-- Choose a Region --"], disabled=True)
-        selected_region = "-- Choose a Region --"
+        st.selectbox("🌍 Country:", options=["-- Choose Country --"], disabled=True)
+        sel_country = "-- Choose Country --"
 
-    # 6. Render Dashboard Cards & Table Metrics
+    # --- 3. STATE / REGION ---
+    if sel_country != "-- Choose Country --" and sel_country in forecasts.get(sel_continent, {}):
+        states = ["-- Choose State/Region --"] + sorted(list(forecasts[sel_continent][sel_country].keys()))
+        sel_state = st.selectbox("🏙️ State/Region:", options=states)
+    else:
+        st.selectbox("🏙️ State/Region:", options=["-- Choose State/Region --"], disabled=True)
+        sel_state = "-- Choose State/Region --"
+
+    # --- 4. COUNTY ---
+    if sel_state != "-- Choose State/Region --" and sel_state in forecasts.get(sel_continent, {}).get(sel_country, {}):
+        counties = ["-- Choose County --"] + sorted(list(forecasts[sel_continent][sel_country][sel_state].keys()))
+        sel_county = st.selectbox("📍 County:", options=counties)
+    else:
+        st.selectbox("📍 County:", options=["-- Choose County --"], disabled=True)
+        sel_county = "-- Choose County --"
+
+    # 6. Render the Interactive Dynamic Forecast Table Row
     if (
-        selected_country != "-- Choose a Country --"
-        and selected_region != "-- Choose a Region --"
-        and selected_region in forecasts.get(selected_country, {})
+        sel_continent != "-- Choose Continent --"
+        and sel_country != "-- Choose Country --"
+        and sel_state != "-- Choose State/Region --"
+        and sel_county != "-- Choose County --"
     ):
-        
-        entry = forecasts[selected_country][selected_region]
+        # Fetching nested leaf values safely
+        try:
+            values = forecasts[sel_continent][sel_country][sel_state][sel_county]
+            tier = str(values.get("tier", "GREEN")).upper()
+            p_final = values.get("P_final", 0.0)
+            probability = p_final * 100
 
-        # Extract entry properties safely
-        tier = str(entry.get("tier", "GREEN")).upper()
-        p_final = entry.get("P_final", 0.0)
-        probability = p_final * 100
-        generated_utc = entry.get("generated_utc", data.get("timestamp", "N/A"))
-
-        # Render visual layout representation
-        st.markdown("### 📊 Active Forecast Overview")
-        st.markdown(
-            f"""
-            <div class="tier-card {tier}">
-                <h3><strong>Region:</strong> {selected_region}</h3>
-                <p><strong>Risk Tier:</strong> <span style="font-weight:bold;">{tier}</span></p>
-                <p><strong>Flood Probability:</strong> {probability:.1f}%</p>
-                <div class="bar-container">
-                    <div class="bar {tier}" style="width:{probability}%"></div>
-                </div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
-        # Meta Diagnostics (From your second JS file block logic)
-        st.markdown("---")
-        st.markdown(f"**Model v1.0.1** • Generated: `{generated_utc}`")
-
-        if "diagnostics" in entry:
-            st.markdown("#### Diagnostics JSON:")
-            st.json(entry["diagnostics"])
-            
-    elif selected_country != "-- Choose a Country --":
-        st.info("💡 Please choose a specific region to output active diagnostics.")
+            # Generate identical design layout structure using HTML table mapping
+            st.markdown(
+                f"""
+                <table class="forecast-table">
+                    <thead>
+                        <tr>
+                            <th>Location</th>
+                            <th>Flood Probability</th>
+                            <th>Tier</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="{tier}">
+                            <td><strong>{sel_county}</strong></td>
+                            <td>
+                                {probability:.1f}%
+                                <div class="bar-container">
+                                    <div class="bar {tier}" style="width:{probability}%"></div>
+                                </div>
+                            </td>
+                            <td><strong>{tier}</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+                """,
+                unsafe_allow_html=True,
+            )
+        except KeyError:
+            st.error("⚠️ Data mismatch encountered mapping this specific path branch sequence.")
 else:
-    st.warning(
-        "⚠️ The dashboard is currently building or throttled by cloud resources. "
-        "Please check your `data/outputs/all_forecasts.json` file storage path."
-    )
+    st.error("No valid multi-tier nesting parameters found in `all_forecasts.json` structure.")
 
-# 7. Render Footer Layout
+# 7. Layout Footer
 st.markdown(
     """
     <div class="custom-footer">
