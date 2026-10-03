@@ -88,7 +88,7 @@ st.markdown(
     }
     </style>
     """,
-    unsafe_html=True,
+    unsafe_allow_html=True,
 )
 
 
