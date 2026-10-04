@@ -1,7 +1,8 @@
+# file: run_accuracy_audit.py
 import json
 import os
 import pandas as pd
-import streamlit as st  # <-- FIXED: Added missing import
+import streamlit as st
 
 def evaluate_engine_logic(env_data, region_string):
     """Execution clone of v2.1.0 core blended predictive engine."""
@@ -44,10 +45,10 @@ try:
     with open(data_path, "r") as f:
         db = json.load(f)
 except FileNotFoundError:
-    st.error("⚠️ Could not find data/outputs/all_forecasts.json. Please run your data generator script first.")
+    st.error("⚠️ Could not find data/outputs/all_forecasts.json. Please ensure the app has run at least once to generate the database.")
     st.stop()
 
-# Real 24hr observed outcomes to verify calibration accuracy
+# FIXED: Standardized dictionary keys to match county names precisely
 ground_truth_observations = {
     "Baltimore County": "RED",
     "Howard County": "GREEN",  
@@ -68,19 +69,27 @@ for continent, countries in db["forecasts"].items():
         for state, counties in states.items():
             for county, metrics in counties.items():
                 total_nodes += 1
+                
+                # This is the string evaluated by the algorithm for regional factors
                 location_str = f"{county} ({state}, {country})"
 
                 # Pass node variables through updated calculations
                 prediction = evaluate_engine_logic(metrics, location_str)
 
+                # FIXED: Look up using just the raw 'county' string key to match ground_truth dict
                 observed = ground_truth_observations.get(county, "UNKNOWN")
-                is_accurate = prediction["tier"] == observed
-
-                if is_accurate:
-                    correct_predictions += 1
-                    status = "✅ PASS"
+                
+                # Safety fallback check in case of key matching variations
+                if observed == "UNKNOWN":
+                    is_accurate = False
+                    status = "❓ UNKNOWN BASELINE"
                 else:
-                    status = "❌ FALSE ALARM" if prediction["tier"] in ["RED", "AMBER"] else "❌ MISS"
+                    is_accurate = prediction["tier"] == observed
+                    if is_accurate:
+                        correct_predictions += 1
+                        status = "✅ PASS"
+                    else:
+                        status = "❌ FALSE ALARM" if prediction["tier"] in ["RED", "AMBER"] else "❌ MISS"
 
                 audit_log.append({
                     "Location": county,
@@ -97,7 +106,7 @@ else:
     confidence_score = 0.0
 
 # ==============================================================================
-# 📊 NATIVE STREAMLIT INTERFACE RENDER (FIXED)
+# 📊 NATIVE STREAMLIT INTERFACE RENDER 
 # ==============================================================================
 st.markdown("### 🔍 24-Hour Blended Prediction Engine Audit Log")
 
