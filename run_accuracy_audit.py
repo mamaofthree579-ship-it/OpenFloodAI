@@ -106,7 +106,7 @@ confidence_score = (correct_predictions / total_nodes) * 100
 # Present audit metrics
 print("\n=== 🔍 24-HOUR BLENDED PREDICTION ENGINE AUDIT LOG ===")
 df = pd.DataFrame(audit_log)
-print(df.to_markdown(index=False))
+print(df.to_string(index=False))
 print("\n" + "=" * 55)
 print(
     f"🏆 SYSTEM PERFORMANCE RATING: {confidence_score:.1f}% ACCURACY"
