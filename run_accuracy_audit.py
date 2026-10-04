@@ -112,3 +112,9 @@ print(
     f"🏆 SYSTEM PERFORMANCE RATING: {confidence_score:.1f}% ACCURACY"
 )
 print("=" * 55 + "\n")
+
+# Streamlit dashboard UI area
+st.markdown("### 🔍 24-Hour Blended Prediction Engine Audit Log")
+st.dataframe(df, use_container_width=True)
+st.metric("System Performance Rating", f"{confidence_score:.1f}% Accuracy")
+
